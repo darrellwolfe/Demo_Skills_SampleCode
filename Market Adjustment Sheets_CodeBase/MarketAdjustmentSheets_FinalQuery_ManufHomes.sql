@@ -9,10 +9,10 @@ LTRIM(RTRIM())
 */
 
 
--------------------------------------
--- MANUFACTERED HOMES WORKSHEETS
--------------------------------------
 
+-------------------------------------
+-- RESIDENTIAL WORKSHEETS
+-------------------------------------
 -------------------------------------
 -- CTEs will drive this report and combine in the main query
 -------------------------------------
@@ -25,7 +25,7 @@ WITH
 -------------------------------------
 
 CTE_MarketAdjustmentNotes AS (
- Select Distinct
+  Select Distinct
     m1.lrsn,
     LTRIM(RTRIM(CONCAT(
     m2.memo_text,
@@ -65,6 +65,7 @@ CTE_MarketAdjustmentNotes AS (
   --------------------------
   Where m1.memo_id IN ('SA','SAMH')
   AND m1.status = 'A'
+
 ),
 
 -------------------------------------
@@ -97,7 +98,7 @@ CTE_Improvements_Residential AS (
   -- Residential Dwellings dw
     --codes_table
     -- AND htyp.tbl_type_code='htyp'  
-  dw.mkt_house_type,
+  dw.mkt_house_type AS [HouseType#],
   htyp.tbl_element_desc AS [HouseTypeName],
   dw.mkt_rdf AS [RDF] -- Relative Desirability Facotor (RDF), see ProVal, Values, Cost Buildup, under depreciation
   
@@ -227,7 +228,7 @@ CTE_Improvements_MF AS (
   -- Residential Dwellings dw
     --codes_table
     -- AND htyp.tbl_type_code='htyp'  
-  dw.mkt_house_type,
+  dw.mkt_house_type AS [HouseType#],
   htyp.tbl_element_desc AS [HouseTypeName],
   dw.mkt_rdf AS [RDF], -- Relative Desirability Facotor (RDF), see ProVal, Values, Cost Buildup, under depreciation
   
@@ -380,25 +381,65 @@ CTE_LandDetails AS (
   ld.ActualFrontage,
   ld.DepthFactor,
   ld.SoilProdFactor,
-  ld.SmallAcreFactor
+  ld.SmallAcreFactor,
+  ld.SiteRating,
+  TRIM (sr.tbl_element_desc) AS [Legend],
+  li.InfluenceCode,
+  STRING_AGG (li.InfluenceAmount, ',') AS [InfluenceFactor(s)],
+  li.InfluenceAmount,
+  CASE
+      WHEN li.InfluenceType = 1 THEN '1-Pct'
+      ELSE '2-Val'
+  END AS [InfluenceType],
+  li.PriceAdjustment
   
   --Land Header
   FROM LandHeader AS lh
   --Land Detail
   JOIN LandDetail AS ld ON lh.id=ld.LandHeaderId 
     AND ld.EffStatus='A' 
+    AND ld.PostingSource='A'
     AND lh.PostingSource=ld.PostingSource
+  LEFT JOIN codes_table AS sr ON ld.SiteRating = sr.tbl_element
+      AND sr.tbl_type_code='siterating  '
+
   --Land Types
   LEFT JOIN land_types AS lt ON ld.LandType=lt.land_type
   
+  --Land Influence
+  LEFT JOIN LandInfluence AS li ON li.ObjectId = ld.Id
+    AND li.EffStatus='A' 
+    AND li.PostingSource='A'
+
+  
   WHERE lh.EffStatus= 'A' 
     AND lh.PostingSource='A'
-    AND ld.PostingSource='A'
+
   --Change land model id for current year
     AND lh.LandModelId='702023'
     AND ld.LandModelId='702023'
+    AND ld.LandType IN ('9','31','32')
+
   --Looking for:
     --AND ld.LandType IN ('82')
+    GROUP BY
+  lh.RevObjId,
+  ld.LandDetailType,
+  ld.LandType,
+  lt.land_type_desc,
+  ld.SoilIdent,
+  ld.LDAcres,
+  ld.ActualFrontage,
+  ld.DepthFactor,
+  ld.SoilProdFactor,
+  ld.SmallAcreFactor,
+  ld.SiteRating,
+  sr.tbl_element_desc,
+  li.InfluenceCode,
+  li.InfluenceAmount,
+  li.InfluenceType,
+  li.PriceAdjustment
+    
 )
 
 -------------------------------------
@@ -411,23 +452,71 @@ CTE_LandDetails AS (
 -------------------------------------
 SELECT DISTINCT
   --This query is driven by Transfer Table, sales in 2022-2023
-  t.lrsn,
   --Parcel Master Details
+  pmd.[GEO],
+--  pmd.[GEO_Name],
+  t.lrsn,
   pmd.[PIN],
   pmd.[AIN],
-  pmd.[GEO],
-  pmd.[GEO_Name],
-  pmd.[PCC_ClassCD],
   pmd.[SitusAddress],
-  pmd.[SitusCity],
+  --pmd.[SitusCity],
+  pmd.[PCC_ClassCD],
+  CAST(LEFT(TRIM(pmd.[PCC_ClassCD]),3) AS INT) AS [PCC#],
+  res.year_built,
+  res.eff_year_built,
+  res.year_remodeled,
+  --res.[GradeCode], -- is this a code that needs a key?
+  TRIM(res.[GradeType]) AS [Grade],
+  TRIM(res.condition) AS [Condition],
+  res.[HouseType#],
+  TRIM(res.[HouseTypeName]) AS [HouseTypeName],
+  res.[RDF], -- Relative Desirability Facotor (RDF), see ProVal, Values, Cost Buildup, under depreciation
+  --Cat19 Waste, see CTE for details
   pmd.LegalAcres,
-  pmd.Improvement_Status,
-  --Transfer Table Sale Details
-  t.pxfer_date AS [SaleDate],
+  CAST (1 AS int) AS [Site_1_Acre],
+  c19.[Cat19Waste],
+--LEGEND CASE Land Detail
+  cld.[Legend],
+  CASE
+    WHEN cld.[Legend] LIKE 'Legend%' THEN CAST(RIGHT(cld.[Legend],2) AS INT)
+    ELSE
+      CASE
+        WHEN cld.[Legend] LIKE 'No%' THEN CAST(1 AS INT)
+        WHEN cld.[Legend] LIKE 'Average%' THEN CAST(2 AS INT)
+        WHEN cld.[Legend] LIKE 'Good%' THEN CAST(3 AS INT)
+        WHEN cld.[Legend] LIKE 'Excellent%' THEN CAST(4 AS INT)
+        ELSE 0
+      END
+  END AS [Legend#],
+--INFLUENCE FACTOR CASE Land Detail
+  cld.[InfluenceType],
+  --cld.[InfluenceFactor(s)],
+  CASE 
+    WHEN cld.[InfluenceType] LIKE '1%' THEN CAST(TRIM(cld.[InfluenceFactor(s)]) AS INT)
+    ELSE NULL 
+  END AS InfluenceFactor1,
+  CASE 
+    WHEN cld.[InfluenceType] LIKE '2%' THEN CAST(TRIM(cld.[InfluenceFactor(s)]) AS INT)
+    ELSE NULL 
+  END AS InfluenceFactor2,
+  --Certified Values 2023
+  cv23.[Cert_Land_2023],
+  cv23.[Cert_Imp_2023],
+  cv23.[Cert_Total_2023],
+  pmd.WorkValue_Impv AS [WorksheetValue_TOS_ImpValue],
+    --Transfer Table Sale Details
   t.AdjustedSalePrice AS [SalePrice],
-  t.SaleDesc,
-  t.TfrType,
-  t.DocNum, -- Multiples will have the same DocNum
+  CAST(t.pxfer_date AS DATE) AS [SaleDate],
+  TRIM(t.SaleDesc) AS [SaleDescr],
+  TRIM(t.TfrType) AS [TranxType],
+  TRIM(t.DocNum) AS [Doc#], -- Multiples will have the same DocNum
+  --TRY_CAST(TRIM(t.DocNum) AS INT) AS [Doc#], -- Multiples will have the same DocNum
+  --Residential Details
+  pmd.Improvement_Status,
+ -- "_" AS [NotesInSeperate part of sheet>>>],
+  --Notes in the Proval Memo Headers SA or SAMH will show here
+  notes.[MarketAdjustmentNotes],
+
   --MF Home Details
   mf.imp_type,
   mf.year_built,
@@ -447,14 +536,7 @@ SELECT DISTINCT
   mf.[VIN],
   mf.mhpark_code,
   mf.[MH_Park],
-  --Cat19 Waste, see CTE for details
-  c19.[Cat19Waste],
-  --Certified Values 2023
-  cv23.[Cert_Land_2023],
-  cv23.[Cert_Imp_2023],
-  cv23.[Cert_Total_2023],
-  --Notes in the Proval Memo Headers SA or SAMH will show here
-  notes.[MarketAdjustmentNotes]
+
 
 
 FROM transfer AS t -- ON t.lrsn for joins
@@ -502,7 +584,6 @@ ORDER BY
   pmd.[GEO],
   pmd.[PIN],
   pmd.[PCC_ClassCD],
-  pmd.[SitusCity],
   pmd.Improvement_Status,
   t.pxfer_date
 

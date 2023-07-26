@@ -1,0 +1,7 @@
+
+
+In 2023, this was used on the totals sheet to get the totals from other sheets in the workbook.
+We can re-use this for the new workbooks to reference a query. 
+
+=VLOOKUP($B18,INDIRECT("'"&$J18&"'!$B$17:$DD$500"),38,FALSE)
+

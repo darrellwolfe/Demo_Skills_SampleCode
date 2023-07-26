@@ -8,8 +8,10 @@ GRM_Main
 LTRIM(RTRIM())
 */
 
+
+
 -------------------------------------
--- MA FULL - Res, Comm, MF in one table result
+-- RESIDENTIAL WORKSHEETS
 -------------------------------------
 -------------------------------------
 -- CTEs will drive this report and combine in the main query
@@ -23,7 +25,7 @@ WITH
 -------------------------------------
 
 CTE_MarketAdjustmentNotes AS (
- Select Distinct
+  Select Distinct
     m1.lrsn,
     LTRIM(RTRIM(CONCAT(
     m2.memo_text,
@@ -63,6 +65,7 @@ CTE_MarketAdjustmentNotes AS (
   --------------------------
   Where m1.memo_id IN ('SA','SAMH')
   AND m1.status = 'A'
+
 ),
 
 -------------------------------------
@@ -91,12 +94,15 @@ CTE_Improvements_Residential AS (
   i.condition,
   i.grade AS [GradeCode], -- is this a code that needs a key?
   grades.tbl_element_desc AS [GradeType],
+  
   -- Residential Dwellings dw
     --codes_table
     -- AND htyp.tbl_type_code='htyp'  
-  dw.mkt_house_type,
+  dw.mkt_house_type AS [HouseType#],
   htyp.tbl_element_desc AS [HouseTypeName],
   dw.mkt_rdf AS [RDF] -- Relative Desirability Facotor (RDF), see ProVal, Values, Cost Buildup, under depreciation
+  
+  
   --Extensions always comes first
   FROM extensions AS e -- ON e.lrsn --lrsn link if joining this to another query
     -- AND e.status = 'A' -- Filter if joining this to another query
@@ -114,6 +120,7 @@ CTE_Improvements_Residential AS (
         AND i.extension=dw.extension
     LEFT JOIN codes_table AS htyp ON dw.mkt_house_type = htyp.tbl_element 
       AND htyp.tbl_type_code='htyp'  
+       
   --MANUFACTERED HOUSING
   LEFT JOIN manuf_housing AS mh ON i.lrsn=mh.lrsn 
         AND i.extension=mh.extension
@@ -124,6 +131,7 @@ CTE_Improvements_Residential AS (
       AND model.tbl_type_code='mhmodel'
     LEFT JOIN codes_table AS park ON mh.mhpark_code=park.tbl_element 
       AND park.tbl_type_code='mhpark'
+  
   --Conditions
   WHERE e.status = 'A'
   AND i.improvement_id IN ('D','M')
@@ -173,7 +181,9 @@ CTE_Improvements_Commercial AS (
       --need codes to get the grade name, vs just the grade code#
       LEFT JOIN codes_table AS grades ON i.grade = grades.tbl_element
         AND grades.tbl_type_code='grades'
+        
   --manuf_housing, comm_bldg, dwellings all must be after e and i
+  
   --COMMERCIAL      
   LEFT JOIN comm_bldg AS cb ON i.lrsn=cb.lrsn 
         AND i.extension=cb.extension
@@ -203,6 +213,7 @@ CTE_Improvements_MF AS (
   e.collection_date,
   e.appraiser,
   e.appraisal_date,
+  
   --Improvements Table
     --codes_table 
     --AND park.tbl_type_code='grades'
@@ -213,14 +224,17 @@ CTE_Improvements_MF AS (
   i.condition,
   i.grade AS [GradeCode], -- is this a code that needs a key?
   grades.tbl_element_desc AS [GradeType],
+  
   -- Residential Dwellings dw
     --codes_table
     -- AND htyp.tbl_type_code='htyp'  
-  dw.mkt_house_type,
+  dw.mkt_house_type AS [HouseType#],
   htyp.tbl_element_desc AS [HouseTypeName],
   dw.mkt_rdf AS [RDF], -- Relative Desirability Facotor (RDF), see ProVal, Values, Cost Buildup, under depreciation
+  
   --Commercial
   cu.use_code,
+  
   --manuf_housing
       --codes_table 
       --AND make.tbl_type_code='mhmake'
@@ -244,7 +258,9 @@ CTE_Improvements_MF AS (
       --need codes to get the grade name, vs just the grade code#
       LEFT JOIN codes_table AS grades ON i.grade = grades.tbl_element
         AND grades.tbl_type_code='grades'
---manuf_housing, comm_bldg, dwellings all must be after e and i
+        
+  --manuf_housing, comm_bldg, dwellings all must be after e and i
+  
   --COMMERCIAL      
   LEFT JOIN comm_bldg AS cb ON i.lrsn=cb.lrsn 
         AND i.extension=cb.extension
@@ -252,12 +268,14 @@ CTE_Improvements_MF AS (
       LEFT JOIN comm_uses AS cu ON cb.lrsn=cu.lrsn
         AND cb.extension = cu.extension
         AND cu.status='A'
+        
   --RESIDENTIAL DWELLINGS
   LEFT JOIN dwellings AS dw ON i.lrsn=dw.lrsn
         AND dw.status='A'
         AND i.extension=dw.extension
     LEFT JOIN codes_table AS htyp ON dw.mkt_house_type = htyp.tbl_element 
       AND htyp.tbl_type_code='htyp'  
+       
   --MANUFACTERED HOUSING
   LEFT JOIN manuf_housing AS mh ON i.lrsn=mh.lrsn 
         AND i.extension=mh.extension
@@ -295,8 +313,8 @@ CTE_ParcelMasterData AS (
   
   From TSBv_PARCELMASTER AS pm
   Where pm.EffStatus = 'A'
-
-),
+  
+  ),
   
   -------------------------------------
   --CTE_CertValues2023
@@ -363,25 +381,65 @@ CTE_LandDetails AS (
   ld.ActualFrontage,
   ld.DepthFactor,
   ld.SoilProdFactor,
-  ld.SmallAcreFactor
+  ld.SmallAcreFactor,
+  ld.SiteRating,
+  TRIM (sr.tbl_element_desc) AS [Legend],
+  li.InfluenceCode,
+  STRING_AGG (li.InfluenceAmount, ',') AS [InfluenceFactor(s)],
+  li.InfluenceAmount,
+  CASE
+      WHEN li.InfluenceType = 1 THEN '1-Pct'
+      ELSE '2-Val'
+  END AS [InfluenceType],
+  li.PriceAdjustment
   
   --Land Header
   FROM LandHeader AS lh
   --Land Detail
   JOIN LandDetail AS ld ON lh.id=ld.LandHeaderId 
     AND ld.EffStatus='A' 
+    AND ld.PostingSource='A'
     AND lh.PostingSource=ld.PostingSource
+  LEFT JOIN codes_table AS sr ON ld.SiteRating = sr.tbl_element
+      AND sr.tbl_type_code='siterating  '
+
   --Land Types
   LEFT JOIN land_types AS lt ON ld.LandType=lt.land_type
   
+  --Land Influence
+  LEFT JOIN LandInfluence AS li ON li.ObjectId = ld.Id
+    AND li.EffStatus='A' 
+    AND li.PostingSource='A'
+
+  
   WHERE lh.EffStatus= 'A' 
     AND lh.PostingSource='A'
-    AND ld.PostingSource='A'
+
   --Change land model id for current year
     AND lh.LandModelId='702023'
     AND ld.LandModelId='702023'
+    AND ld.LandType IN ('9','31','32')
+
   --Looking for:
     --AND ld.LandType IN ('82')
+    GROUP BY
+  lh.RevObjId,
+  ld.LandDetailType,
+  ld.LandType,
+  lt.land_type_desc,
+  ld.SoilIdent,
+  ld.LDAcres,
+  ld.ActualFrontage,
+  ld.DepthFactor,
+  ld.SoilProdFactor,
+  ld.SmallAcreFactor,
+  ld.SiteRating,
+  sr.tbl_element_desc,
+  li.InfluenceCode,
+  li.InfluenceAmount,
+  li.InfluenceType,
+  li.PriceAdjustment
+    
 )
 
 -------------------------------------
@@ -394,34 +452,72 @@ CTE_LandDetails AS (
 -------------------------------------
 SELECT DISTINCT
   --This query is driven by Transfer Table, sales in 2022-2023
-  t.lrsn,
   --Parcel Master Details
+  pmd.[GEO],
+--  pmd.[GEO_Name],
+  t.lrsn,
   pmd.[PIN],
   pmd.[AIN],
-  pmd.[GEO],
-  pmd.[GEO_Name],
-  pmd.[PCC_ClassCD],
   pmd.[SitusAddress],
-  pmd.[SitusCity],
-  pmd.LegalAcres,
-  pmd.Improvement_Status,
-  --Transfer Table Sale Details
-  t.pxfer_date AS [SaleDate],
-  t.AdjustedSalePrice AS [SalePrice],
-  t.SaleDesc,
-  t.TfrType,
-  t.DocNum, -- Multiples will have the same DocNum
-  --Residential Details
+  --pmd.[SitusCity],
+  pmd.[PCC_ClassCD],
+  CAST(LEFT(TRIM(pmd.[PCC_ClassCD]),3) AS INT) AS [PCC#],
   res.year_built,
   res.eff_year_built,
   res.year_remodeled,
-  res.condition,
-  res.[GradeCode], -- is this a code that needs a key?
-  res.[GradeType],
-  res.mkt_house_type,
-  res.[HouseTypeName],
+  --res.[GradeCode], -- is this a code that needs a key?
+  TRIM(res.[GradeType]) AS [Grade],
+  TRIM(res.condition) AS [Condition],
+  res.[HouseType#],
+  TRIM(res.[HouseTypeName]) AS [HouseTypeName],
   res.[RDF], -- Relative Desirability Facotor (RDF), see ProVal, Values, Cost Buildup, under depreciation
-  --Commercial Details
+  --Cat19 Waste, see CTE for details
+  pmd.LegalAcres,
+  CAST (1 AS int) AS [Site_1_Acre],
+  c19.[Cat19Waste],
+--LEGEND CASE Land Detail
+  cld.[Legend],
+  CASE
+    WHEN cld.[Legend] LIKE 'Legend%' THEN CAST(RIGHT(cld.[Legend],2) AS INT)
+    ELSE
+      CASE
+        WHEN cld.[Legend] LIKE 'No%' THEN CAST(1 AS INT)
+        WHEN cld.[Legend] LIKE 'Average%' THEN CAST(2 AS INT)
+        WHEN cld.[Legend] LIKE 'Good%' THEN CAST(3 AS INT)
+        WHEN cld.[Legend] LIKE 'Excellent%' THEN CAST(4 AS INT)
+        ELSE 0
+      END
+  END AS [Legend#],
+--INFLUENCE FACTOR CASE Land Detail
+  cld.[InfluenceType],
+  --cld.[InfluenceFactor(s)],
+  CASE 
+    WHEN cld.[InfluenceType] LIKE '1%' THEN CAST(TRIM(cld.[InfluenceFactor(s)]) AS INT)
+    ELSE NULL 
+  END AS InfluenceFactor1,
+  CASE 
+    WHEN cld.[InfluenceType] LIKE '2%' THEN CAST(TRIM(cld.[InfluenceFactor(s)]) AS INT)
+    ELSE NULL 
+  END AS InfluenceFactor2,
+  --Certified Values 2023
+  cv23.[Cert_Land_2023],
+  cv23.[Cert_Imp_2023],
+  cv23.[Cert_Total_2023],
+  pmd.WorkValue_Impv AS [WorksheetValue_TOS_ImpValue],
+    --Transfer Table Sale Details
+  t.AdjustedSalePrice AS [SalePrice],
+  CAST(t.pxfer_date AS DATE) AS [SaleDate],
+  TRIM(t.SaleDesc) AS [SaleDescr],
+  TRIM(t.TfrType) AS [TranxType],
+  TRIM(t.DocNum) AS [Doc#], -- Multiples will have the same DocNum
+  --TRY_CAST(TRIM(t.DocNum) AS INT) AS [Doc#], -- Multiples will have the same DocNum
+  --Residential Details
+  pmd.Improvement_Status,
+ -- "_" AS [NotesInSeperate part of sheet>>>],
+  --Notes in the Proval Memo Headers SA or SAMH will show here
+  notes.[MarketAdjustmentNotes],
+
+--Commercial
   comm.use_code,
   comm.year_built,
   comm.eff_year_built,
@@ -429,7 +525,7 @@ SELECT DISTINCT
   comm.condition,
   comm.[GradeCode], -- is this a code that needs a key?
   comm.[GradeType],
-  --MF Home Details
+--MF Home Details
   mf.imp_type,
   mf.year_built,
   mf.eff_year_built,
@@ -447,15 +543,8 @@ SELECT DISTINCT
   mf.[MH_Model],
   mf.[VIN],
   mf.mhpark_code,
-  mf.[MH_Park],
-  --Cat19 Waste, see CTE for details
-  c19.[Cat19Waste],
-  --Certified Values 2023
-  cv23.[Cert_Land_2023],
-  cv23.[Cert_Imp_2023],
-  cv23.[Cert_Total_2023],
-  --Notes in the Proval Memo Headers SA or SAMH will show here
-  notes.[MarketAdjustmentNotes]
+  mf.[MH_Park]
+
 
 
 FROM transfer AS t -- ON t.lrsn for joins
@@ -499,10 +588,8 @@ ORDER BY
   pmd.[GEO],
   pmd.[PIN],
   pmd.[PCC_ClassCD],
-  pmd.[SitusCity],
   pmd.Improvement_Status,
   t.pxfer_date
-
 -------------------------------------
 --End QUERY
 -------------------------------------
