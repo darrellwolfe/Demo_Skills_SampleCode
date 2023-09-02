@@ -1,8 +1,0 @@
-=IFERROR(IF(MATCH($B$1, '[GEO_InformationTables Backup.xlsx]Rural Land'!$A:$A, 0) > 0, INDEX('[GEO_InformationTables Backup.xlsx]Rural Land'!Q:Q, MATCH($B$1, '[GEO_InformationTables Backup.xlsx]Rural Land'!$A:$A, 0)), IF(MATCH($B$1, '[GEO_InformationTables Backup.xlsx]Urban Land'!$A:$A, 0) > 0, INDEX('[GEO_InformationTables Backup.xlsx]Urban Land'!Q:Q, MATCH($B$1, '[GEO_InformationTables Backup.xlsx]Urban Land'!$A:$A, 0)),0)), "0")
-
-
-=INDEX('GEO_ReferenceInformationTables (2023).xlsx'!GEO_Legends_Rates_Homesite[df2], MATCH($B$1,'GEO_ReferenceInformationTables (2023).xlsx'!GEO_Legends_Rates_Homesite[GEO],0))
-
-
-=INDEX('C:\Users\dsavage\Documents\[GEO_InformationTables Backup.xlsx]Rural & Urban Land'!$G:$G, MATCH($B$1, 'C:\Users\dsavage\Documents\[GEO_InformationTables Backup.xlsx]Rural & Urban Land'!$A:$A,0))
-
