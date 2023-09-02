@@ -1,0 +1,161 @@
+------------------------------------------
+-- Conditional Columns CDA Permits, Permit Types
+------------------------------------------
+
+if [project_type] = "DUPLEX" 
+  and Text.Contains([project_description], "DUPLEX") then 1
+
+else if [project_type] = "TOWN HOUSE" 
+  and Text.Contains([project_description], "TOWN HOUSE") then 1
+  
+else if [project_type] = "TOWN HOUSE" 
+  and Text.Contains([project_description], "TOWNHOUSE") then 1
+
+else if [project_type] = "MULTI-FAMILY" 
+  and Text.Contains([project_description], "NEW")
+  and Text.Contains([project_description], "TOWN HOME") then 1
+
+else if [project_type] = "MULTI-FAMILY" 
+  and Text.Contains([project_description], "TOWNHOME") then 1
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "NEW")
+  and Text.Contains([project_description], "TOWN HOME") then 1
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "NEW")
+  and Text.Contains([project_description], "DUPLEX") then 1
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "NEW")
+  and Text.Contains([project_description], "SFR") then 1
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "SFR") then 1
+  
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "SFD") then 1
+  
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "ADU") then 1
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "ALU") then 1
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "NEW")
+  and Text.Contains([project_description], "BLDG") then 2
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "MIXED USE")
+  and Text.Contains([project_description], "BLDG") then 2
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "MIXED USE")
+  and Text.Contains([project_description], "BUILDING") then 2
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "MIXED USE") then 2
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "NEW")
+  and Text.Contains([project_description], "BUILDING") then 2
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "T.I.")
+  or Text.Contains([project_description], "TI")
+  or Text.Contains([project_description], "DAMAGE") 
+  or Text.Contains([project_description], "REPAIR") 
+  or Text.Contains([project_description], "DEMO") 
+  or Text.Contains([project_description], "REMODEL") 
+  or Text.Contains([project_description], "CHANGE") 
+  or Text.Contains([project_description], "RESTROOM") 
+  or Text.Contains([project_description], "TANK")
+  or Text.Contains([project_description], "TENANT")
+  or Text.Contains([project_description], "POOL")
+  or Text.Contains([project_description], "WAKE-UP")
+  or Text.Contains([project_description], "OVERHANG")
+  or Text.Contains([project_description], "COVER") then 3
+
+else if [project_type] = "DUPLEX" 
+  and Text.Contains([project_description], "FINISH") then 3
+  
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "BASEMENT") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "BATH") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "DECK") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "SOLAR") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "RETAINING") then 4
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "REBUILD") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "STAIRS") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "PORCH") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "ADU") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "REMODEL") then 3
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "ADDITION") then 3
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "OUTDOOR") then 4
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "POLE") then 4
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "GARAGE") then 4
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "SHOP") then 4
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "PERGOLA") then 4
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "PAVILLION") then 4
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "REPAIR")
+  or Text.Contains([project_description], "REPLACE") 
+  or Text.Contains([project_description], "ROOF")
+  or Text.Contains([project_description], "SIDING") 
+  or Text.Contains([project_description], "WINDOW") 
+  or Text.Contains([project_description], "WINDOWS") 
+  or Text.Contains([project_description], "DOOR") 
+  or Text.Contains([project_description], "GENERATOR") 
+  or Text.Contains([project_description], "MECH") then 9
+
+else Text.Contains([project_description], "MECHANICAL PERMIT") then 9
+else Text.Contains([project_description], "SOLAR") then 9
+
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "BOAT") then 14
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "BOAT") then 14
+
+else if [project_type] = "SINGLE-FAMILY" 
+  and Text.Contains([project_description], "DOCK") then 14
+
+else if [project_type] = "COMMERCIAL" 
+  and Text.Contains([project_description], "DOCK") then 14
+
+else 0
