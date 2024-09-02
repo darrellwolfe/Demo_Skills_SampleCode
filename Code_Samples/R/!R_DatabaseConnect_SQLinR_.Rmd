@@ -1,0 +1,149 @@
+-- !preview conn=conn
+
+
+```{r echo=TRUE}
+install.packages("DBI")
+install.packages("odbc")
+
+```
+
+```{r echo=TRUE}
+# AsTxDBProd
+# GRM_Main
+
+library(DBI)
+library(odbc)
+
+# Create a connection string
+conn <- dbConnect(odbc::odbc(),
+                 Driver = "SQL Server",
+                 Server = "AsTxDBProd",
+                 Database = "GRM_Main",
+                 
+                 timeout = 10)
+# Test the connection
+dbGetQuery(con, "SELECT 1")
+
+
+```
+
+
+```{r echo=TRUE}
+# AsTxDBProd
+# GRM_Main
+
+library(DBI)
+library(odbc)
+
+# Create a connection string
+conn <- dbConnect(odbc::odbc(),
+                 Driver = "SQL Server",
+                 Server = "AsTxWebProd",
+                 Database = "GRMReports",
+                 
+                 timeout = 10)
+# Test the connection
+dbGetQuery(con, "SELECT 1")
+
+
+```
+
+  
+```{r echo=TRUE}
+# AsTxDBpubtest
+# GRM_Test
+
+library(DBI)
+library(odbc)
+
+# Create a connection string
+conn <- dbConnect(odbc::odbc(),
+                 Driver = "SQL Server",
+                 Server = "AsTxDBpubtest",
+                 Database = "GRM_Test",
+                 
+                 timeout = 10)
+# Test the connection
+dbGetQuery(con, "SELECT 1")
+
+```
+
+```{r echo=TRUE}
+# AsTxDBpubtest
+# GRM_Test
+
+library(DBI)
+library(odbc)
+
+# Create a connection string
+conn <- dbConnect(odbc::odbc(),
+                 Driver = "SQL Server",
+                 Server = "AsTxDBpubtest",
+                 Database = "GRM_Public",
+                 
+                 timeout = 10)
+# Test the connection
+dbGetQuery(con, "SELECT 1")
+
+```
+
+
+  
+    
+```{r echo=TRUE}
+
+# Permits-Prod
+# iMS
+
+library(DBI)
+library(odbc)
+
+# Create a connection string
+conn <- dbConnect(odbc::odbc(),
+                 Driver = "SQL Server",
+                 Server = "Permits-Prod",
+                 Database = "iMS",
+                 
+                 timeout = 10)
+# Test the connection
+dbGetQuery(con, "SELECT 1")
+
+
+```
+
+  
+  
+```{r echo=TRUE}
+
+# GISDB
+# KCASRMap_Nightly
+
+library(DBI)
+library(odbc)
+
+# Create a connection string
+conn <- dbConnect(odbc::odbc(),
+                 Driver = "SQL Server",
+                 Server = "GISDB",
+                 Database = "KCASRMap_Nightly",
+                 
+                 timeout = 10)
+# Test the connection
+dbGetQuery(con, "SELECT 1")
+
+
+```
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

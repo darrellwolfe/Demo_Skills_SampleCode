@@ -1,0 +1,1858 @@
+---
+title: "SQL Quick Reference Library"
+format: html
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# Using this document
+
+
+## Code Chunks - FYI
+When creating .qmd documents you can use the following to create code chunks. Eval (evaluation) means you want the code chunk to actually run and display its results in the final document, 
+while include means that you want to display the code chunk (false would mean to hide it) in the final document.
+
+```{r eval=TRUE, include=TRUE} 
+```
+
+```{SQL eval=TRUE, include=TRUE} 
+```
+
+```{python eval=TRUE, include=TRUE} 
+```
+
+# Links
+This is an example of a link format
+`[Link text](https://example.com)`
+
+
+# To actually knitt/stitch this document you will need to have Python, R, and Quarto installed on your machine through Visual Studio Code (or RStudio). 
+
+[Quarto](https://quarto.org/docs/get-started/)
+
+[Install R](https://cran.r-project.org/bin/windows/base/)
+
+[Install Python](https://www.python.org/downloads/)
+
+
+# SQL Quick Reference Materials from W3Schools
+Many of the original materials for this quick reference library were borrowed from W3Schools and the Google Data Analytics Certification through Coursera. However, after coding SQL for over a year and building hundreds of scripts and thousands of lines of code, and working through ChatGPT to build ideas for unique solutions, this codebase can no longer be considered to have one source. I share it freely, I hope it helps. 
+
+Darrell Wolfe, Business Intelligence Analyst (BIA) 08/14/2024
+
+------------------------------------------------------------------------
+
+
+## Useful Comparisons
+
+From Mike Dunn at XTR:
+I was talking about the EXCEPT “SET” command
+This compares two columns in the CADINV table for the annual roll for years 2021 and 2022
+You can compare any table in multiple databases, but the number of columns has to be identical.
+
+
+This will show ALL PIN, AIN that exists in 2021 that DO NOT exist in 2022
+
+```{sql eval=FALSE, include=TRUE}
+select ci.PIN, ci.AIN 
+from CADInv ci
+where year(ci.InvEffDate) = 2021
+and RollCaste = 16001 -- ANNUAL
+group by ci.PIN, ci.AIN
+
+EXCEPT
+
+select ci.PIN, ci.AIN 
+from CADInv ci
+where year(ci.InvEffDate) = 2022
+and RollCaste = 16001 -- ANNUAL
+group by ci.PIN, ci.AIN
+
+# This will show ALL PIN, AIN that exists in 2021 that DO NOT exist in 2022
+
+```
+
+You can flip this:
+and it shoes al PIN, AIN in 2022 and NOT in 2021
+
+```{sql eval=FALSE, include=TRUE}
+
+select ci.PIN, ci.AIN 
+from CADInv ci
+where year(ci.InvEffDate) = 2022
+and RollCaste = 16001 -- ANNUAL
+group by ci.PIN, ci.AIN
+
+EXCEPT
+
+select ci.PIN, ci.AIN 
+from CADInv ci
+where year(ci.InvEffDate) = 2021
+and RollCaste = 16001 -- ANNUAL
+group by ci.PIN, ci.AIN
+
+
+# and it shoes al PIN, AIN in 2022 and NOT in 2021
+
+```
+
+
+the opposite on EXCEPT is INTERSECT
+
+```{sql eval=FALSE, include=TRUE}
+select ci.PIN, ci.AIN 
+from CADInv ci
+where year(ci.InvEffDate) = 2022
+and RollCaste = 16001 -- ANNUAL
+group by ci.PIN, ci.AIN
+
+INTERSECT
+
+select ci.PIN, ci.AIN 
+from CADInv ci
+where year(ci.InvEffDate) = 2021
+and RollCaste = 16001 -- ANNUAL
+group by ci.PIN, ci.AIN
+
+```
+
+
+
+
+
+------------------------------------------------------------------------
+
+## Most Common Errors
+
+### Joins
+
+#### Improvements of any kind, must filter with Extensions
+
+If you pull improvements or dwellings without an INNER join on extensions, you will get voided records in your results even if it is otherwise filtered for ACTIVE. You must join extensions on lrsn and on extensions to either of these tables (and probably any other table that has extensions on it)
+
+```{sql eval=FALSE, include=TRUE}
+
+
+From improvements AS i
+  Join extensions AS e
+  On e.lrsn = i.lrsn
+  And e.extension = i.extension
+  And e.status = 'A'
+
+FROM dwellings AS d
+  Join extensions AS e
+  On e.lrsn = d.lrsn
+  And e.extension = d.extension
+  And e.status = 'A'
+
+
+```
+
+
+
+
+### Commas: Missing or Incorrect Placement
+
+Started using commas behind the select list items
+
+### WITH
+
+CTE Either WITH is missing, or there is an extra WITH
+
+### CTE in Tableau
+
+Common table expressions (CTEs) are useful when using "Custom SQL" as a
+data source in Tableau. CTEs make SQL code more readable, especially for
+more complex SQL statements. However, Tableau does not support CTEs in
+"Custom SQL". Instead, you can use CTEs in "Initial SQL". To use CTEs in
+Tableau, you can: Select Data \> New Data Source and choose your data
+source. In the Server Connection dialog box, choose Initial SQL. Enter
+your CTE in the Initial SQL field. Create a Custom SQL query that
+selects from the temp table you inserted the records into.
+
+Common Table Expressions (CTEs) are named temporary result sets that are
+used to manipulate complex sub-query data. CTEs are often preferred over
+temporary tables when you need to simplify complex queries and improve
+query readability. CTEs can only be used in the current query scope.
+Temporary tables are physically created in the tempdb database and can
+exist for the entire duration of the session. You can use temporary
+tables when the number of steps needed to solve the problem gets high,
+or when dealing with really large data sets.
+
+To use CTEs in Tableau, you can: In the Data Source page, click on the
+caret icon by your current connection and click
+
+Initial SQL.
+
+Add a Custom SQL Query and enter the following:
+
+INTO #temptable
+
+SELECT \* FROM #temptable
+
+Tableau does not support CTE expressions in "Custom SQL".
+
+------------------------------------------------------------------------
+
+## Most Common References
+
+## Declare Variables
+
+
+```{sql eval=FALSE, include=TRUE}
+
+DECLARE @TaxYear INT;
+SET @TaxYear = YEAR(GETDATE());
+-- You can use @TaxYear in your queries below
+/*
+SET @TaxYear = CASE 
+                   WHEN MONTH(GETDATE()) >= 6 THEN YEAR(GETDATE())
+                   ELSE YEAR(GETDATE()) - 1
+               END;
+*/
+```
+
+
+## Handling Dates
+
+```{sql eval=FALSE, include=TRUE}
+
+DECLARE @CurrentYear INT = YEAR(GETDATE());
+
+DECLARE @CurrentDate DATE = GETDATE();
+
+,CAST(@CurrentDate AS DATE) AS Today,
+
+,CAST(GETDATE() AS DATE) AS Today,
+
+,f.date_completed AS DateCompleted
+,YEAR(f.date_completed) AS Compl_Year
+,MONTH(f.date_completed) AS Compl_Month
+,DAY(f.date_completed) AS Compl_Day
+,DATENAME(MONTH, f.date_completed) AS Compl_MonthName
+
+```
+
+
+```{sql eval=FALSE, include=TRUE}
+
+-- Personal Property
+
+DECLARE @CurrentDate DATE = GETDATE();
+
+DECLARE @CurrentYear INT = YEAR(GETDATE());
+
+DECLARE @Year INT;
+
+--Change this to choose which day in January the program begins reading rolled over assets.
+-- This checks if today's date is after January 15 of the current year
+IF @CurrentDate > DATEFROMPARTS(@CurrentYear, 1, 1) --01/01/20xx
+--IF @CurrentDate > DATEFROMPARTS(@CurrentYear, 1, 15) --01/01/20xx
+--IF @CurrentDate > DATEFROMPARTS(@CurrentYear, 1, 31) --01/01/20xx
+
+    SET @Year = @CurrentYear; -- After January 15, set @Year to the current year
+ELSE
+    SET @Year = @CurrentYear - 1; -- Before or on January 15, set @Year to the previous year
+
+-- DECLARE @Year INT = 2024; -- Input year
+
+-- Use CONCAT to create date strings for the start and end of the year
+DECLARE @LastYearCertFrom INT = CONCAT(@Year - 1, '0101');
+DECLARE @LastYearCertTo INT = CONCAT(@Year - 1, '1231');
+
+-- Date and time for January 1 of the input year
+DECLARE @Jan1ThisYear1 DATETIME = CONCAT(@Year, '-01-01 00:00:00');
+DECLARE @Jan1ThisYear2 DATETIME = CONCAT(@Year, '-01-01 23:59:59');
+
+-- Use CONCAT to create certification date strings for the current year
+DECLARE @ThisYearCertFrom INT = CONCAT(@Year, '0101');
+DECLARE @ThisYearCertTo INT = CONCAT(@Year, '1231');
+
+-- Use CONCAT for creating range values for MPPV
+DECLARE @ThisYearMPPVFrom INT = CONCAT(@Year, '00000');
+DECLARE @ThisYearMPPVTo INT = CONCAT(@Year, '99999');
+
+-- Declare cadaster year as the input year
+DECLARE @CadasterYear INT = @Year;
+
+DECLARE @NoteYear VARCHAR(10) = CONCAT('%',@Year,'%');
+
+```
+
+
+
+
+
+```{sql eval=FALSE, include=TRUE}
+
+--Cadaster Queries
+
+--Declare @Year int = 2024; -- Input THIS year here
+DECLARE @TaxYear INT;
+SET @TaxYear = YEAR(GETDATE());
+
+--OR 
+--Declare @Year int = 2024; -- Input THIS year here
+
+Declare @YearPrev int = @Year - 1; -- Input the year here
+Declare @YearPrev2 int = @Year - 2; -- Input the year here
+Declare @YearPrev3 int = @Year - 3; -- Input the year here
+Declare @YearPrev4 int = @Year - 4; -- Input the year here
+Declare @YearPrev5 int = @Year - 5; -- Input the year here
+
+
+Declare @EffYear0101Current varchar(8) = Cast(@Year as varchar) + '0101'; -- Generates '20230101' for the previous year
+Declare @EffYear0101Previous varchar(8) = Cast(@YearPrev as varchar) + '0101'; -- Generates '20230101' for the previous year
+Declare @EffYear0101Previous2 varchar(8) = Cast(@YearPrev2 as varchar) + '0101'; -- Generates '20230101' for the previous year
+Declare @EffYear0101Previous3 varchar(8) = Cast(@YearPrev3 as varchar) + '0101'; -- Generates '20230101' for the previous year
+Declare @EffYear0101Previous4 varchar(8) = Cast(@YearPrev4 as varchar) + '0101'; -- Generates '20230101' for the previous year
+Declare @EffYear0101Previous5 varchar(8) = Cast(@YearPrev5 as varchar) + '0101'; -- Generates '20230101' for the previous year
+
+
+Declare @ValEffDateCurrent date = CAST(CAST(@Year as varchar) + '-01-01' AS DATE); -- Generates '2023-01-01' for the current year
+Declare @ValEffDatePrevious date = CAST(CAST(@YearPrev as varchar) + '-01-01' AS DATE); -- Generates '2022-01-01' for the previous year
+Declare @ValEffDatePrevious2 date = CAST(CAST(@YearPrev2 as varchar) + '-01-01' AS DATE); -- Generates '2022-01-01' for the previous year
+Declare @ValEffDatePrevious3 date = CAST(CAST(@YearPrev3 as varchar) + '-01-01' AS DATE); -- Generates '2022-01-01' for the previous year
+Declare @ValEffDatePrevious4 date = CAST(CAST(@YearPrev4 as varchar) + '-01-01' AS DATE); -- Generates '2022-01-01' for the previous year
+Declare @ValEffDatePrevious5 date = CAST(CAST(@YearPrev5 as varchar) + '-01-01' AS DATE); -- Generates '2022-01-01' for the previous year
+
+
+Declare @EffYearLike varchar(8) = Cast(@Year as varchar) + '%'; -- Generates '2023%' for the previous year
+Declare @EffYearLikePrevious varchar(8) = Cast(@YearPrev as varchar) + '%'; -- Generates '2023%' for the previous year
+Declare @EffYearLikePrevious2 varchar(8) = Cast(@YearPrev2 as varchar) + '%'; -- Generates '2023%' for the previous year
+Declare @EffYearLikePrevious3 varchar(8) = Cast(@YearPrev3 as varchar) + '%'; -- Generates '2023%' for the previous year
+Declare @EffYearLikePrevious4 varchar(8) = Cast(@YearPrev4 as varchar) + '%'; -- Generates '2023%' for the previous year
+Declare @EffYearLikePrevious5 varchar(8) = Cast(@YearPrev5 as varchar) + '%'; -- Generates '2023%' for the previous year
+
+Declare @ValueTypehoex INT = 305;
+--    305 HOEX_Exemption Homeowner Exemption
+Declare @ValueTypeimp INT = 103;
+--    103 Imp Assessed Improvement Assessed
+Declare @ValueTypeland INT = 102;
+--    102 Land Assessed Land Assessed
+Declare @ValueTypetotal INT = 109;
+--    109 Total Value Total Value
+Declare @NetTaxableValueImpOnly INT = 458;
+--    458 Net Imp Only Net Taxable Value Imp Only
+Declare @NetTaxableValueTotal INT = 455;
+--    455 Net Tax Value Net Taxable Value
+Declare @NewConstruction INT = 651;
+--    651 NewConstByCat New Construction
+Declare @AssessedByCat INT = 470;
+--470 AssessedByCat Assessed Value
+
+
+
+
+
+```
+
+
+
+
+```{sql eval=FALSE, include=TRUE}
+
+
+--Declare @Year int = 2024; -- Input THIS year here
+DECLARE @TaxYear INT;
+SET @TaxYear = YEAR(GETDATE());
+
+Declare @YearPrev int = @Year - 1; -- Input the year here
+Declare @YearPrevPrev int = @Year - 2; -- Input the year here
+
+--VARCHAR String with the two letters plus last two of year, allows for NC Memos in this case
+Declare @NCYear varchar(4) = 'NC' + Right(Cast(@Year as varchar), 2); -- This will create 'NC24'
+Declare @NCYearPrevious varchar(4) = 'NC' + Right(Cast(@YearPrev as varchar), 2); -- This will create 'NC23'
+
+
+--EXACT NO-DASHES '20230101'
+Declare @EffYear0101Current varchar(8) = Cast(@Year as varchar) + '0101'; -- Generates '20230101' for the previous year
+Declare @EffYear0101Previous varchar(8) = Cast(@YearPrev as varchar) + '0101'; -- Generates '20230101' for the previous year
+Declare @EffYear0101PreviousPrevious varchar(8) = Cast(@YearPrevPrev as varchar) + '0101'; -- Generates '20230101' for the previous year
+
+--EXACT DASHES '2023-01-01'
+Declare @ValEffDateCurrent date = CAST(CAST(@Year as varchar) + '-01-01' AS DATE); -- Generates '2023-01-01' for the current year
+Declare @ValEffDatePrevious date = CAST(CAST(@YearPrev as varchar) + '-01-01' AS DATE); -- Generates '2022-01-01' for the previous year
+--And CAST(i.ValEffDate AS DATE) = '2023-01-01'
+
+--LIKE Year with Perce Symbol 2023%
+Declare @EffYear0101PreviousLike varchar(8) = Cast(@YearPrev as varchar) + '%'; -- Generates '20230101' for the previous year
+--Where eff_year LIKE '2023%'Results include --20230101 --20230804
+Declare @EffYear0101PreviousPreviousLike varchar(8) = Cast(@YearPrevPrev as varchar) + '%'; -- Generates '20230101' for the previous year
+Declare @EffYear0101CurrentLike varchar(8) = Cast(@Year as varchar) + '%'; -- Generates '20230101' for the previous year
+
+
+-- These ValueTypes are for the Cadastre Queries
+Declare @ValueTypeimp INT = 103;
+--    103 Imp Assessed Improvement Assessed
+Declare @ValueTypeland INT = 102;
+--    102 Land Assessed Land Assessed
+Declare @ValueTypetotal INT = 109;
+--    109 Total Value Total Value
+Declare @NetTaxableValueImpOnly INT = 458;
+--    458 Net Imp Only Net Taxable Value Imp Only
+Declare @NetTaxableValueTotal INT = 455;
+--    455 Net Tax Value Net Taxable Value
+
+Declare @NewConstruction INT = 651;
+--    651 NewConstByCat New Construction
+Declare @AssessedByCat INT = 470;
+--470 AssessedByCat Assessed Value
+
+
+Declare @ValueTypehoex INT = 305;
+--    305 HOEX_Exemption Homeowner Exemption
+--NOTE: For HOEX from Cadaster, it will only pull fro a locked roll
+  --If the current year roll is locked, and you use @Year no values will populate
+  --If the @YearPrev is used, you will pull last year's cadasters not this years
+
+```
+
+
+
+
+
+
+
+```{sql eval=FALSE, include=TRUE}
+
+--Divide by zero error fix. 
+
+,(wk.Worksheet_Total_Market / NULLIF(market.Tax_Year_Market, 0)) AS WorkMarket_Perc_CertMarket_Total
+
+```
+
+
+
+
+### Search Entire Database
+
+```{sql eval=FALSE, include=TRUE}
+
+--Find a table name like... 
+
+SELECT * FROM information_schema.columns 
+WHERE table_name LIKE 'CAD%'
+OR table_name LIKE 'Value%'
+
+SELECT * FROM information_schema.columns 
+WHERE table_name LIKE 'TIF%';
+
+--Find a table with a Column Name like...
+SELECT * FROM information_schema.columns 
+WHERE column_name LIKE 'TaxCalcDetail%';
+
+
+SELECT * FROM information_schema.columns 
+WHERE column_name LIKE '%Due%';
+
+
+
+
+
+
+
+--Complex Example
+
+SELECT
+    tc.table_name AS foreign_table,
+    kcu.column_name AS foreign_column,
+    ccu.table_name AS primary_table,
+    ccu.column_name AS primary_column
+FROM
+    information_schema.table_constraints AS tc
+    JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
+    JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name
+WHERE
+    tc.constraint_type = 'FOREIGN KEY'
+    AND kcu.table_name = 'YourTableName'
+    AND kcu.column_name = 'YourIDColumnName';
+
+```
+
+### ROW_NUMBER
+
+```{sql eval=FALSE, include=TRUE}
+
+ROW_NUMBER() OVER (PARTITION BY ### ORDER BY ### DESC) AS RowNum
+
+# Explained: 
+
+ROW_NUMBER() OVER (PARTITION BY #GroupByColumn# ORDER BY #FilterOutColumn# DESC) AS RowNum
+
+# Example: 
+
+ROW_NUMBER() OVER (PARTITION BY pm.lrsn ORDER BY v.Last_Updated DESC) AS RowNum
+
+
+```
+
+### TRIM()
+
+```{sql eval=FALSE, include=TRUE}
+
+# Newer Style, Post 2017
+TRIM() <- For SQL Server after 2017
+
+
+# Older Style Pre 2017
+LTRIM(RTRIM()) <- For SQL Server before 2017 
+
+```
+
+### CTEs
+
+```{sql eval=FALSE, include=TRUE}
+WITH CTE_NameYouAssign AS (
+Example:
+  WITH
+    CTE_1 AS (),
+    CTE_2 AS (),
+    CTE_3 AS ()
+
+  SELECT DISTINCT *
+  FROM CTE_1 AS 1
+  LEFT JOIN CTE_2 AS 2 ON 1.lrsn=2.RevObjId
+  LEFT JOIN CTE_3 AS 3 ON 1.lrsn=3.RevObjId
+
+  WHERE... 
+
+```
+
+### CTEs with Variables Example 1
+
+```{sql eval=FALSE, include=TRUE}
+DECLARE @TaxYear INT = 2024; 
+-- Current Tax Year -- Change this to the current tax year
+DECLARE @MemoID VARCHAR(4); -- Specify an appropriate length
+
+--WHERE m.memo_id='RY24'
+SET @MemoID = CAST('RY' + RIGHT(CAST(@TaxYear AS VARCHAR(4)), 2) AS VARCHAR(4));
+
+
+CTE_Memos_RY AS (
+Select
+m.lrsn
+,m.memo_id
+,m.memo_text AS RY_Memo
+
+FROM memos AS m
+WHERE m.memo_id = @MemoID
+--WHERE m.memo_id='RY24'
+AND m.status = 'A'
+AND m.memo_line_number <> '1'
+)
+
+```
+
+### CTEs with Variables Example 2
+
+```{sql eval=FALSE, include=TRUE}
+-- !preview conn=conn
+
+/*
+AsTxDBProd
+GRM_Main
+*/
+
+
+
+DECLARE @TaxYear INT = 2024; 
+-- Current Tax Year -- Change this to the current tax year
+DECLARE @MemoID VARCHAR(4); -- Specify an appropriate length
+
+-----------------
+-- By changing these years, you will have effectively changed all effective years
+-----------------
+
+--WHERE m.memo_id='RY24'
+SET @MemoID = CAST('RY' + RIGHT(CAST(@TaxYear AS VARCHAR(4)), 2) AS VARCHAR(4));
+
+DECLARE @PrevTaxYear INT = @TaxYear - 1;
+-- Now, derive other variables from @TaxYear
+DECLARE @PrimaryTransferDateFROM DATE = CAST(CAST(@TaxYear AS VARCHAR) + '-01-01' AS DATE);
+DECLARE @PrimaryTransferDateTO DATE = CAST(CAST(@TaxYear AS VARCHAR) + '-12-31' AS DATE);
+
+DECLARE @CertValueDateFROM INT = CAST(CAST(@TaxYear AS VARCHAR) + '0101' AS INT);
+DECLARE @CertValueDateTO INT = CAST(CAST(@TaxYear AS VARCHAR) + '1231' AS INT);
+
+DECLARE @PrevCertValueDateFROM INT = CAST(CAST(@PrevTaxYear AS VARCHAR) + '0101' AS INT);
+DECLARE @PrevCertValueDateTO INT = CAST(CAST(@PrevTaxYear AS VARCHAR) + '1231' AS INT);
+
+-- Assuming you want to construct @LandModelId based on the year too, here's a potential way to do it:
+-- Example assumes the prefix '70' is constant and the year is appended to it.
+DECLARE @LandModelIdPrefix VARCHAR(2) = '70'; -- This is just an example. Adjust as needed.
+DECLARE @LandModelId INT = CAST(@LandModelIdPrefix + CAST(@TaxYear AS VARCHAR) AS INT);
+
+/*
+
+EXAMPLES without CAST:
+--DECLARE @LandModelIDYear INT = 2023; 
+-- Current Land Model ID Year -- Change this to the desired year
+Declare @PrimaryTransferDateFROM DATE = '2023-01-01';
+Declare @PrimaryTransferDateTO DATE = '2023-12-31';
+--pxfer_date
+--AND tr.pxfer_date BETWEEN '2023-01-01' AND '2023-12-31'
+
+Declare @CertValueDateFROM INT = '20230101';
+Declare @CertValueDateTO INT = '20231231';
+--v.eff_year
+---WHERE v.eff_year BETWEEN 20230101 AND 20231231
+
+--DECLARE @VariableName INT = '';
+
+--Change year 2023, 2024, 2025, etc. '702023'
+DECLARE @LandModelId INT = '702024';
+*/
+
+WITH
+
+CTE_ParcelMaster AS (
+--------------------------------
+--ParcelMaster
+--------------------------------
+Select Distinct
+CASE
+  WHEN pm.neighborhood >= 9000 THEN 'Manufactured_Homes'
+  WHEN pm.neighborhood >= 6003 THEN 'District_6'
+  WHEN pm.neighborhood = 6002 THEN 'Manufactured_Homes'
+  WHEN pm.neighborhood = 6001 THEN 'District_6'
+  WHEN pm.neighborhood = 6000 THEN 'Manufactured_Homes'
+  WHEN pm.neighborhood >= 5003 THEN 'District_5'
+  WHEN pm.neighborhood = 5002 THEN 'Manufactured_Homes'
+  WHEN pm.neighborhood = 5001 THEN 'District_5'
+  WHEN pm.neighborhood = 5000 THEN 'Manufactured_Homes'
+  WHEN pm.neighborhood >= 4000 THEN 'District_4'
+  WHEN pm.neighborhood >= 3000 THEN 'District_3'
+  WHEN pm.neighborhood >= 2000 THEN 'District_2'
+  WHEN pm.neighborhood >= 1021 THEN 'District_1'
+  WHEN pm.neighborhood = 1020 THEN 'Manufactured_Homes'
+  WHEN pm.neighborhood >= 1001 THEN 'District_1'
+  WHEN pm.neighborhood = 1000 THEN 'Manufactured_Homes'
+  WHEN pm.neighborhood >= 451 THEN 'Commercial'
+  WHEN pm.neighborhood = 450 THEN 'Specialized_Cell_Towers'
+  WHEN pm.neighborhood >= 1 THEN 'Commercial'
+  WHEN pm.neighborhood = 0 THEN 'N/A_or_Error'
+  ELSE NULL
+END AS District
+
+-- # District SubClass
+,pm.neighborhood AS GEO
+,TRIM(pm.NeighborHoodName) AS GEO_Name
+,pm.lrsn
+,TRIM(pm.pin) AS PIN
+,TRIM(pm.AIN) AS AIN
+,pm.ClassCD
+,TRIM(pm.PropClassDescr) AS Property_Class_Description
+,TRIM(pm.TAG) AS TAG
+,TRIM(pm.DisplayName) AS Owner
+,TRIM(pm.DisplayDescr) AS LegalDescription
+,TRIM(pm.SitusAddress) AS SitusAddress
+,TRIM(pm.SitusCity) AS SitusCity
+,TRIM(pm.SitusState) AS SitusState
+,TRIM(pm.SitusZip) AS SitusZip
+,TRIM(pm.AttentionLine) AS AttentionLine
+,TRIM(pm.MailingAddress) AS MailingAddress
+,TRIM(pm.AddlAddrLine) AS AddlAddrLine
+,TRIM(pm.MailingCityStZip) AS MailingCityStZip
+,TRIM(pm.MailingCity) AS MailingCity
+,TRIM(pm.MailingState) AS MailingState
+,TRIM(pm.MailingZip) AS MailingZip
+
+,pm.LegalAcres
+--,pm.WorkValue_Land
+--,pm.WorkValue_Impv
+--,pm.WorkValue_Total
+--,pm.CostingMethod
+,pm.Improvement_Status -- <Improved vs Vacant
+
+
+From TSBv_PARCELMASTER AS pm
+
+Where pm.EffStatus = 'A'
+AND pm.ClassCD NOT LIKE '070%'
+AND pm.neighborhood <> 0
+AND pm.neighborhood IS NOT NULL
+),
+
+CTE_LandInfluenceCodesKey AS (
+  SELECT
+  tbl_element AS InfluenceCode,
+  tbl_element_desc AS InfluenceCodeDescription
+  FROM codes_table
+  WHERE TRIM(tbl_type_code) LIKE 'landinf%'
+  AND code_status='A'
+),
+
+CTE_LegendKey AS (
+  SELECT
+  TRIM(sr.tbl_element) AS Site_Rating,
+  TRIM(sr.tbl_element_desc) AS Legend,
+  CASE
+    WHEN TRIM(sr.tbl_element_desc) LIKE 'Leg%' THEN CAST(RIGHT(TRIM(sr.tbl_element_desc),2) AS INT)
+    ELSE
+      CASE
+        WHEN sr.tbl_element_desc IS NULL THEN CAST(1 AS INT)
+        WHEN sr.tbl_element_desc LIKE 'No%' THEN CAST(1 AS INT)
+        WHEN sr.tbl_element_desc LIKE 'Average%' THEN CAST(2 AS INT)
+        WHEN sr.tbl_element_desc LIKE 'Good%' THEN CAST(3 AS INT)
+        WHEN sr.tbl_element_desc LIKE 'Excellent%' THEN CAST(4 AS INT)
+        ELSE 0
+      END
+  END AS LegendNum
+
+  FROM codes_table AS sr 
+      
+  WHERE sr.tbl_type_code='siterating'
+  AND code_status = 'A'
+  
+  --JOIN ON
+  --ON ld.SiteRating = sr.tbl_element
+),
+
+CTE_LandDetails AS (
+  SELECT
+  lh.RevObjId AS lrsn
+, ld.LandType
+,  CONCAT_WS('-',ld.LandType,lt.land_type_desc) AS LandType_Desc
+,  STRING_AGG (ld.LDAcres, ', ') AS LDAcres
+,  STRING_AGG (leg.Legend, ', ') AS Legend
+
+  
+  --Land Header
+  FROM LandHeader AS lh
+  --Land Detail
+  JOIN LandDetail AS ld ON lh.id=ld.LandHeaderId 
+    AND ld.EffStatus='A' 
+    AND ld.PostingSource='A'
+    AND lh.PostingSource=ld.PostingSource
+  --Legend Key    
+  LEFT JOIN CTE_LegendKey AS leg ON ld.SiteRating = leg.Site_Rating
+  --Land Types
+  LEFT JOIN land_types AS lt ON ld.LandType=lt.land_type
+  --Land Influence
+  LEFT JOIN LandInfluence AS li ON li.ObjectId = ld.Id
+    AND li.EffStatus='A' 
+    AND li.PostingSource='A'
+  --Land Influcnce Code Key for Description
+  LEFT JOIN CTE_LandInfluenceCodesKey AS lic ON lic.InfluenceCode=li.InfluenceCode
+  
+  WHERE lh.EffStatus= 'A' 
+    AND lh.PostingSource='A'
+
+  GROUP BY
+  lh.RevObjId
+
+--  ld.LDAcres
+,  ld.LandType
+,  lt.land_type_desc
+--  leg.Legend
+
+),
+
+CTE_WorksheetMarketValues AS(
+SELECT 
+    r.lrsn,
+    r.method AS PriceMethod,
+    r.land_mkt_val_inc AS Worksheet_Land,
+    (r.income_value - r.land_mkt_val_cost) AS Worksheet_Imp,
+    r.income_value AS Worksheet_Total
+
+FROM reconciliation AS r 
+--ON parcel.lrsn = r.lrsn
+WHERE r.status = 'W'
+AND r.method = 'I' 
+--AND r.land_model = @LandModelId
+
+UNION ALL
+
+SELECT 
+    r.lrsn,
+    r.method AS PriceMethod,
+    r.land_mkt_val_cost AS Worksheet_Land,
+    r.cost_value AS Worksheet_Imp,
+    (r.cost_value + r.land_mkt_val_cost) AS Worksheet_Total
+    
+FROM reconciliation AS r 
+--ON parcel.lrsn = r.lrsn
+WHERE r.status='W'
+AND r.method = 'C' 
+--AND r.land_model = @LandModelId
+
+--ORDER BY GEO, PIN;
+),
+
+CTE_ParcelCounter AS (
+SELECT
+Owner
+,COUNT(lrsn) AS CountParcels_PerOwner
+
+FROM CTE_ParcelMaster
+WHERE GEO = '42'
+GROUP BY Owner
+),
+
+CTE_LegalAcresCounter AS (
+SELECT
+Owner
+,COUNT(LegalAcres) AS CountLegalAcres_PerOwner
+
+FROM CTE_ParcelMaster
+WHERE GEO = '42'
+GROUP BY Owner
+),
+
+  -------------------------------------
+--CTE_TransferSales
+-------------------------------------
+CTE_TransferSales AS (
+SELECT DISTINCT
+--  pmd.[GEO_Name],
+  t.lrsn,
+  t.status,
+--Transfer Table Sale Details
+  t.AdjustedSalePrice AS SalePrice,
+  CAST(t.pxfer_date AS DATE) AS SaleDate,
+  TRIM(t.SaleDesc) AS SaleDescr,
+  TRIM(t.TfrType) AS TranxType,
+  TRIM(t.DocNum) AS DocNumber -- Multiples will have the same DocNum
+FROM transfer AS t -- ON t.lrsn for joins
+WHERE t.status = 'A'
+  AND t.AdjustedSalePrice <> '0'
+  AND t.pxfer_date BETWEEN @PrimaryTransferDateFROM AND @PrimaryTransferDateTO
+  --AND t.pxfer_date BETWEEN '2023-01-01' AND '2023-12-31'
+),
+
+CTE_Cert AS (
+  SELECT 
+    lrsn,
+    --Certified Values
+    v.land_market_val AS CertValue_Land_Current,
+    v.imp_val AS CertValue_Imp_Current,
+    (v.imp_val + v.land_market_val) AS CertValue_Total_Current,
+    v.eff_year AS Tax_Year_Cert,
+    ROW_NUMBER() OVER (PARTITION BY v.lrsn ORDER BY v.last_update DESC) AS RowNumber
+  FROM valuation AS v
+  WHERE v.eff_year BETWEEN @CertValueDateFROM AND @CertValueDateTO
+--Change to desired year
+    AND v.status = 'A'
+),
+
+CTE_Cert_Prev AS (
+  SELECT 
+    lrsn,
+    --Certified Values
+    v.land_market_val AS CertValue_Land_Previous,
+    v.imp_val AS CertValue_Imp_Previous,
+    (v.imp_val + v.land_market_val) AS CertValue_Total_Previous,
+    v.eff_year AS Tax_Year_Cert,
+    ROW_NUMBER() OVER (PARTITION BY v.lrsn ORDER BY v.last_update DESC) AS RowNumber
+  FROM valuation AS v
+  --WHERE v.eff_year BETWEEN @PrevCertValueDateFROM AND @PrevCertValueDateTO
+  WHERE v.eff_year BETWEEN '20230101' AND '20231231'
+--Change to desired year
+    AND v.status = 'A'
+),
+
+CTE_Assessed AS (
+  SELECT 
+    lrsn,
+    --Assessed Values
+    v.land_assess AS AssessedValue_Land_wEx,
+    v.imp_assess AS AssessedValue_Imp,
+    (v.imp_assess + v.land_assess) AS AssessedValue_Total,
+    v.eff_year AS Tax_Year_Assessed,
+    ROW_NUMBER() OVER (PARTITION BY v.lrsn ORDER BY v.last_update DESC) AS RowNumber
+  FROM valuation AS v
+  WHERE v.eff_year BETWEEN @CertValueDateFROM AND @CertValueDateTO
+--Change to desired year
+    AND v.status = 'A'
+),
+
+CTE_Memos_RY AS (
+Select
+m.lrsn
+,m.memo_id
+,m.memo_text AS RY_Memo
+
+FROM memos AS m
+WHERE m.memo_id = @MemoID
+--WHERE m.memo_id='RY24'
+AND m.status = 'A'
+AND m.memo_line_number <> '1'
+)
+
+
+SELECT DISTINCT *
+---
+FROM CTE_ParcelMaster AS pmd
+Left Join CTE_WorksheetMarketValues AS ws
+  On ws.lrsn = pmd.lrsn
+Left Join CTE_ParcelCounter AS pc
+  On pmd.owner = pc.owner
+  --,COUNT(lrsn) AS CountParcels_PerOwner
+Left Join CTE_LegalAcresCounter AS lac
+  On pmd.owner = lac.owner
+  --,COUNT(LegalAcres) AS CountLegalAcres_PerOwner
+Left Join CTE_Cert AS cv
+  ON pmd.lrsn=cv.lrsn
+  AND cv.RowNumber = '1'
+Left Join CTE_Cert_Prev AS cvp
+  ON pmd.lrsn=cvp.lrsn
+  AND cvp.RowNumber = '1'
+Left Join CTE_Memos_RY AS mry
+  On pmd.lrsn = mry.lrsn
+
+Where pmd.GEO = '42'
+
+Order By pmd.Owner;
+
+```
+
+### CASE_Single vs Multiple
+
+```{sql eval=FALSE, include=TRUE}
+
+# Case Single
+CASE
+  WHEN field1 = 'value1' THEN 'Category1'
+  ELSE 'Other'
+END AS [YourNewColumnName]
+
+# Case Multiple
+
+CASE
+  WHEN field1 = 'value1' THEN 'Category1'
+  WHEN field1 = 'value2' THEN 'Category2'
+  WHEN field1 = 'value3' THEN 'Category3'
+  ELSE 'Other'
+END AS [YourNewColumnName]
+
+
+```
+
+### Insert into text:
+
+```{sql eval=FALSE, include=TRUE}
+SUBSTRING(column, 1, 3) + '-' + SUBSTRING(column, 4, 3) AS TAG,
+
+Example: 
+SELECT DISTINCT
+TAGDescr,
+SUBSTRING(TAGDescr, 1, 3) + '-' + SUBSTRING(TAGDescr, 4, 3) AS TAG,
+LevyRate
+
+FROM KCv_TAGLevyRate22a
+ORDER BY TAGDescr
+
+```
+
+------------------------------------------------------------------------
+
+## CAST Examples
+
+```{sql eval=FALSE, include=TRUE}
+
+CAST(expression AS data_type)
+SELECT CAST(42 AS VARCHAR(10));
+CONVERT(data_type, expression [, style])
+
+Data Type Options:
+SELECT CAST(ColumnName AS VARCHAR(10)) AS NumericToString;
+SELECT CAST(ColumnName AS FLOAT) AS StringToNumeric;
+SELECT CAST(ColumnName AS DATE) AS StringToDate;
+SELECT CAST(GETDATE() AS VARCHAR(25)) AS DateToString;
+SELECT CAST(ColumnName AS DECIMAL(10, 2)) AS IntegerToDecimal;
+SELECT CAST(ColumnName AS INT) AS DecimalToInteger;
+
+SELECT
+    CASE WHEN CAST('True' AS BIT) = 1 THEN 'Yes'
+         ELSE 'No' END AS StringToBoolean;
+         
+SELECT IIF(CAST('False' AS BIT) = 1, 'Yes', 'No') AS StringToBoolean;
+
+
+```
+
+------------------------------------------------------------------------
+
+## Common Syntax References
+
+ASC Sorts the result set in ascending order CAST Converts a value (of
+any type) into a specified datatype DESC Sorts the result set in
+descending order DISTINCT Selects only distinct (different) values
+BETWEEN Selects values within a given range CASE Creates different
+outputs based on conditions LIKE Searches for a specified pattern in a
+column LIMIT Specifies the number of records to return in the result set
+NOT Only includes rows where a condition is not true NOT NULL A
+constraint that enforces a column to not accept NULL values UNION
+Combines the result set of two or more SELECT statements (only distinct
+values) UNION ALL Combines the result set of two or more SELECT
+statements (allows duplicate values)
+
+------------------------------------------------------------------------
+
+## CAST Explained
+
+In SQL Server, the `CAST` function is used to explicitly convert one
+data type to another. The basic syntax for the `CAST` function is as
+follows:
+
+```{sql eval=FALSE, include=TRUE}
+CAST(expression AS data_type)
+```
+
+Here: - `expression`: The value or column that you want to convert to
+another data type. - `data_type`: The target data type to which you want
+to convert the expression.
+
+For example, to convert a numeric value to a varchar data type, you can
+use:
+
+```{sql eval=FALSE, include=TRUE}
+SELECT CAST(42 AS VARCHAR(10));
+```
+
+This will convert the numeric value 42 to a varchar data type, resulting
+in the string `'42'`.
+
+Note that when using `CAST`, be careful about potential data loss or
+conversion errors, especially when converting between different data
+types that have different ranges or precision.
+
+Additionally, SQL Server also provides the `CONVERT` function, which is
+similar to `CAST` but provides more formatting options for certain data
+types, like converting dates to specific formats. The syntax for
+`CONVERT` is:
+
+```{sql eval=FALSE, include=TRUE}
+CONVERT(data_type, expression [, style])
+```
+
+Where `style` is an optional parameter used for formatting when
+converting dates. If you don't need specific formatting, you can use
+`CAST` as it is more concise.
+
+Let's demonstrate various `CAST` data type options in SQL Server using
+some examples:
+
+1.  Numeric to String Conversion:
+
+```{sql eval=FALSE, include=TRUE}
+SELECT CAST(42 AS VARCHAR(10)) AS NumericToString;
+```
+
+Output:
+
+```         
+NumericToString
+--------------
+42
+```
+
+2.  String to Numeric Conversion:
+
+```{sql eval=FALSE, include=TRUE}
+SELECT CAST('3.14' AS FLOAT) AS StringToNumeric;
+```
+
+Output:
+
+```         
+StringToNumeric
+---------------
+3.14
+```
+
+3.  String to Date Conversion:
+
+```{sql eval=FALSE, include=TRUE}
+CAST('2023-08-03' AS DATE) AS StringToDate;
+```
+
+Output:
+
+```         
+StringToDate
+------------
+2023-08-03
+```
+
+4.  Date to String Conversion:
+
+```{sql eval=FALSE, include=TRUE}
+CAST(GETDATE() AS VARCHAR(25)) AS DateToString;
+```
+
+Output (will vary based on the current date):
+
+```         
+DateToString
+-------------------------
+2023-08-03 15:30:00.123
+```
+
+5.  Integer to Decimal Conversion:
+
+```{sql eval=FALSE, include=TRUE}
+CAST(123 AS DECIMAL(10, 2)) AS IntegerToDecimal;
+```
+
+Output:
+
+```         
+IntegerToDecimal
+----------------
+123.00
+```
+
+6.  Decimal to Integer Conversion (Note: Truncation will occur):
+
+```{sql eval=FALSE, include=TRUE}
+CAST(456.78 AS INT) AS DecimalToInteger;
+```
+
+Output:
+
+```         
+DecimalToInteger
+----------------
+456
+```
+
+7.  String to Boolean Conversion (Using CASE expression):
+
+```{sql eval=FALSE, include=TRUE}
+SELECT
+    CASE 
+      WHEN CAST('True' AS BIT) = 1 THEN 'Yes'
+      ELSE 'No' 
+    END AS StringToBoolean;
+FROM table_name
+
+```
+
+Output:
+
+```         
+StringToBoolean
+--------------
+Yes
+```
+
+8.  String to Boolean Conversion (Using IIF function):
+
+```{sql eval=FALSE, include=TRUE}
+SELECT 
+
+  IIF(CAST('False' AS BIT) = 1, 'Yes', 'No') AS StringToBoolean
+
+FROM 
+```
+
+Output:
+
+```         
+StringToBoolean
+--------------
+No
+```
+
+Remember that the exact output and behavior will depend on the specific
+values and data types used in your database. Always be cautious when
+performing data type conversions, as unexpected results may occur if the
+data cannot be converted correctly.
+
+------------------------------------------------------------------------
+
+## GPT-4 Explains TRIM vs TRIM
+
+```{sql eval=FALSE, include=TRUE}
+
+LTRIM(RTRIM()) 
+
+#vs 
+
+TRIM()
+
+
+```
+
+The difference between `LTRIM(RTRIM(pm.pin)) AS [PIN]` and
+`TRIM(pm.pin) AS [PIN]` in SQL Server comes down to the versions of SQL
+Server you are using.
+
+Before SQL Server 2017, the `TRIM` function did not exist. So, to remove
+both leading and trailing spaces, you had to use
+`LTRIM(RTRIM(pm.pin)) AS [PIN]`. This first applies the `RTRIM` function
+to remove trailing spaces and then the `LTRIM` function to remove
+leading spaces.
+
+Starting from SQL Server 2017, Microsoft introduced the `TRIM` function,
+which removes both leading and trailing spaces from a string. So, in SQL
+Server 2017 and later versions, you can simply use
+`TRIM(pm.pin) AS [PIN]` to achieve the same result as
+`LTRIM(RTRIM(pm.pin)) AS [PIN]`.
+
+In terms of functionality, there's no practical difference between the
+two in SQL Server 2017 and later -- they both remove leading and
+trailing spaces. However, `TRIM` is more concise and easier to read. So
+if you're using a newer version of SQL Server, I'd recommend using
+`TRIM` for simplicity.
+
+Do keep in mind that if your scripts need to be backward compatible with
+versions of SQL Server prior to 2017, you should stick with using
+`LTRIM(RTRIM())`.
+
+------------------------------------------------------------------------
+
+## TABLE QUERIES - BASICS OF THE CODE YOU NEED TO GRAB INFORMATION FROM A SQL DATABASE, MOST MATERIALS FROM W3 SCHOOLS
+
+[W3 Schools
+LINK](https://www.w3schools.com/sql/sql_quickref.asp "W3 Schools LINK")
+
+------------------------------------------------------------------------
+
+```{sql eval=FALSE, include=TRUE}
+
+
+--**-- SELECT TYPES
+
+--SELECT
+	SELECT column_name(s)
+FROM table_name
+
+--SELECT *	
+	SELECT *
+FROM table_name
+
+--SELECT DISTINCT	
+	SELECT DISTINCT column_name(s)
+FROM table_name
+
+--SELECT INTO	
+	SELECT *
+INTO new_table_name [IN externaldatabase]
+FROM old_table_name
+or
+
+SELECT column_name(s)
+INTO new_table_name [IN externaldatabase]
+FROM old_table_name
+
+--SELECT TOP	
+	SELECT TOP number|percent column_name(s)
+FROM table_name
+
+--**--JOIN TYPES
+
+--INNER JOIN	
+	SELECT column_name(s)
+FROM table_name1
+INNER JOIN table_name2
+ON table_name1.column_name=table_name2.column_name
+
+--LEFT JOIN	
+	SELECT column_name(s)
+FROM table_name1
+LEFT JOIN table_name2
+ON table_name1.column_name=table_name2.column_name
+
+--RIGHT JOIN	
+	SELECT column_name(s)
+FROM table_name1
+RIGHT JOIN table_name2
+ON table_name1.column_name=table_name2.column_name
+
+--FULL JOIN	
+	SELECT column_name(s)
+FROM table_name1
+FULL JOIN table_name2
+ON table_name1.column_name=table_name2.column_name
+
+
+--**-- CONDITIONS
+
+--WHERE
+	SELECT column_name(s)
+FROM table_name
+WHERE column_name operator value
+
+--IN
+	SELECT column_name(s)
+FROM table_name
+WHERE column_name
+IN (value1,value2,..)
+
+--AS (alias)	
+SELECT column_name AS column_alias
+FROM table_name
+or
+
+SELECT column_name
+FROM table_name  AS table_alias
+
+--AND / OR	
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+AND|OR condition
+
+--BETWEEN
+	SELECT column_name(s)
+FROM table_name
+WHERE column_name
+BETWEEN value1 AND value2
+
+--LIKE
+	SELECT column_name(s)
+FROM table_name
+WHERE column_name LIKE pattern
+
+--**-- ORDERING RESULTS OF QUERY (FOR SELECT, DIFFERENT THAN GROUP BY)
+
+--ORDER BY	
+	SELECT column_name(s)
+FROM table_name
+ORDER BY column_name [ASC|DESC]
+
+
+--**-- AGGREGATES 
+
+
+--GROUP BY	
+	SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE column_name operator value
+GROUP BY column_name
+
+--HAVING
+	SELECT column_name, aggregate_function(column_name)
+FROM table_name
+WHERE column_name operator value
+GROUP BY column_name
+HAVING aggregate_function(column_name) operator value
+
+```
+
+## SUB QUERIES
+
+### EXISTS
+
+The SQL EXISTS Operator is used to test for the existence of any record
+in a subquery. The EXISTS operator returns TRUE if the subquery returns
+one or more records.
+
+```{sql eval=FALSE, include=TRUE}
+IF EXISTS (SELECT \* FROM table_name WHERE id = ?) BEGIN
+
+
+```
+
+IF EXISTS (SELECT \* FROM table_name WHERE id = ?) BEGIN --do what needs
+to be done if exists END ELSE BEGIN --do what needs to be done if not
+END
+
+CTE ((WITH common_table_expression)) (Transact-SQL)
+<https://learn.microsoft.com/en-us/sql/t-sql/queries/with-common-table-expression-transact-sql?view=sql-server-ver16>
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+WITH CTE_NameYouAssign AS ( SELECT column1 column2 column3 ROW_NUMBER()
+OVER (PARTITION BY column3 ORDER BY column1 DESC) AS RowNum FROM
+TableNameYouAreReferencing AS aliashere WHERE columnwhatever = 'some
+condition' )
+
+SELECT DISTINCT a.column1 a.column2 a.column3 a.column4 a.column5
+b.column -- from CTE above, uses table join alias below, this is the
+part that confused me.
+
+FROM primarytable AS a LEFT OUTER JOIN CTE_NameYouAssign AS b ON
+a.columnkey=b.columnkey WHERE a.column1 = 'some condition' AND a.column2
+= 'some condition' ORDER BY columnwhatever;
+
+--\*\*-- COMBINING QUERIES
+
+--\*\*-- APPEND TWO MATCHING TABLES (LIKE APPEND IN POWER QUERY)
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+--UNION SELECT column_name(s) FROM table_name1 UNION SELECT
+column_name(s) FROM table_name2
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+--UNION ALL SELECT column_name(s) FROM table_name1 UNION ALL SELECT
+column_name(s) FROM table_name2
+
+|                                                                                                                                                                                                                                                          |
+|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| QUERY-ONLY ABOVE THIS LINE DATABASE ALTERING CODE BELOW THIS LINE, USE CAUTION, RUN IN TEST BEFORE COMMITTING CHANGES                                                                                                                                    |
+| FOR PRACTICE OR PERSONAL USE SEE: SQL Server 2022 Express is a free edition of SQL Server, ideal for development and production for desktop, web, and small server applications. <https://www.microsoft.com/en-us/sql-server/sql-server-downloads?rtc=1> |
+
+--\*\* DATABASE & TABLE MAINTENCE --\*\*--DATABASE MAINTENCE --CREATE
+DATABASE\
+CREATE DATABASE database_name
+
+--DROP DATABASE DROP DATABASE database_name
+
+--\*\*--TABLE MAINTENCE
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+--CREATE TABLE\
+CREATE TABLE table_name ( column_name1 data_type, column_name2
+data_type, column_name3 data_type, ... )
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+--CREATE INDEX
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+```         
+CREATE INDEX index_name
+```
+
+ON table_name (column_name) or
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+CREATE UNIQUE INDEX index_name ON table_name (column_name)
+
+--INSERT INTO
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+```         
+INSERT INTO table_name
+```
+
+VALUES (value1, value2, value3,....) or
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+INSERT INTO table_name (column1, column2, column3,...) VALUES (value1,
+value2, value3,....)
+
+--CREATE VIEW
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+```         
+CREATE VIEW view_name AS
+```
+
+SELECT column_name(s) FROM table_name WHERE condition
+
+--DELETE
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+```         
+DELETE FROM table_name
+```
+
+WHERE some_column=some_value or
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+DELETE FROM table_name (Note: Deletes the entire table!!)
+
+--DROP INDEX
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+```         
+DROP INDEX table_name.index_name (SQL Server)
+```
+
+DROP INDEX index_name ON table_name (MS Access) DROP INDEX index_name
+(DB2/Oracle) ALTER TABLE table_name DROP INDEX index_name (MySQL)
+
+--DROP TABLE
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+DROP TABLE table_name
+
+--ALTER TABLE
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+ALTER TABLE table_name ADD column_name datatype or
+
+--ALTER TABLE table_name
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+DROP COLUMN column_name
+
+--TRUNCATE TABLE
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+TRUNCATE TABLE table_name
+
+--UPDATE
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+```         
+UPDATE table_name
+```
+
+SET column1=value, column2=value,... WHERE some_column=some_value
+
+| SQL Keywords Reference <https://www.w3schools.com/sql/sql_ref_keywords.asp>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Keyword Description ADD Adds a column in an existing table ADD CONSTRAINT Adds a constraint after a table is already created ALL Returns true if all of the subquery values meet the condition ALTER Adds, deletes, or modifies columns in a table, or changes the data type of a column in a table ALTER COLUMN Changes the data type of a column in a table ALTER TABLE Adds, deletes, or modifies columns in a table AND Only includes rows where both conditions is true ANY Returns true if any of the subquery values meet the condition AS Renames a column or table with an alias ASC Sorts the result set in ascending order BACKUP DATABASE Creates a back up of an existing database BETWEEN Selects values within a given range CASE Creates different outputs based on conditions CHECK A constraint that limits the value that can be placed in a column COLUMN Changes the data type of a column or deletes a column in a table CONSTRAINT Adds or deletes a constraint CREATE Creates a database, index, view, table, or procedure CREATE DATABASE Creates a new SQL database CREATE INDEX Creates an index on a table (allows duplicate values) CREATE OR REPLACE VIEW Updates a view CREATE TABLE Creates a new table in the database CREATE PROCEDURE Creates a stored procedure CREATE UNIQUE INDEX Creates a unique index on a table (no duplicate values) CREATE VIEW Creates a view based on the result set of a SELECT statement DATABASE Creates or deletes an SQL database DEFAULT A constraint that provides a default value for a column DELETE Deletes rows from a table DESC Sorts the result set in descending order DISTINCT Selects only distinct (different) values DROP Deletes a column, constraint, database, index, table, or view DROP COLUMN Deletes a column in a table DROP CONSTRAINT Deletes a UNIQUE, PRIMARY KEY, FOREIGN KEY, or CHECK constraint DROP DATABASE Deletes an existing SQL database DROP DEFAULT Deletes a DEFAULT constraint DROP INDEX Deletes an index in a table DROP TABLE Deletes an existing table in the database DROP VIEW Deletes a view EXEC Executes a stored procedure EXISTS Tests for the existence of any record in a subquery FOREIGN KEY A constraint that is a key used to link two tables together FROM Specifies which table to select or delete data from FULL OUTER JOIN Returns all rows when there is a match in either left table or right table GROUP BY Groups the result set (used with aggregate functions: COUNT, MAX, MIN, SUM, AVG) HAVING Used instead of WHERE with aggregate functions IN Allows you to specify multiple values in a WHERE clause INDEX Creates or deletes an index in a table INNER JOIN Returns rows that have matching values in both tables INSERT INTO Inserts new rows in a table INSERT INTO SELECT Copies data from one table into another table IS NULL Tests for empty values IS NOT NULL Tests for non-empty values JOIN Joins tables LEFT JOIN Returns all rows from the left table, and the matching rows from the right table LIKE Searches for a specified pattern in a column LIMIT Specifies the number of records to return in the result set NOT Only includes rows where a condition is not true NOT NULL A constraint that enforces a column to not accept NULL values OR Includes rows where either condition is true ORDER BY Sorts the result set in ascending or descending order OUTER JOIN Returns all rows when there is a match in either left table or right table PRIMARY KEY A constraint that uniquely identifies each record in a database table PROCEDURE A stored procedure RIGHT JOIN Returns all rows from the right table, and the matching rows from the left table ROWNUM Specifies the number of records to return in the result set SELECT Selects data from a database SELECT DISTINCT Selects only distinct (different) values SELECT INTO Copies data from one table into a new table SELECT TOP Specifies the number of records to return in the result set SET Specifies which columns and values that should be updated in a table TABLE Creates a table, or adds, deletes, or modifies columns in a table, or deletes a table or data inside a table TOP Specifies the number of records to return in the result set TRUNCATE TABLE Deletes the data inside a table, but not the table itself UNION Combines the result set of two or more SELECT statements (only distinct values) UNION ALL Combines the result set of two or more SELECT statements (allows duplicate values) UNIQUE A constraint that ensures that all values in a column are unique UPDATE Updates existing rows in a table VALUES Specifies the values of an INSERT INTO statement VIEW Creates, updates, or deletes a view WHERE Filters a result set to include only records that fulfill a specified condition |
+
+ADDITIONAL RESOURCES - SQL Server Functions
+<https://www.w3schools.com/sql/sql_ref_sqlserver.asp>
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+--SQL Server String Functions Function Description ASCII Returns the
+ASCII value for the specific character CHAR Returns the character based
+on the ASCII code CHARINDEX Returns the position of a substring in a
+string CONCAT Adds two or more strings together Concat with + Adds two
+or more strings together CONCAT_WS Adds two or more strings together
+with a separator DATALENGTH Returns the number of bytes used to
+represent an expression DIFFERENCE Compares two SOUNDEX values, and
+returns an integer value FORMAT Formats a value with the specified
+format LEFT Extracts a number of characters from a string (starting from
+left) LEN Returns the length of a string LOWER Converts a string to
+lower-case LTRIM Removes leading spaces from a string NCHAR Returns the
+Unicode character based on the number code PATINDEX Returns the position
+of a pattern in a string QUOTENAME Returns a Unicode string with
+delimiters added to make the string a valid SQL Server delimited
+identifier REPLACE Replaces all occurrences of a substring within a
+string, with a new substring REPLICATE Repeats a string a specified
+number of times REVERSE Reverses a string and returns the result RIGHT
+Extracts a number of characters from a string (starting from right)
+RTRIM Removes trailing spaces from a string SOUNDEX Returns a
+four-character code to evaluate the similarity of two strings SPACE
+Returns a string of the specified number of space characters STR Returns
+a number as string STUFF Deletes a part of a string and then inserts
+another part into the string, starting at a specified position SUBSTRING
+Extracts some characters from a string TRANSLATE Returns the string from
+the first argument after the characters specified in the second argument
+are translated into the characters specified in the third argument. TRIM
+Removes leading and trailing spaces (or other specified characters) from
+a string UNICODE Returns the Unicode value for the first character of
+the input expression UPPER Converts a string to upper-case
+
+--SQL Server Math/Numeric Functions Function Description ABS Returns the
+absolute value of a number ACOS Returns the arc cosine of a number ASIN
+Returns the arc sine of a number ATAN Returns the arc tangent of a
+number ATN2 Returns the arc tangent of two numbers AVG Returns the
+average value of an expression CEILING Returns the smallest integer
+value that is \>= a number COUNT Returns the number of records returned
+by a select query COS Returns the cosine of a number COT Returns the
+cotangent of a number DEGREES Converts a value in radians to degrees EXP
+Returns e raised to the power of a specified number FLOOR Returns the
+largest integer value that is \<= to a number LOG Returns the natural
+logarithm of a number, or the logarithm of a number to a specified base
+LOG10 Returns the natural logarithm of a number to base 10 MAX Returns
+the maximum value in a set of values MIN Returns the minimum value in a
+set of values PI Returns the value of PI POWER Returns the value of a
+number raised to the power of another number RADIANS Converts a degree
+value into radians RAND Returns a random number ROUND Rounds a number to
+a specified number of decimal places SIGN Returns the sign of a number
+SIN Returns the sine of a number SQRT Returns the square root of a
+number SQUARE Returns the square of a number SUM Calculates the sum of a
+set of values TAN Returns the tangent of a number
+
+--SQL Server Date Functions Function Description CURRENT_TIMESTAMP
+Returns the current date and time DATEADD Adds a time/date interval to a
+date and then returns the date DATEDIFF Returns the difference between
+two dates DATEFROMPARTS Returns a date from the specified parts (year,
+month, and day values) DATENAME Returns a specified part of a date (as
+string) DATEPART Returns a specified part of a date (as integer) DAY
+Returns the day of the month for a specified date GETDATE Returns the
+current database system date and time GETUTCDATE Returns the current
+database system UTC date and time ISDATE Checks an expression and
+returns 1 if it is a valid date, otherwise 0 MONTH Returns the month
+part for a specified date (a number from 1 to 12) SYSDATETIME Returns
+the date and time of the SQL Server YEAR Returns the year part for a
+specified date
+
+--SQL Server Advanced Functions Function Description CAST Converts a
+value (of any type) into a specified datatype COALESCE Returns the first
+non-null value in a list CONVERT Converts a value (of any type) into a
+specified datatype CURRENT_USER Returns the name of the current user in
+the SQL Server database IIF Returns a value if a condition is TRUE, or
+another value if a condition is FALSE ISNULL Return a specified value if
+the expression is NULL, otherwise return the expression ISNUMERIC Tests
+whether an expression is numeric NULLIF Returns NULL if two expressions
+are equal SESSION_USER Returns the name of the current user in the SQL
+Server database SESSIONPROPERTY Returns the session settings for a
+specified option SYSTEM_USER Returns the login name for the current user
+USER_NAME Returns the database user name based on the specified id
+
+| ADDITIONAL RESOURCES - MySQL Functions <https://www.w3schools.com/sql/sql_ref_mysql.asp>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --MySQL String Functions Function Description ASCII Returns the ASCII value for the specific character CHAR_LENGTH Returns the length of a string (in characters) CHARACTER_LENGTH Returns the length of a string (in characters) CONCAT Adds two or more expressions together CONCAT_WS Adds two or more expressions together with a separator FIELD Returns the index position of a value in a list of values FIND_IN_SET Returns the position of a string within a list of strings FORMAT Formats a number to a format like "#,###,###.##", rounded to a specified number of decimal places INSERT Inserts a string within a string at the specified position and for a certain number of characters INSTR Returns the position of the first occurrence of a string in another string LCASE Converts a string to lower-case LEFT Extracts a number of characters from a string (starting from left) LENGTH Returns the length of a string (in bytes) LOCATE Returns the position of the first occurrence of a substring in a string LOWER Converts a string to lower-case LPAD Left-pads a string with another string, to a certain length LTRIM Removes leading spaces from a string MID Extracts a substring from a string (starting at any position) POSITION Returns the position of the first occurrence of a substring in a string REPEAT Repeats a string as many times as specified REPLACE Replaces all occurrences of a substring within a string, with a new substring REVERSE Reverses a string and returns the result RIGHT Extracts a number of characters from a string (starting from right) RPAD Right-pads a string with another string, to a certain length RTRIM Removes trailing spaces from a string SPACE Returns a string of the specified number of space characters STRCMP Compares two strings SUBSTR Extracts a substring from a string (starting at any position) SUBSTRING Extracts a substring from a string (starting at any position) SUBSTRING_INDEX Returns a substring of a string before a specified number of delimiter occurs TRIM Removes leading and trailing spaces from a string UCASE Converts a string to upper-case UPPER Converts a string to upper-case                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| --MySQL Numeric Functions Function Description ABS Returns the absolute value of a number ACOS Returns the arc cosine of a number ASIN Returns the arc sine of a number ATAN Returns the arc tangent of one or two numbers ATAN2 Returns the arc tangent of two numbers AVG Returns the average value of an expression CEIL Returns the smallest integer value that is \>= to a number CEILING Returns the smallest integer value that is \>= to a number COS Returns the cosine of a number COT Returns the cotangent of a number COUNT Returns the number of records returned by a select query DEGREES Converts a value in radians to degrees DIV Used for integer division EXP Returns e raised to the power of a specified number FLOOR Returns the largest integer value that is \<= to a number GREATEST Returns the greatest value of the list of arguments LEAST Returns the smallest value of the list of arguments LN Returns the natural logarithm of a number LOG Returns the natural logarithm of a number, or the logarithm of a number to a specified base LOG10 Returns the natural logarithm of a number to base 10 LOG2 Returns the natural logarithm of a number to base 2 MAX Returns the maximum value in a set of values MIN Returns the minimum value in a set of values MOD Returns the remainder of a number divided by another number PI Returns the value of PI POW Returns the value of a number raised to the power of another number POWER Returns the value of a number raised to the power of another number RADIANS Converts a degree value into radians RAND Returns a random number ROUND Rounds a number to a specified number of decimal places SIGN Returns the sign of a number SIN Returns the sine of a number SQRT Returns the square root of a number SUM Calculates the sum of a set of values TAN Returns the tangent of a number TRUNCATE Truncates a number to the specified number of decimal places                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| --MySQL Date Functions Function Description ADDDATE Adds a time/date interval to a date and then returns the date ADDTIME Adds a time interval to a time/datetime and then returns the time/datetime CURDATE Returns the current date CURRENT_DATE Returns the current date CURRENT_TIME Returns the current time CURRENT_TIMESTAMP Returns the current date and time CURTIME Returns the current time DATE Extracts the date part from a datetime expression DATEDIFF Returns the number of days between two date values DATE_ADD Adds a time/date interval to a date and then returns the date DATE_FORMAT Formats a date DATE_SUB Subtracts a time/date interval from a date and then returns the date DAY Returns the day of the month for a given date DAYNAME Returns the weekday name for a given date DAYOFMONTH Returns the day of the month for a given date DAYOFWEEK Returns the weekday index for a given date DAYOFYEAR Returns the day of the year for a given date EXTRACT Extracts a part from a given date FROM_DAYS Returns a date from a numeric datevalue HOUR Returns the hour part for a given date LAST_DAY Extracts the last day of the month for a given date LOCALTIME Returns the current date and time LOCALTIMESTAMP Returns the current date and time MAKEDATE Creates and returns a date based on a year and a number of days value MAKETIME Creates and returns a time based on an hour, minute, and second value MICROSECOND Returns the microsecond part of a time/datetime MINUTE Returns the minute part of a time/datetime MONTH Returns the month part for a given date MONTHNAME Returns the name of the month for a given date NOW Returns the current date and time PERIOD_ADD Adds a specified number of months to a period PERIOD_DIFF Returns the difference between two periods QUARTER Returns the quarter of the year for a given date value SECOND Returns the seconds part of a time/datetime SEC_TO_TIME Returns a time value based on the specified seconds STR_TO_DATE Returns a date based on a string and a format SUBDATE Subtracts a time/date interval from a date and then returns the date SUBTIME Subtracts a time interval from a datetime and then returns the time/datetime SYSDATE Returns the current date and time TIME Extracts the time part from a given time/datetime TIME_FORMAT Formats a time by a specified format TIME_TO_SEC Converts a time value into seconds TIMEDIFF Returns the difference between two time/datetime expressions TIMESTAMP Returns a datetime value based on a date or datetime value TO_DAYS Returns the number of days between a date and date "0000-00-00" WEEK Returns the week number for a given date WEEKDAY Returns the weekday number for a given date WEEKOFYEAR Returns the week number for a given date YEAR Returns the year part for a given date YEARWEEK Returns the year and week number for a given date |
+| --MySQL Advanced Functions Function Description BIN Returns a binary representation of a number BINARY Converts a value to a binary string CASE Goes through conditions and return a value when the first condition is met CAST Converts a value (of any type) into a specified datatype COALESCE Returns the first non-null value in a list CONNECTION_ID Returns the unique connection ID for the current connection CONV Converts a number from one numeric base system to another CONVERT Converts a value into the specified datatype or character set CURRENT_USER Returns the user name and host name for the MySQL account that the server used to authenticate the current client DATABASE Returns the name of the current database IF Returns a value if a condition is TRUE, or another value if a condition is FALSE IFNULL Return a specified value if the expression is NULL, otherwise return the expression ISNULL Returns 1 or 0 depending on whether an expression is NULL LAST_INSERT_ID Returns the AUTO_INCREMENT id of the last row that has been inserted or updated in a table NULLIF Compares two expressions and returns NULL if they are equal. Otherwise, the first expression is returned SESSION_USER Returns the current MySQL user name and host name SYSTEM_USER Returns the current MySQL user name and host name USER Returns the current MySQL user name and host name VERSION Returns the current version of the MySQL database                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+
+ADDITIONAL RESOURCES - CTE EXPLAINED
+
+--Basic structure, layman's terms. A Common Table Expression (CTE) can
+be used many ways, but for the most basic use, think of it as a
+sub-query, or temp-query that you can reference within your primary
+query.
+
+In Microsoft Power Query (Excel/PowerBI), this would be akin to pulling
+in a table as "connection only", doing some transformations within that
+connection only table, and then referencing or merging that connection
+only table into your final results. But unlike PowerQuery tables, you
+can do all the transformations in a few lines of code, without pulling
+in millions of rows of data before transformations.
+
+//Start Example CTE --CTE PRECEDING MAIN QUERY, This is you sub-query,
+or "connection only" query, which you will reference in your final
+query(s). --CTE can be used to get a RowNum as below, MAX, AVERAGE, SUM,
+etc.
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+WITH CTE_TableNameYouAssign AS ( SELECT column1 column2 column3
+ROW_NUMBER() OVER (PARTITION BY column3 ORDER BY column1 DESC) AS RowNum
+
+FROM TableNameYouAreReferencing AS aliashere WHERE columnwhatever =
+'some condition' )
+
+--MAIN QUERY STARTS HERE, Now you will build the original query you
+wanted, and pull in the results of the CTE (often just the one column
+you needed). --Select Statements
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+SELECT DISTINCT a.column1 a.column2 a.column3 a.column4 a.column5
+b.column -- from CTE above, uses table join alias below, this is the
+part that confused me.
+
+--From, Join Where(s), Order By
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+FROM primarytable AS a LEFT OUTER JOIN CTE_TableNameYouAssign AS b ON
+a.columnkey=b.columnkey WHERE a.column1 = 'some condition' AND a.column2
+= 'some condition' ORDER BY columnwhatever;
+
+//End Example CTE
+
+--\*\*--An example I've actually used with a CTE, Treasurer_Warrants
+//Begin example
+
+--CTE PRECEDING MAIN QUERY
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+WITH CTE_DescrHeader AS ( SELECT dh.Id, dh.BegEffDate, dh.TranId,
+dh.RevObjId, dh.DescrHeaderType, dh.DisplayDescr, ROW_NUMBER() OVER
+(PARTITION BY dh.RevObjId ORDER BY dh.BegEffDate DESC) AS RowNum FROM
+DescrHeader AS dh WHERE dh.EffStatus = 'A' )
+
+--MAIN QUERY STARTS HERE
+
+--Select Statements
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+SELECT DISTINCT --Demographics LTRIM(RTRIM(kcv.ain)) AS [AIN],
+LTRIM(RTRIM(kcv.pin)) AS [PIN], LTRIM(RTRIM(pb.OwnerName1)) AS [Owner],
+LTRIM(RTRIM(pb.OwnerName2)) AS [AltOwner],
+LTRIM(RTRIM(kcv.AttentionLine)) AS [Comm_Attn],
+LTRIM(RTRIM(kcv.MailingAddress)) AS [MailingAddress],
+LTRIM(RTRIM(kcv.MailingCityStZip)) AS [Mailing_CSZ],
+LTRIM(RTRIM(pb.OwnerCountry)) AS [OwnerCountry],
+LTRIM(RTRIM(kcv.SitusAddress)) AS [SitusAddress],
+LTRIM(RTRIM(kcv.DisplayDescr)) AS [LegalDescription], dd.DisplayDescr AS
+[ParcelBase_LegalDesc], --Amounts (incomplete, still searching for these
+figures) del.TaxAmount AS [TaxDue], del.PenAmount AS [Penalty],
+del.IntAmount AS [Interest], del.FeeAmount AS [Fees], --Year, Vin, Make,
+if applicable i.year_built AS [YearBuilt],
+LTRIM(RTRIM(mh.mh_serial_num)) AS [VIN],
+LTRIM(RTRIM(ct.tbl_element_desc)) AS [Make]
+
+--From tables/joined tables
+
+FROM KCv_PARCELMASTER1 AS kcv LEFT OUTER JOIN parcel_base_data AS pb ON
+kcv.lrsn=pb.lrsn LEFT OUTER JOIN CTE_DescrHeader AS dd ON
+pb.lrsn=dd.RevObjId LEFT OUTER JOIN manuf_housing AS mh ON
+kcv.lrsn=mh.lrsn LEFT OUTER JOIN codes_table AS ct ON
+mh.mh_make=ct.tbl_element AND ct.tbl_type_code='mhmake' LEFT OUTER JOIN
+improvements AS i ON mh.lrsn=i.lrsn AND mh.extension=i.extension LEFT
+OUTER JOIN eGovDelq_T AS del ON kcv.lrsn=del.RevObjId
+
+--Where conditions WHERE kcv.EffStatus='A' AND pb.status='A' AND
+mh.status='A' AND i.status='A' AND dd.RowNum = 1 AND
+i.improvement_id='M' AND kcv.pin NOT LIKE 'GENERAL PARCEL' AND kcv.pin
+LIKE 'M%' OR kcv.pin LIKE 'L%' OR kcv.pin LIKE 'G%' OR kcv.pin LIKE 'E%'
+OR (kcv.pin LIKE 'R%' AND kcv.DisplayDescr LIKE '%Golden Spike%') OR
+(kcv.pin LIKE 'U%' AND kcv.ClassCD='010 Operating Property') OR (kcv.pin
+LIKE '%' AND kcv.DisplayDescr LIKE '%PP On Real%')
+
+ORDER BY [PIN]; //End example
+
+```{sql eval=FALSE, include=TRUE}
+```
+
+--\*\*--Microsoft SQL Server 2022: WITH common_table_expression
+(Transact-SQL)
+<https://learn.microsoft.com/en-us/sql/t-sql/queries/with-common-table-expression-transact-sql?view=sql-server-ver16>
+Specifies a temporary named result set, known as a common table
+expression (CTE). This is derived from a simple query and defined within
+the execution scope of a single SELECT, INSERT, UPDATE, DELETE or MERGE
+statement. This clause can also be used in a CREATE VIEW statement as
+part of its defining SELECT statement. A common table expression can
+include references to itself. This is referred to as a recursive common
+table expression.
+
+The following guidelines apply to nonrecursive common table expressions.
+For guidelines that apply to recursive common table expressions, see
+Guidelines for Defining and Using Recursive Common Table Expressions
+that follows.
+
+A CTE must be followed by a single SELECT, INSERT, UPDATE, or DELETE
+statement that references some or all the CTE columns. A CTE can also be
+specified in a CREATE VIEW statement as part of the defining SELECT
+statement of the view. Multiple CTE query definitions can be defined in
+a nonrecursive CTE. The definitions must be combined by one of these set
+operators: UNION ALL, UNION, INTERSECT, or EXCEPT. A CTE can reference
+itself and previously defined CTEs in the same WITH clause. Forward
+referencing isn't allowed. Specifying more than one WITH clause in a CTE
+isn't allowed. For example, if a CTE_query_definition contains a
+subquery, that subquery can't contain a nested WITH clause that defines
+another CTE.
+
+The following clauses can't be used in the CTE_query_definition:
+
+ORDER BY (except when a TOP clause is specified) INTO OPTION clause with
+query hints FOR BROWSE
+
+When a CTE is used in a statement that is part of a batch, the statement
+before it must be followed by a semicolon. A query referencing a CTE can
+be used to define a cursor. Tables on remote servers can be referenced
+in the CTE. When executing a CTE, any hints that reference a CTE may
+conflict with other hints that are discovered when the CTE accesses its
+underlying tables, in the same manner as hints that reference views in
+queries. When this occurs, the query returns an error.
+
+--\*\*-- SQLSHACK SQL Server Common Table Expressions (CTE)
+<https://www.sqlshack.com/sql-server-common-table-expressions-cte/> A
+Common Table Expression, also called as CTE in short form, is a
+temporary named result set that you can reference within a SELECT,
+INSERT, UPDATE, or DELETE statement. The CTE can also be used in a View.
+
+EXPLANATION: The CTE query starts with a ?With? and is followed by the
+Expression Name. We will be using this expression name in our select
+query to display the result of our CTE Query and be writing our CTE
+query definition. To view the CTE result we use a Select query with the
+CTE expression name.
+
+-EXAMPLE: WITH expression_name [ ( column_name [,...n] ) ] AS (
+CTE_query_definition ) Select [Column1,Column2,Column3 ?..] from
+expression_name
+
+--Or
+
+WITH expression_name [ ( column_name [,...n] ) ] AS (
+CTE_query_definition ) Select \* from expression_name
+
+--CTE with Union All In order to display the result from start date to
+end date one by one as recursive, we use a Union All to increment RowNo,
+to add the day one by one till the condition satisfied the date range,
+in order to stop the recursion we need set some condition. In this
+example, we repeat the recursion to display our records until the date
+is less than or equal to the end date.
+
+-EXAMPLE declare @startDate datetime,\
+@endDate datetime;
+
+select @startDate = getdate(),\
+@endDate = getdate()+16;\
+-- select @sDate StartDate,@eDate EndDate\
+;with myCTE as\
+(\
+select 1 as ROWNO,@startDate StartDate,'W -'+convert(varchar(2),\
+DATEPART( wk, @startDate))+' / D
+('+convert(varchar(2),@startDate,106)+')' as 'WeekNumber'\
+union all\
+select ROWNO+1 ,dateadd(DAY, 1, StartDate) ,\
+'W -'+convert(varchar(2),DATEPART( wk, StartDate))+' / D
+('+convert(varchar(2),\
+dateadd(DAY, 1, StartDate),106)+')' as 'WeekNumber'\
+FROM myCTE\
+WHERE dateadd(DAY, 1, StartDate)\<= @endDate\
+)\
+select ROWNO,Convert(varchar(10),StartDate,105) as StartDate ,WeekNumber
+from myCTE
+
+--ANOTHER EXAMPLE FROM SQL SERVER TUTORIAL
+<https://www.sqlservertutorial.net/sql-server-basics/sql-server-cte/>
+
+WITH cte_sales AS ( SELECT staff_id, COUNT(\*) order_count\
+FROM sales.orders WHERE YEAR(order_date) = 2018 GROUP BY staff_id )
+
+SELECT AVG(order_count) average_orders_by_staff FROM cte_sales;
+
+--MORE EXAMPLES AT MS SQL TIPS
+<https://www.mssqltips.com/sqlservertip/6861/cte-in-sql-server-examples/>
+-EX 1
+
+WITH Sum_OrderQuantity_CTE AS ( SELECT ProductKey ,EnglishMonthName
+,SUM(OrderQuantity) AS TotalOrdersByMonth FROM [dbo].[FactInternetSales]
+fs INNER JOIN [dbo].[DimDate] dd ON dd.DateKey = fs.OrderDateKey GROUP
+BY ProductKey, EnglishMonthName
+
+) SELECT ProductKey, AVG(TotalOrdersByMonth) AS 'Average Total Orders By
+Month' FROM Sum_OrderQuantity_CTE GROUP BY ProductKey ORDER BY
+ProductKey
+
+-EX 2 WITH Simple_CTE AS ( SELECT dd.CalendarYear ,fs.OrderDateKey
+,fs.ProductKey ,fs.OrderQuantity \* fs.UnitPrice AS TotalSale
+,dc.FirstName ,dc.LastName FROM [dbo].[FactInternetSales] fs INNER JOIN
+[dbo].[DimCustomer] dc ON dc.CustomerKey = fs.CustomerKey INNER JOIN
+[dbo].[DimDate] dd ON dd.DateKey = fs.OrderDateKey ) SELECT \* FROM
+Simple_CTE
+
+------------------------------------------------------------------------
+
+|                        |
+|:-----------------------|
+| ADDITIONAL RESOURCES - |
+
+\*/
+
+### Format
+
+![](Images/FORMAT1.jpg)
+
+![](Images/FORMAT2.jpg)

@@ -1,0 +1,15 @@
+
+
+Allocations Mismatch requires a local excel file. The file (Allocations Key.xlsx) and a database query (Allocations_.sql).
+
+In Power Query, 
+- TRIM the Group Code and PCC code on both tables. 
+- Starting with the dbQuery, MERGE AS NEW with the Allocations Key, match on Group Code and PCC Code, Left Anti (keep only those in the first table, not matching)
+
+S:\Common\Comptroller Tech\Reporting Tools\! Reporting Tools and Templates\Keys
+Allocations Key.xlsx
+
+
+Darrell Wolfe
+Kendall Malarey
+04/30/2024
