@@ -1,0 +1,46 @@
+---
+Title: TBC...
+
+---
+
+# Data Frames used in National Market Markers Analysis
+
+## EIA - US Energy Information Administration
+
+This dataframe set `eia_prices_1970_2022.csv` comes from the EIA website as a downloadable CSV. 
+
+https://www.eia.gov/TOOLS/FAQS/faq.php?id=26&t=10
+
+"To obtain the historical prices from the SEDS data, use the CSV file for All States—Prices. In the file, the code for gasoline prices for the transportation sector, in `$/MMBtu`, is: State Abbreviation (in column A) and `MGACD` (in column B). For example, the code for Alaska is `AK—MGACD`. Those prices, in $/MMBtu, can be converted to approximate dollars per gallon using the heat contents in Table A3 Petroleum consumption and fuel ethanol. There are 42 U.S. gallons in a barrel."
+
+https://www.eia.gov/totalenergy/data/monthly/index.php#appendices
+
+TBC...
+
+The CSV is downloaded from 
+https://www.eia.gov/state/seds/seds-data-complete.php?sid=US#CompleteDataFile
+
+Section: Prices and expenditures	
+    Subsection: All price and expenditure estimates	
+        SubSubsection: Prices
+            1970-2022
+           	XLSX CSV ZIP
+
+
+
+
+
+
+```{python}
+
+
+
+
+```
+
+
+
+
+
+
+
