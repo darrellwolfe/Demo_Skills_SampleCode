@@ -6,6 +6,7 @@ file_path = 'C:/Users/dwolfe/Documents/Demo_Skills_SampleCode/Projects/National_
 
 # Read the CSV file
 df = pd.read_csv(file_path)
+# print(df.head)
 # print(df['MSN'].unique())
 
 # Filter rows where 'MSN' column contains 'AVACD'

@@ -1,28 +1,24 @@
 ---
-Title: Gas Prices in USA, historical
+Title: Gas Prices in USA and internationally, historical
 ---
-
 
 # Gas Prices in USA, historical analysis
 
-This report is intended to review gas prices in the USA historically for comparison against various claims. 
+This report is intended to review gas prices in the USA historically for comparison against various claims.
 
 One such claim is that the sitting US President has a direct affect on gas prices.
 
+------------------------------------------------------------------------
+
 ## Data from the EIA - US Energy Information Administration
 
-This dataframe set `GasPrices_eia_prices_1970_2022` comes from the EIA website as a downloadable CSV. 
+This dataframe set `GasPrices_eia_prices_1970_2022` comes from the EIA website as a downloadable CSV.
 
-The [EIA][1] provides an FAQ for using the data, which includes instructions to download the [CSV][2] and for a reference [Excel][3] document that helps with conversion. 
+The [EIA](https://www.eia.gov/TOOLS/FAQS/faq.php?id=26&t=10) provides an FAQ for using the data, which includes instructions to download the [CSV](https://www.eia.gov/state/seds/seds-data-complete.php?sid=US#CompleteDataFile) and for a reference [Excel](https://www.eia.gov/totalenergy/data/monthly/index.php#appendices) document that helps with conversion.
 
-[1]: https://www.eia.gov/TOOLS/FAQS/faq.php?id=26&t=10
-[2]: https://www.eia.gov/state/seds/seds-data-complete.php?sid=US#CompleteDataFile
-[3]: https://www.eia.gov/totalenergy/data/monthly/index.php#appendices
+> "To obtain the historical prices from the SEDS data, use the CSV file for All States—Prices. In the file, the code for gasoline prices for the transportation sector, in `$/MMBtu`, is: State Abbreviation (in column A) and `MGACD` (in column B). For example, the code for Alaska is `AK—MGACD`. Those prices, in \$/MMBtu, can be converted to approximate dollars per gallon using the heat contents in Table A3 Petroleum consumption and fuel ethanol. There are 42 U.S. gallons in a barrel."
 
-> "To obtain the historical prices from the SEDS data, use the CSV file for All States—Prices. In the file, the code for gasoline prices for the transportation sector, in `$/MMBtu`, is: State Abbreviation (in column A) and `MGACD` (in column B). For example, the code for Alaska is `AK—MGACD`. Those prices, in $/MMBtu, can be converted to approximate dollars per gallon using the heat contents in Table A3 Petroleum consumption and fuel ethanol. There are 42 U.S. gallons in a barrel."
-
-The CSV is downloaded from 
-> Section: Prices and expenditures > Subsection: All price and expenditure estimates >    SubSubsection: Prices > 1970-2022 > XLSX CSV ZIP
+The CSV is downloaded from \> Section: Prices and expenditures \> Subsection: All price and expenditure estimates \> SubSubsection: Prices \> 1970-2022 \> XLSX CSV ZIP
 
 The following shows the barrel prices falling sharply well before 2016's national election, and remaining relatively stable until after the pandemic crashes of 2020.
 
@@ -56,26 +52,51 @@ plt.show()  # Display the plot
 
 ```
 
-
+------------------------------------------------------------------------
 
 ## Data from Our World in Data
 
-Our World in Data provides an international dataset to review. 
+Our World in Data provides an international dataset to review.
 
-This dataframe set `GasePrices_OWD_crude-oil-prices.csv` comes from the Our World in Data website as a downloadable CSV. 
+This dataframe set `GasePrices_OWD_crude-oil-prices.csv` comes from the Our World in Data website as a downloadable CSV.
 
-> “Data Page: Oil price - Crude prices since 1861”, part of the following publication: Hannah Ritchie, Pablo Rosado and Max Roser (2023) - “Energy”. Data adapted from Energy Institute. Retrieved from https://ourworldindata.org/grapher/crude-oil-prices [online resource]
+> “Data Page: Oil price - Crude prices since 1861”, part of the following publication: Hannah Ritchie, Pablo Rosado and Max Roser (2023) - “Energy”. Data adapted from Energy Institute. Retrieved from https://ourworldindata.org/grapher/crude-oil-prices \[online resource\]
 
+These international crude oil prices show the same trends, clearly indicating that the US President is unrelated to gas prices.
 
 ```{python}
 
+import pandas as pd
+import matplotlib.pyplot as plt
 
+# Path to the CSV file
+file_path = 'C:/Users/dwolfe/Documents/Demo_Skills_SampleCode/Projects/National_Market_Markers/_dataframes/GasPrices_owd_intl_1861_2023.csv'
+
+# Read the CSV file
+df = pd.read_csv(file_path)
+
+# Display the first few rows to verify the data
+print(df.head())
+
+# Filter data for years 1970 to 2023
+filtered_df = df[(df['Year'] >= 1970) & (df['Year'] <= 2023)]
+
+# Plotting the filtered data
+plt.figure(figsize=(12, 6))  # Set figure size
+plt.plot(filtered_df['Year'], filtered_df['Oil price - Crude prices since 1861 (current US$)'], marker='o', linestyle='-')
+plt.title('International Crude Oil Prices from 1970 to 2023')
+plt.xlabel('Year')
+plt.ylabel('Oil Price (current US$)')
+plt.grid(True)
+plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+plt.tight_layout()  # Adjust layout
+plt.show()  # Display the plot
 
 ```
 
+------------------------------------------------------------------------
 
-
-## Placeholder
+## Placeholder TBC...
 
 Text
 

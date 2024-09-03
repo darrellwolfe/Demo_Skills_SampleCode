@@ -84,16 +84,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Gas Prices in USA, historical analysis</h1>
 <p>This report is intended to review gas prices in the USA historically for comparison against various claims.</p>
 <p>One such claim is that the sitting US President has a direct affect on gas prices.</p>
-<section id="data-comes-from-the-eia---us-energy-information-administration" class="level2">
-<h2 class="anchored" data-anchor-id="data-comes-from-the-eia---us-energy-information-administration">Data comes from the EIA - US Energy Information Administration</h2>
-<p>This dataframe set <code>eia_prices_1970_2022.csv</code> comes from the EIA website as a downloadable CSV.</p>
+<hr>
+<section id="data-from-the-eia---us-energy-information-administration" class="level2">
+<h2 class="anchored" data-anchor-id="data-from-the-eia---us-energy-information-administration">Data from the EIA - US Energy Information Administration</h2>
+<p>This dataframe set <code>GasPrices_eia_prices_1970_2022</code> comes from the EIA website as a downloadable CSV.</p>
 <p>The <a href="https://www.eia.gov/TOOLS/FAQS/faq.php?id=26&amp;t=10">EIA</a> provides an FAQ for using the data, which includes instructions to download the <a href="https://www.eia.gov/state/seds/seds-data-complete.php?sid=US#CompleteDataFile">CSV</a> and for a reference <a href="https://www.eia.gov/totalenergy/data/monthly/index.php#appendices">Excel</a> document that helps with conversion.</p>
 <blockquote class="blockquote">
 <p>“To obtain the historical prices from the SEDS data, use the CSV file for All States—Prices. In the file, the code for gasoline prices for the transportation sector, in <code>$/MMBtu</code>, is: State Abbreviation (in column A) and <code>MGACD</code> (in column B). For example, the code for Alaska is <code>AK—MGACD</code>. Those prices, in $/MMBtu, can be converted to approximate dollars per gallon using the heat contents in Table A3 Petroleum consumption and fuel ethanol. There are 42 U.S. gallons in a barrel.”</p>
 </blockquote>
 <p>The CSV is downloaded from &gt; Section: Prices and expenditures &gt; Subsection: All price and expenditure estimates &gt; SubSubsection: Prices &gt; 1970-2022 &gt; XLSX CSV ZIP</p>
 <p>The following shows the barrel prices falling sharply well before 2016’s national election, and remaining relatively stable until after the pandemic crashes of 2020.</p>
-<div id="ebcc224f" class="cell" data-execution_count="1">
+<div id="9d30718e" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -127,6 +128,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<hr>
+</section>
+<section id="data-from-our-world-in-data" class="level2">
+<h2 class="anchored" data-anchor-id="data-from-our-world-in-data">Data from Our World in Data</h2>
+<p>Our World in Data provides an international dataset to review.</p>
+<p>This dataframe set <code>GasePrices_OWD_crude-oil-prices.csv</code> comes from the Our World in Data website as a downloadable CSV.</p>
+<blockquote class="blockquote">
+<p>“Data Page: Oil price - Crude prices since 1861”, part of the following publication: Hannah Ritchie, Pablo Rosado and Max Roser (2023) - “Energy”. Data adapted from Energy Institute. Retrieved from https://ourworldindata.org/grapher/crude-oil-prices [online resource]</p>
+</blockquote>
+<p>These international crude oil prices show the same trends, clearly indicating that the US President is unrelated to gas prices.</p>
+<div id="fdab6004" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Path to the CSV file</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>file_path <span class="op">=</span> <span class="st">'C:/Users/dwolfe/Documents/Demo_Skills_SampleCode/Projects/National_Market_Markers/_dataframes/GasPrices_owd_intl_1861_2023.csv'</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the CSV file</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(file_path)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the first few rows to verify the data</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head())</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter data for years 1970 to 2023</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>filtered_df <span class="op">=</span> df[(df[<span class="st">'Year'</span>] <span class="op">&gt;=</span> <span class="dv">1970</span>) <span class="op">&amp;</span> (df[<span class="st">'Year'</span>] <span class="op">&lt;=</span> <span class="dv">2023</span>)]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting the filtered data</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))  <span class="co"># Set figure size</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>plt.plot(filtered_df[<span class="st">'Year'</span>], filtered_df[<span class="st">'Oil price - Crude prices since 1861 (current US$)'</span>], marker<span class="op">=</span><span class="st">'o'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'International Crude Oil Prices from 1970 to 2023'</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Year'</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Oil Price (current US$)'</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)  <span class="co"># Rotate x-axis labels for better readability</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()  <span class="co"># Adjust layout</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>plt.show()  <span class="co"># Display the plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Entity      Code  Year  Oil price - Crude prices since 1861 (current US$)
+0  World  OWID_WRL  1861                                           3.082002
+1  World  OWID_WRL  1862                                           6.604290
+2  World  OWID_WRL  1863                                          19.812870
+3  World  OWID_WRL  1864                                          50.695790
+4  World  OWID_WRL  1865                                          41.449783</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="GasPrices_files/figure-html/cell-3-output-2.png" width="1142" height="566" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="placeholder-tbc" class="level2">
+<h2 class="anchored" data-anchor-id="placeholder-tbc">Placeholder TBC…</h2>
+<p>Text</p>
 </section>
 </section>
 
