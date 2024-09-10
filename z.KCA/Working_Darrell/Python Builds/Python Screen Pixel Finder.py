@@ -1,0 +1,11 @@
+
+
+import pyautogui
+
+pyautogui.displayMousePosition()
+
+
+
+
+
+

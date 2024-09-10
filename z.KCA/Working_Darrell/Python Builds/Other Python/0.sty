@@ -1,0 +1,174 @@
+import pyautogui
+import pyodbc
+import time
+import keyboard
+import threading
+import tkinter as tk
+from tkinter import simpledialog
+
+# Configuration for database connection
+db_connection_string = (
+    "Driver={SQL Server};"
+        "Server=astxdbprod;"
+    "Database=GRM_Main;"
+    "Trusted_Connection=yes;"
+)
+
+# Connect to the database
+conn = pyodbc.connect(db_connection_string)
+cursor = conn.cursor()
+
+# Create a tkinter root window
+root = tk.Tk()
+root.withdraw()  # Hide the root window
+
+# Define user inputs through tkinter dialogs
+AINLIST = simpledialog.askstring("Input", "List all AINs in Mapping Packet, separate by comma:")
+MemoTXT = simpledialog.askstring("Input", "Insert Memo text for mapping packet:")
+PDESC = simpledialog.askstring("Input", "Insert Permit Description:")
+PFILE = simpledialog.askstring("Input", "Filing Date (Top Date):")
+PNUMBER = simpledialog.askstring("Input", "Permit Number (Bottom Date):")
+TREVIEW = simpledialog.askstring("Input", "Timber or AG review? Y/N:")
+
+# Fetch data from the database
+query = f"SELECT pm.AIN, pm.LegalAcres FROM TSBv_Parcelmaster AS pm WHERE pm.AIN IN ({AINLIST})"
+cursor.execute(query)
+rows = cursor.fetchall()
+
+# Global flag to indicate if the script should be stopped
+stop_script = False
+
+def focus_proval(self):
+    logging.debug("Attempting to focus ProVal window...")
+    try:
+        proval_pid = self.get_proval_pid()
+        if not proval_pid:
+            logging.debug("ProVal process not found.")
+            return False
+        app = Application().connect(process=proval_pid)
+        proval_windows = app.windows(title_re='ProVal', found_index=0)
+        if proval_windows:
+            self.proval_window_handle = proval_windows[0]
+            logging.debug(f"Found ProVal window: {self.proval_window_handle}")
+            self.proval_window_handle.set_focus()
+            time.sleep(1)
+            if self.proval_window_handle.has_focus():
+                logging.debug("ProVal window is confirmed as active.")
+                return True
+            else:
+                logging.debug("Failed to activate ProVal window.")
+                return False
+        else:
+            logging.debug("ProVal window not found.")
+            return False
+    except Exception as e:
+        logging.error(f"Error focusing ProVal window: {e}")
+        return False
+
+def press_key_multiple_times(key, times):
+    for _ in range(times):
+        if stop_script:
+            break
+        pyautogui.press(key)
+
+def monitor_kill_key():
+    global stop_script
+    keyboard.wait('esc')  # Set 'esc' as the kill key
+    stop_script = True
+
+# Start the kill key monitoring in a separate thread
+kill_key_thread = threading.Thread(target=monitor_kill_key)
+kill_key_thread.daemon = True
+kill_key_thread.start()
+
+for row in rows:
+    if stop_script:
+        break
+    DBAIN, DBACRE = row
+
+    # Open Parcel Selection
+    pyautogui.hotkey('ctrl', 'o')
+    time.sleep(1)
+    
+    # Navigate to the top radio button on the account lookup pop-up window
+    press_key_multiple_times('up', 20)
+    time.sleep(1)
+    
+    # Press down four times to get to the AIN radio button
+    press_key_multiple_times('down', 4)
+    time.sleep(1)
+    
+    # Tab to the From field
+    pyautogui.press(['tab'])
+    time.sleep(1)
+    
+    # Delete contents
+    pyautogui.press(['delete'])
+    time.sleep(1)
+    
+    # Send the first AIN, then iterate through loop
+    pyautogui.typewrite(str(DBAIN))
+    time.sleep(1)
+    
+    # Press Enter to complete account look up
+    pyautogui.press('enter')
+    time.sleep(1)
+
+    # Insert Memo
+    pyautogui.hotkey('ctrl', 'shift', 'm')
+    time.sleep(2)
+    pyautogui.typewrite(MemoTXT)
+    pyautogui.press('enter')
+
+    # Add Legal Acres
+    pyautogui.hotkey('ctrl', 'shift', 'l')
+    time.sleep(2)
+    pyautogui.typewrite(str(DBACRE))
+    pyautogui.press('enter')
+
+    # Add Permit
+    pyautogui.hotkey('ctrl', 'shift', 'p')
+    time.sleep(2)
+    pyautogui.typewrite(PNUMBER)
+    pyautogui.press('tab')
+    pyautogui.typewrite('S')
+    pyautogui.press(['tab', 'tab', 'tab'])
+    pyautogui.typewrite(PFILE)
+    pyautogui.press('tab')
+    pyautogui.typewrite(PDESC)
+    pyautogui.press('enter')
+
+    if TREVIEW.upper() == 'Y':
+        # Timber or AG Review
+        pyautogui.hotkey('ctrl', 'shift', 't')
+        time.sleep(2)
+        pyautogui.typewrite(PNUMBER)
+        pyautogui.press('tab')
+        pyautogui.typewrite('T')
+        pyautogui.press(['tab', 'tab', 'tab'])
+        pyautogui.typewrite(PFILE)
+        pyautogui.press('tab')
+        pyautogui.typewrite(PDESC)
+        pyautogui.press('enter')
+
+    # Save changes
+    pyautogui.hotkey('ctrl', 's')
+    time.sleep(2)
+
+# Close the database connection
+conn.close()
+
+"""
+Notes:
+if AIN:
+    press_key_multiple_times('down', 4)
+elif PIN:
+    press_key_multiple_times('down', 0)
+
+    
+    ## For testing purposes, PIN: KC-DGW = AIN: 345134
+
+"""
+
+# Version History
+# NEW v1 07/26/2024
