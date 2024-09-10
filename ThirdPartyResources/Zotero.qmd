@@ -1,0 +1,8 @@
+# GitHub_VisStudioCode_RepoKey
+
+Zotero is a citation software used in conjuction with GitHub and Microsoft Word and other tools for the purpose of storing and caling sitations and bibliographies.
+
+[Zotero_Settings_Keys](https://www.zotero.org/settings/keys)
+
+-   GitHub_VisStudioCode_RepoKey
+
