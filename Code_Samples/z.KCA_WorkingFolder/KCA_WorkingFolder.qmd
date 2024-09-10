@@ -1,0 +1,49 @@
+# Kootenai County Assessor's Office - Working Folder
+
+This folder is where I'm working on projects that are not ready to get pushed to the Main Repo yet. We all agreed that pushing once a week would be cleaner for all involved, this way when we push updates everyone can read the one clean update of the final project rather than hundreds of mini-updates. I cannot stand the idea of leaving work on my local PC even for one day, so I will push to my Private Codebase frequently and then map this to Main once a week.
+
+```{python eval=TRUE include=TRUE}
+
+# Travis Downs, whereever you are, this is for showing me The Forbiden Zone movie decades ago, it still haunts me to this day. LOL 
+
+import tkinter as tk
+from itertools import cycle
+
+# Function to create a simple animation
+def animate_label():
+    label_text.set(next(cycle_texts))
+    window.after(500, animate_label)  # Update the text every 500 ms
+
+# Set up the main window
+window = tk.Tk()
+window.title("Update Notification")
+
+# Cycle through texts to simulate animation
+cycle_texts = cycle(["You are now entering...", "the forbidden..", "ZONE!"])
+
+# Variable to hold changing label text
+label_text = tk.StringVar()
+label_text.set(next(cycle_texts))
+
+# Label for the animated text
+label_animation = tk.Label(window, textvariable=label_text, font=("Helvetica", 14))
+label_animation.pack(pady=10)
+
+# Start the animation
+animate_label()
+
+# Text for the main message
+message_text = ("This folder is where I'm working on projects that are not ready to get pushed to the Main Repo yet. "
+                "We all agreed that pushing once a week would be cleaner for all involved, this way when we push updates "
+                "everyone can read the one clean update of the final project rather than hundreds of mini-updates. "
+                "I cannot stand the idea of leaving work on my local PC even for one day, so I will push to my Private Codebase frequently and then map this to Main once a week.")
+
+# Label to display the main message
+label_message = tk.Label(window, text=message_text, font=("Helvetica", 10), justify=tk.LEFT, wraplength=400)
+label_message.pack(pady=20)
+
+# Run the main window loop
+window.mainloop()
+
+
+```
