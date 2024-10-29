@@ -37,7 +37,7 @@ import threading  # For running background tasks and creating concurrent threads
 import tkinter as tk  # For creating basic GUI elements in Python applications
 from tkinter import ttk, messagebox  # For advanced Tkinter widgets and displaying dialog boxes
 import pytesseract  # For OCR (Optical Character Recognition) to read text from images
-from PIL import Image  # For working with image data
+from PIL import Image, ImageGrab  # For working with image data
 import cv2  # For image processing and computer vision tasks (OpenCV library)
 import ctypes  # For interacting with C data types and Windows API functions
 from tkcalendar import DateEntry  # For adding a calendar widget to Tkinter GUIs
@@ -45,6 +45,9 @@ import logging  # For logging events, errors, and information during script exec
 from datetime import datetime # For handling dates and times
 import re # The import re statement in Python imports the regular expressions (regex) module, which provides a powerful way to search, match, and manipulate strings based on patterns.
 import sys # Contains basic Python commands regarding runtime and formatting; used for exiting code
+import pygetwindow as gw # Instead, you should use the pygetwindow library, which provides the getWindowsWithTitle method.
+
+
 
 #### CAPS LOCK
 def is_capslock_on():
@@ -60,10 +63,6 @@ def ensure_capslock_off():
     else:
         logging.info("CAPS LOCK is already off.")
 
-# To use in script
-# ensure_capslock_off()
-
-
 
 """
 # GLOBAL LOGICS - CONNECTIONS
@@ -71,13 +70,14 @@ def ensure_capslock_off():
 
 
 ### Logging
+#'S:/Common/Comptroller Tech/Reports/Python/Auto_Mapping_Packet/MappingPacketsAutomation.log'
 
-# This will call into both the logging config and the AINLogProcessor config
-#mylog_filename = 'C:/Users/dwolfe/Documents/Kootenai_County_Assessor_CodeBase-1/Working_Darrell\Logs_Darrell/MappingPacketsAutomation.log'
-mylog_filename = 'S:/Common/Comptroller Tech/Reports/Python/Auto_Mapping_Packet/MappingPacketsAutomation.log'
+#This log will pull through to my working folder when I push git changes.... 
+#'C:/Users/dwolfe/Documents/Kootenai_County_Assessor_CodeBase-1/Working_Darrell\Logs_Darrell/MappingPacketsAutomation.log'
 
+mylog_filename = 'C:/Users/dwolfe/Documents/Kootenai_County_Assessor_CodeBase-1/Working_Darrell\Logs_Darrell/PlatMappingPacketsAutomation.log'
+#mylog_filename = 'S:/Common/Comptroller Tech/Reports/Python/Auto_Mapping_Packet/PlatMappingPacketsAutomation.log'
 
-## Logging config
 logging.basicConfig(
     filename = mylog_filename,
     level=logging.DEBUG,
@@ -88,12 +88,7 @@ console_handler.setLevel(logging.DEBUG)
 console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logging.getLogger().addHandler(console_handler)
 
-# Call this in script
-#logging.info("Whatever I write here will print outinto the log.")
-#logging.info(f"Place an f in front of text in double quots and variable in cruly brackets {DBAIN}} to have that variable output show up in the log.")
 
-
-# This counts the AINs sent within your log, makes a unique list, and counts the list to show you how many you did today
 class AINLogProcessor:
     def __init__(self, log_filename):
         self.log_filename = log_filename
@@ -137,6 +132,7 @@ if __name__ == "__main__":
 
 
 
+
 ### Kill Script
 
 # Global flag to indicate if the script should be stopped
@@ -155,15 +151,11 @@ kill_key_thread = threading.Thread(target=monitor_kill_key)
 kill_key_thread.daemon = True
 kill_key_thread.start()
 
-# Just call this in your final script
-# stop_script 
 
-# Or this
-# if stop_script:
-#     logging.info("Script stopping due to kill key press.")
-#     stop_script
-
-
+def check_stop_script():
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        sys.exit("Script terminated")
 
 
 ### Connections: Database
@@ -181,9 +173,13 @@ def connect_to_database(connection_string):
     return pyodbc.connect(connection_string)
 
 # Function to execute a SQL query and fetch data
-def execute_query(cursor, query):
-    cursor.execute(query)
+def execute_query(cursor, query, params=None):
+    if params:
+        cursor.execute(query, params)
+    else:
+        cursor.execute(query)
     return cursor.fetchall()
+
 
 
 ### Graphic User Interface (GUI) Logic - START
@@ -191,54 +187,67 @@ def execute_query(cursor, query):
 # Initialize variables to avoid 'NameError', will call them into the final product after variable selections
 MemoTXT = ""
 PDESC = ""
+PLATCOMBO = ""
+
+the_month = datetime.now().month
+the_day = datetime.now().day
+the_year = datetime.now().year
+
+
+# Get today's date in mm/dd/yyyy format
+today_date = datetime.now().strftime("%m/%d/%Y")
+# You can then use `today_date` in your code wherever you need the formatted date
+logging.info(f"Today's date is: {today_date}")
+
+def calculate_for_year():
+    current_date = datetime.now()
+    if current_date.month > 4 or (current_date.month == 4 and current_date.day >= 16):
+        return current_date.year + 1
+    else:
+        return current_date.year
 
 def on_submit():
     ensure_capslock_off()
 
-    global AINLIST, AINFROM, AINTO, PDESC, PFILE, PNUMBER, TREVIEW, MappingPacketType, Initials, MemoTXT, ForYear
+    global AINFROM, PDESC, PFILE, PNUMBER, TREVIEW, MappingPacketType, Initials, MemoTXT, ForYear, PLATCOMBO, LEGENDTYPE, AIN_Exclude
 
-    # Collect inputs for AINFROM and AINTO, and split by commas
+    # Collect inputs for AINFROM and split by commas
     AINFROM = [ain.strip() for ain in entry_ainfrom.get().strip().upper().split(",")]
-    AINTO = [ain.strip() for ain in entry_ainto.get().strip().upper().split(",")]
 
-    # Creates an exclude list to be either excluded from AINLIST when that is the parameter for SQL query, or from the PLATCOMBO when that is used (see query below)
-    AIN_Exclude = [ain.strip() for ain in entry_ainexclude.get().strip().upper().split(",")]
-
-    # Combine the AINFROM and AINTO lists, removing duplicates
-    combined_ain_list = list(set(AINFROM + AINTO) - set(AIN_Exclude))
+    # Collect AIN_Exclude inputs if provided
+    AIN_Exclude = [ain.strip() for ain in entry_ainexclude.get().strip().upper().split(",")] if entry_ainexclude.get().strip() else []
 
     # Combine the AINFROM and AINTO lists, removing duplicates
-    AINLIST = combined_ain_list
+    AINFROM_str = ', '.join(AINFROM) 
+    # Needed for memo
 
+    # Collect PLAT inputs
+    PLATCOMBO = entry_platcombo.get().strip().upper()
+    #SELECTEDLANDTYPE = combobox_landtype.get().strip().upper()
+    LEGENDTYPE = entry_legendtype.get().strip().upper()
 
-    PFILE = entry_pfile.get().strip().upper()
-    PNUMBER = entry_pnumber.get().strip().upper()
+    # Collect other inputs
+    PFILE = plat_date.get().strip().upper()
+    PNUMBER = plat_date.get().strip().upper()
     TREVIEW = entry_treview.get().strip().upper()
     MappingPacketType = combobox_mappingpackettype.get().strip().upper()
     Initials = entry_initials.get().strip().upper()
     ForYear = for_year_combobox.get().strip()  # Get the selected year
+    PDESC = f"{MappingPacketType} {PLATCOMBO} for {ForYear}"
 
     the_month = datetime.now().month
     the_day = datetime.now().day
     the_year = datetime.now().year
-    
-    #the_month = datetime.datetime.now().month
-    #the_day = datetime.datetime.now().day
-    #the_year = datetime.datetime.now().year
 
+    MemoTXT = f"{Initials}-{the_month}/{str(the_year)[-2:]} {MappingPacketType} from {AINFROM_str} into {PLATCOMBO} for {ForYear}"
 
-    AINFROM_str = ', '.join(AINFROM)
-    AINTO_str = ', '.join(AINTO)
-    MemoTXT = f"{Initials}-{the_month}/{str(the_year)[-2:]} {MappingPacketType} from {AINFROM_str} into {AINTO_str} for {ForYear}"
     logging.info(f"Generated MemoTXT: {MemoTXT}")
 
-    PDESC = f"{MappingPacketType} for {ForYear}"
-
-    if not AINFROM or not AINTO or not PFILE or not PNUMBER or not TREVIEW or not MappingPacketType or not Initials or not PDESC:
-        # Does not need to include AIN_Exclude
+    # Check if any required field is empty
+    if not PLATCOMBO or not LEGENDTYPE or not PFILE or not PNUMBER or not TREVIEW or not MappingPacketType or not Initials or not ForYear:
         messagebox.showerror("Input Error", "All input fields are required.")
-        stop_script
-
+        return
+    
     root.destroy()  # Close the GUI
 
 def setup_gui():
@@ -256,63 +265,73 @@ def validate_initials(action, value_if_allowed):
     return True
 
 def setup_widgets(root):
-    global entry_ainfrom, entry_ainto, entry_pfile, entry_pnumber, entry_treview, combobox_mappingpackettype, entry_initials, for_year_combobox, entry_ainexclude
+    global entry_ainfrom, plat_date, entry_treview, combobox_mappingpackettype, entry_initials, for_year_combobox, entry_ainexclude, entry_platcombo, entry_legendtype
+    #combobox_landtype
 
-    # Get the current and next year
-    current_year = datetime.now().year
-    next_year = current_year + 1
+    # Calculate the "FOR" year dynamically
+    for_year = calculate_for_year()
 
-    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=1, padx=10, pady=5)
-    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
-    for_year_combobox.grid(column=1, row=1, padx=10, pady=5)
-    for_year_combobox.current(0)  # Set default selection to the current year
+    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=0, padx=10, pady=5)
+    for_year_combobox = ttk.Combobox(root, values=[for_year], width=47)
+    for_year_combobox.grid(column=1, row=0, padx=10, pady=5)
+    for_year_combobox.current(0)  # Set default selection to the calculated year
 
-    # AINFROM input
-    ttk.Label(root, text="List AINs FROM (separated by comma):").grid(column=0, row=0, padx=10, pady=5)
-    entry_ainfrom = ttk.Entry(root, width=50)
-    entry_ainfrom.grid(column=1, row=0, padx=10, pady=5)
 
-    # AINTO input
-    ttk.Label(root, text="List AINs TO (separated by comma):").grid(column=0, row=1, padx=10, pady=5)
-    entry_ainto = ttk.Entry(root, width=50)
-    entry_ainto.grid(column=1, row=1, padx=10, pady=5)
-
-    # Existing fields continue below...
-    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=2, padx=10, pady=5)
-    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
-    for_year_combobox.grid(column=1, row=2, padx=10, pady=5)
-    for_year_combobox.current(0)  # Set default selection to the current year
-
-    ttk.Label(root, text="Filing Date (Top Date):").grid(column=0, row=3, padx=10, pady=5)
-    entry_pfile = ttk.Entry(root, width=50)
-    entry_pfile.grid(column=1, row=3, padx=10, pady=5)
-
-    ttk.Label(root, text="Permit Number (Bottom Date):").grid(column=0, row=4, padx=10, pady=5)
-    entry_pnumber = ttk.Entry(root, width=50)
-    entry_pnumber.grid(column=1, row=4, padx=10, pady=5)
-
-    ttk.Label(root, text="Timber or AG review? Y/N:").grid(column=0, row=5, padx=10, pady=5)
-    entry_treview = ttk.Entry(root, width=50)
-    entry_treview.grid(column=1, row=5, padx=10, pady=5)
-
-    ttk.Label(root, text="Select Mapping Packet Type:").grid(column=0, row=6, padx=10, pady=5)
-    
-    mapping_packet_types = [
-        "MERGE", "SPLIT", "BLA", "LLA", "RW VACATION", "RW SPLIT", "REDESCRIBE",
-        "RW AUDIT", "RW Cat19", "AIRPORT LEASE NEW PARCEL", "PLAT VACATION",
-        "PARCEL DELETED", "ACERAGE AUDIT", "NEW PLAT"
-    ]
+    # Mapping Packet TypeNEW PLAT 0L900 for 2025 FOR APPRAISER REVIEW
+    ttk.Label(root, text="Select Mapping Packet Type:").grid(column=0, row=1, padx=10, pady=5)
+    mapping_packet_types = ["NEW PLAT"]
     combobox_mappingpackettype = ttk.Combobox(root, values=mapping_packet_types, width=47)
-    combobox_mappingpackettype.grid(column=1, row=6, padx=10, pady=5)
+    combobox_mappingpackettype.grid(column=1, row=1, padx=10, pady=5)
     combobox_mappingpackettype.current(0)  # Set default selection to the first item
 
-    # Validation for the Initials Entry
+
+    #ttk.Label(root, text="Enter Land Type (e.g., URBAN, RURAL, CA_COMMON_AREAS_CONDOS, C_CAREA, COMMERCIAL, WASTE):").grid(column=0, row=3, padx=10, pady=5)
+    #combobox_landtype = ttk.Combobox(root, values=["RES_URBAN", "RES_RURAL", "CA_COMMON_AREAS_CONDOS", "C_CAREA", "COMMERCIAL"], width=47)
+    #combobox_landtype.grid(column=1, row=3, padx=10, pady=5)
+    #combobox_landtype.current(0)  # Set default selection to the first item
+
+
+    # Initials with validation
     vcmd = (root.register(validate_initials), '%d', '%P')
-    
-    ttk.Label(root, text="Enter (3) Initials:").grid(column=0, row=7, padx=10, pady=5)
+    ttk.Label(root, text="Enter (3) Initials:").grid(column=0, row=2, padx=10, pady=5)
     entry_initials = ttk.Entry(root, width=50, validate='key', validatecommand=vcmd)
-    entry_initials.grid(column=1, row=7, padx=10, pady=5)
+    entry_initials.grid(column=1, row=2, padx=10, pady=5)
     entry_initials.insert(0, "DGW")
+
+
+
+    # Filing Date
+    ttk.Label(root, text="Date on first page of Plat packet:").grid(column=0, row=3, padx=10, pady=5)
+    plat_date = ttk.Entry(root, width=50)
+    plat_date.grid(column=1, row=3, padx=10, pady=5)
+
+
+
+
+    # AINFROM input
+    ttk.Label(root, text="List AINs FROM_PARENTs (separated by comma):").grid(column=0, row=4, padx=10, pady=5)
+    entry_ainfrom = ttk.Entry(root, width=50)
+    entry_ainfrom.grid(column=1, row=4, padx=10, pady=5)
+
+
+    # New Input Fields for PLATCOMBO, SELECTEDLANDTYPE, and LEGENDTYPE
+    ttk.Label(root, text="Enter the first 5 digits of the PLAT (PLATCOMBO):").grid(column=0, row=5, padx=10, pady=5)
+    entry_platcombo = ttk.Entry(root, width=50)
+    entry_platcombo.grid(column=1, row=5, padx=10, pady=5)
+
+
+
+    ttk.Label(root, text="Enter Legend Type (Just the legend number, e.g., 1 for Legend 1):").grid(column=0, row=6, padx=10, pady=5)
+    entry_legendtype = ttk.Entry(root, width=50)
+    entry_legendtype.grid(column=1, row=6, padx=10, pady=5)
+
+
+
+    # Timber or AG review
+    ttk.Label(root, text="Timber or AG review? Y/N:").grid(column=0, row=7, padx=10, pady=5)
+    entry_treview = ttk.Entry(root, width=50)
+    entry_treview.grid(column=1, row=7, padx=10, pady=5)
+
 
 
     # AIN_Exclude input
@@ -321,39 +340,40 @@ def setup_widgets(root):
     entry_ainexclude.grid(column=1, row=8, padx=10, pady=5)
 
 
+    # Submit Button
     submit_button = ttk.Button(root, text="Submit", command=on_submit)
     submit_button.grid(column=0, row=9, columnspan=2, pady=20)
-
 
 root = setup_gui()
 
 ### Graphic User Interface (GUI) Logic - END
 
 
-# Function to count the number of AINs in AINLIST
-def count_ains(ain_list):
-    return len(ain_list)
-
-# Example usage after collecting AINs in the GUI:
-#ain_count = count_ains(AINLIST)
-#logging.info(f"Total number of AINs: {ain_count}")
 
 
 """
 # GLOBAL LOGICS - LOGIC FUNCTIONS
 """
 
+#### CAPS LOCK
+def is_capslock_on():
+    # This will return 1 if CAPS LOCK is on, 0 if it's off
+    hllDll = ctypes.WinDLL("User32.dll")
+    VK_CAPITAL = 0x14
+    return hllDll.GetKeyState(VK_CAPITAL) & 1
+
+def ensure_capslock_off():
+    if is_capslock_on():
+        pyautogui.press('capslock')
+        logging.info("CAPS LOCK was on. It has been turned off.")
+    else:
+        logging.info("CAPS LOCK is already off.")
+
 #### SET FOCUS
 def set_focus(window_title):
-    windows = pyautogui.getWindowsWithTitle(window_title)
-    if windows:
-        window = windows[0]
-        window.activate()
-        logging.info(f"Set focus to window: {window_title}")
-        return True
-    else:
-        logging.warning(f"Window not found: {window_title}")
-        return False
+    window = gw.getWindowsWithTitle(window_title)
+    if window:
+        window[0].activate()
 
 #### PRESS & CLICK KEY LOGIC
 def press_key_with_modifier_multiple_times(modifier, key, times):
@@ -370,70 +390,9 @@ def press_key_multiple_times(key, times):
             break
         pyautogui.press(key)
 
-    """"
-    # pyautogui.typewrite()
-    pyautogui.typewrite(str(DBACRE))
-    pyautogui.typewrite(str(DBAIN))
-    pyautogui.typewrite(MemoTXT)
-    pyautogui.typewrite(PNUMBER)
-    pyautogui.typewrite('f')
-    pyautogui.typewrite(f"04/01/{ForYear}")
-    pyautogui.typewrite(f"{PDESC} FOR TIMBER REVIEW")
-    pyautogui.typewrite('p')
-
-    # pyautogui.hotkey()
-    pyautogui.hotkey('ctrl', 'o')
-    pyautogui.hotkey('ctrl', 'shift', 'm')
-
-    # pyautogui.press()
-    pyautogui.press(['tab'])
-    pyautogui.press(['delete'])
-    pyautogui.press('enter')
-    pyautogui.press('l')
-    pyautogui.press('space')
-    pyautogui.press('right')
-
-    # press_key_multiple_times
-    press_key_multiple_times('up', 12)
-    press_key_multiple_times('down', 4)
-    press_key_multiple_times(['tab'], 3)
-
-    # press_key_with_modifier_multiple_times
-    press_key_with_modifier_multiple_times('shift', 'tab', 6)
-
-    """
 
 
 
-#### Land Type Press Down Function
-def press_land_key(LANDTYPE):
-    # Define the mapping of LANDTYPE to the number of DOWN key presses
-    land_key_mapping = {
-        "RES_RURAL": 3,
-        "RES_URBAN": 4,
-        "CA_COMMON_AREAS_CONDOS": 22,
-        "C_CAREA": 21,
-        "COMMERCIAL": 1,
-        "WASTE": 13,
-        "REMAINING_ACRES": 16,
-        "DEFAULT": 21
-    }
-
-    logging.info(f"LANDTYPE value: {LANDTYPE}, type: {type(LANDTYPE)}")
-
-    # Determine the number of DOWN key presses
-    # presses = land_key_mapping.get(LANDTYPE, land_key_mapping["DEFAULT"])
-    presses = land_key_mapping[LANDTYPE]  # This will raise a KeyError if LANDTYPE is not found
-
-    # Press the DOWN key the specified number of times
-    pyautogui.press('down', presses)
-    
-    # Press ENTER to confirm the selection
-    pyautogui.press('enter')
-
-    # Example usage:
-    #LANDTYPE = "RURAL"
-    #press_land_key(LANDTYPE)
 
 #### Legend Press Down Key Function
 def press_legend_key(LEGENDTYPE):
@@ -488,14 +447,76 @@ def press_legend_key(LEGENDTYPE):
 
 
 
+def determine_land_type(pcc_code):
+    # Mapping of PCC codes to Land Types
+    land_type_mapping = {
+        # Residential
+        520: "RES_URBAN", 541: "RES_HOMESITE",
+        # Temporary Adjustment for HL891
+        #520: "RES_URBAN", 541: "CA_COMMON_AREAS_CONDOS",
+
+        515: "RES_RURAL", 537: "RES_HOMESITE",
+        512: "RES_RURAL", 534: "RES_HOMESITE",
+        525: "C_CAREA",
+        526: "CA_COMMON_AREAS_CONDOS",
+        
+        # Commercial
+        421: "COMMERCIAL_CITY_LIMITS", 442: "COMMERCIAL_CITY_LIMITS",
+        416: "COMMERCIAL_RURAL_SUBDIVISION", 438: "COMMERCIAL_RURAL_SUBDIVISION",
+        413: "COMMERCIAL_RURAL_TRACT", 435: "COMMERCIAL_RURAL_TRACT",
+        527: "COMMERCIAL_CONDO",
+        
+        # Industrial
+        322: "INDUSTRIAL_CITY_LIMITS", 343: "INDUSTRIAL_CITY_LIMITS",
+        317: "INDUSTRIAL_RURAL_SUBDIVISION", 339: "INDUSTRIAL_RURAL_SUBDIVISION",
+        314: "INDUSTRIAL_RURAL_TRACT", 336: "INDUSTRIAL_RURAL_TRACT"
+
+    }
+    
+    # Return the Land Type based on the PCC code
+    return land_type_mapping.get(pcc_code, "UNKNOWN")
+
+
+#### Land Type Press Down Function
+def press_land_key(LANDTYPE):
+    # Define the mapping of LANDTYPE to the number of DOWN key presses
+    land_key_mapping = {
+        "RES_RURAL": 3,
+        "RES_URBAN": 4,
+        "RES_HOMESITE" : 14,
+        "CA_COMMON_AREAS_CONDOS": 22,
+        "C_CAREA": 21,
+        "COMMERCIAL": 1,
+        "WASTE": 13,
+        "REMAINING_ACRES": 16,
+        "DEFAULT": 21
+    }
+
+    logging.info(f"LANDTYPE value: {LANDTYPE}, type: {type(LANDTYPE)}")
+
+    # Determine the number of DOWN key presses
+    # presses = land_key_mapping.get(LANDTYPE, land_key_mapping["DEFAULT"])
+    presses = land_key_mapping[LANDTYPE]  # This will raise a KeyError if LANDTYPE is not found
+
+    # Press the DOWN key the specified number of times
+    pyautogui.press('down', presses)
+    
+    # Press ENTER to confirm the selection
+    pyautogui.press('enter')
+
+    # Example usage:
+    #LANDTYPE = "RURAL"
+    #press_land_key(LANDTYPE)
+
+
 def determine_group_code(pcc_code):
     # Mapping of PCC codes to Land Group Codes
     group_codes = {
 
         # Residential
-        520: "20", 541: "20",
-        515: "15", 537: "15",
-        512: "12", 534: "12",
+        520: "20", 541: "20H",
+        515: "15", 537: "15H",
+        512: "12", 534: "12H",
         525: "25L",
         526: "26LH",
         
@@ -604,7 +625,6 @@ def pressess_allocations(description_code):
     #press_key_multiple_times('up', num_presses)
 
 
-
 """
 # GLOBAL LOGICS - SCREEN HANDLING FUNCTIONS
 """
@@ -621,15 +641,20 @@ def pressess_allocations(description_code):
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\dwolfe\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
 
-#### Image Paths - Active and Inactive
-land_tab_images = [
-    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab.PNG',
-    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab_active.PNG'
-]
-land_base_tab_images = [
-    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab.PNG',
-    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab_active.PNG'
-]
+
+#### Image Paths
+
+# Open Account Scr
+active_parcels_only_needchecked = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_open_active_parcels_only.PNG'
+active_parcels_only_checked = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_open_active_parcels_only_checked.PNG'
+
+
+# Memos
+duplicate_memo_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_memo_duplicate.PNG'
+memos_land_information_ = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_memos_land_information_.PNG'
+
+
+# Permits
 permits_tab_images = [
     r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab.PNG',
     r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab_active.PNG'
@@ -640,19 +665,47 @@ permits_add_permit_button = [
     r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_permit_button_active.PNG'
 ]
 
-#### Image Paths - Single Images Only
-duplicate_memo_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_memo_duplicate.PNG'
 add_field_visit_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_fieldvisit_button.PNG'
+permit_description = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permit_description.PNG'
+permits_workassigneddate = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_workassigneddate.PNG'
+permit_type = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permit_type.PNG'
+permits_inactivatebutton = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_inactivatebutton.PNG'
+
+
+# Land 
+land_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab_active.PNG'
+]
+land_base_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab_active.PNG'
+]
+land_detail_image = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_detail_.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_detail_active.PNG'
+]
+
 aggregate_land_type_add_button = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_aggregate_land_type_add_button.PNG'
 farm_total_acres_image = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_farm_total_acres.PNG'
-permit_description = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permit_description.PNG'
-memos_land_information_ = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_memos_land_information_.PNG'
+
+
+# Allocations
+allocations_9homesite_ = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_9homesite_.PNG'
+allocations_31Rural = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_31Rural_.PNG'
+allocations_32Urban = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_32Urban_.PNG'
+allocations_82Waste = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_82Waste_.PNG'
+allocations_91RemAcres = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_91RemAcres_.PNG'
+allocations_11Commercial = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_11Commercial_.PNG'
+allocations_C_Carea = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_C_Carea_.PNG'
+allocations_CA_CommonAreaCondos = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_allocations_CA_CommonAreaCondos_.PNG'
 
 
 # 1 CAPTURE SCREEN IN GREYSCALE
 def capture_and_convert_screenshot():
     # Capture the screenshot using pyautogui
-    screenshot = pyautogui.screenshot()
+    # screenshot = pyautogui.screenshot()
+    screenshot = ImageGrab.grab(all_screens=True)
 
     # Convert the screenshot to a numpy array, then to BGR, and finally to greyscale
     screenshot_np = np.array(screenshot)
@@ -660,9 +713,31 @@ def capture_and_convert_screenshot():
     grey_screenshot = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
 
     return grey_screenshot
+
+
+# 1.5 
+def get_window_region(window_title):
+    try:
+        window = gw.getWindowsWithTitle(window_title)[0]
+        left, top, right, bottom = window.left, window.top, window.right, window.bottom
+        return (left, top, right, bottom)
+    except IndexError:
+        logging.error(f"Window with title '{window_title}' not found.")
+        return None
+
+
 # 2 CLICK USING A REFERENCE GREYSCALE SCREENSHOT TO A STORED GREYSCALE IMAGE INCLUDES ABILITY TO CLICK RELATIVE POSITION
-def click_on_image(image_path, direction='center', offset=10, inset=7, confidence=0.75):
-    grey_screenshot = capture_and_convert_screenshot()
+def click_on_image(image_path, direction='center', offset=0, inset=0, confidence=0.75, region=None):
+
+    global click_positions
+
+    # Capture the screenshot using pyautogui
+    screenshot = ImageGrab.grab(bbox=region) if region else ImageGrab.grab(all_screens=True)
+
+    # Convert the screenshot to a numpy array, then to BGR, and finally to greyscale
+    screenshot_np = np.array(screenshot)
+    screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
+    grey_screenshot = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
 
     # Load the reference image in greyscale
     ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -694,16 +769,58 @@ def click_on_image(image_path, direction='center', offset=10, inset=7, confidenc
             'top_center': (top_left[0] + w // 2, top_left[1] + inset),
             'center': (top_left[0] + w // 2, top_left[1] + h // 2)
         }
+    if max_val >= confidence:
+        top_left = max_loc
+        h, w = ref_image.shape
+        right = top_left[0] + w
+        bottom = top_left[1] + h
+
+        # Calculate click position based on direction and inset/offset
+        click_positions = {
+            'right': (right + offset, top_left[1] + h // 2),
+            'left': (top_left[0] - offset, top_left[1] + h // 2),
+            'above': (top_left[0] + w // 2, top_left[1] - offset),
+            'below': (top_left[0] + w // 2, bottom + offset),
+            'bottom_right_corner': (right - inset, bottom - inset),
+            'bottom_left_corner': (top_left[0] + inset, bottom - inset),
+            'top_right_corner': (right - inset, top_left[1] + inset),
+            'top_left_corner': (top_left[0] + inset, top_left[1] + inset),
+            'bottom_center': (top_left[0] + w // 2, bottom - inset),
+            'top_center': (top_left[0] + w // 2, top_left[1] + inset),
+            'center': (top_left[0] + w // 2, top_left[1] + h // 2)
+        }
+        
+        # Check if the direction is valid
+        if direction not in click_positions:
+            logging.error(f"Invalid click direction specified: {direction}")
+            return False
+    
+        # Get the click position
         click_x, click_y = click_positions[direction]
 
+        # Log the mex_val
+        logging.info(f"Max value for image match: {max_val}, confidence threshold: {confidence}")
+
+
+        # Adjust for global screen position if using a region
+        if region:
+            click_x += region[0]
+            click_y += region[1]
+            logging.info(f"Region Adjusted Click - Region bounds: {region}, Adjusted Click Position: ({click_x}, {click_y})")
+        else:
+            logging.info("No region specified - Defaulting to full-screen coordinates.")
+
+
         # Perform the click
-        pyautogui.click(click_x, click_y)
+        time.sleep(0.5)
+        pyautogui.click(click_x, click_y, duration=0.1)
         logging.info(f"Clicked {direction} of the image at ({click_x}, {click_y})")
         return True
+    
     else:
         logging.warning(f"No good match found at the confidence level of {confidence}.")
         return False
-
+    
         """
         # Ref Function click_on_image in the following functions 3, 4, 5, etc... 
         # These reference functions can be called in the final automation script 
@@ -873,17 +990,39 @@ else:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 """
 # Start the GUI event loop
 """
 root.mainloop()
 
+stop_script
+
+check_stop_script()
 
 
-if not AINFROM or not AINTO or not PFILE or not PNUMBER or not TREVIEW or not MappingPacketType or not Initials or not PDESC:
-    # Does not need to include AIN_Exclude
-    messagebox.showerror("Input Error", "All input fields are required.")
-    stop_script
+
+
+
+
+
+
+
 
 
 
