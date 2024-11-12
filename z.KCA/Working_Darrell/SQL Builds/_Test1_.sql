@@ -1,3 +1,6 @@
+WITH
+
+CTE_ParcelMaster AS (
 Select Distinct
 pm.EffStatus
 ,pm.lrsn
@@ -8,14 +11,35 @@ pm.EffStatus
 ,TRIM(pm.TAG) AS TAG
 ,TRIM(pm.DisplayName) AS Owner
 ,TRIM(pm.DisplayDescr) AS LegalDescription
-
-,SUBSTRING(pm.DisplayDescr, PATINDEX('%SITUS#%[0-9][0-9][0-9][0-9][0-9][0-9]%', pm.DisplayDescr) + 6, 6) AS SitusAIN
-
 ,TRIM(pm.SitusAddress) AS SitusAddress
 ,TRIM(pm.SitusCity) AS SitusCity
 ,TRIM(pm.SitusState) AS SitusState
 
 From TSBv_PARCELMASTER AS pm
-Where pm.EffStatus = 'A'
-And pm.PIN LIKE 'E%'
-And pm.DisplayName LIKE 'AT&T M%'
+
+
+)
+
+
+
+SELECT DISTINCT
+pmd.EffStatus
+,pmd.lrsn
+,pmd.PIN
+,pmd.AIN
+,pmd.ClassCD
+,pmd.Property_Class_Description
+,pmd.TAG
+,pmd.Owner
+,pmd.LegalDescription
+,pmd.SitusAddress
+,pmd.SitusCity
+,pmd.SitusState
+
+FROM CTE_ParcelMaster AS pmd
+
+Where pmd.EffStatus = 'A'
+And pmd.PIN LIKE 'E%'
+And pmd.ClassCD LIKE '%22%'
+
+Order by Owner, PIN;
