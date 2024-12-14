@@ -47,18 +47,36 @@ import re # The import re statement in Python imports the regular expressions (r
 import sys # Contains basic Python commands regarding runtime and formatting; used for exiting code
 
 #### CAPS LOCK
-def is_capslock_on():
-    # This will return 1 if CAPS LOCK is on, 0 if it's off
-    hllDll = ctypes.WinDLL("User32.dll")
-    VK_CAPITAL = 0x14
-    return hllDll.GetKeyState(VK_CAPITAL) & 1
+import platform
 
-def ensure_capslock_off():
-    if is_capslock_on():
-        pyautogui.press('capslock')
-        logging.info("CAPS LOCK was on. It has been turned off.")
-    else:
-        logging.info("CAPS LOCK is already off.")
+def is_capslock_on():
+    if platform.system() == "Windows":
+        hllDll = ctypes.WinDLL("User32.dll")
+        VK_CAPITAL = 0x14
+        return bool(hllDll.GetKeyState(VK_CAPITAL) & 1)
+    elif platform.system() == "Darwin":  # macOS
+        import AppKit
+        return AppKit.NSEvent.modifierFlags() & AppKit.NSEventModifierFlagCapsLock
+    else:  # Linux and others
+        import subprocess
+        return subprocess.check_output('xset q | grep "Caps Lock"', shell=True).decode().split(':')[1].strip() == 'on'
+
+def ensure_capslock_off(max_attempts=3, retry_delay=0.5):
+    for attempt in range(max_attempts):
+        try:
+            if is_capslock_on():
+                pyautogui.press('capslock')
+                time.sleep(retry_delay)  # Wait for key press to take effect
+                if not is_capslock_on():
+                    logging.info("CAPS LOCK was on. It has been turned off.")
+                    return
+            else:
+                logging.info("CAPS LOCK is already off.")
+                return
+        except Exception as e:
+            logging.error(f"Error managing Caps Lock (attempt {attempt+1}): {str(e)}")
+    
+    logging.error("Failed to ensure Caps Lock is off after maximum attempts.")
 
 # To use in script
 # ensure_capslock_off()
