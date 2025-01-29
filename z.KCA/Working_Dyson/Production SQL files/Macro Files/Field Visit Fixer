@@ -1,0 +1,43 @@
+Inputbox>D,What date do you want?
+Inputbox>INT,What initials do you want?
+Inputbox>VAR, 12 for Vacant 1 for Improved
+Inputbox>N,How many do you want?
+SetFocus>ProVal
+Let>r=0
+XLSheetToArray>C:\Users\dsavage\Documents\Excel docs\Inspection report fixer.xls,tArray,sheetArray
+Repeat>r
+let>r=r+1
+Press LCTRL
+Send>o
+Release LCTRL
+WaitWindowOpen>Parcel Selection
+SetFocus>Parcel Selection
+Press TAB
+LET>NHBD=sheetArray_%r%_3
+SEND>NHBD
+Press Tab * 5
+Press Enter
+Wait>3
+press alt
+release alt
+send>pi
+WaitWindowOpen>Inspection Record Maintenance
+SetFocus>Inspection Record Maintenance
+press tab
+//CHANGE DATE BELOW TO TODAY'S DATE
+send>D
+press tab
+//CHANGE INITIALS BELOW TO YOUR FULL INITIALS
+send>INT
+press tab*3
+//CHANGE DOWN NUMBER BELOW TO: 12 FOR VACANT; 1 FOR IMPROVED
+press down * %VAR%
+press tab * 5
+press enter
+press tab
+press enter
+WaitWindowOpen>ProVal
+press LCTRL
+send>s
+Release LCTRL
+Until>r=N

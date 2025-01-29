@@ -1,94 +1,21 @@
--- !preview conn=conn
+Select Distinct
+*
 
 /*
-AsTxDBProd
-GRM_Main
-
----------
---Select All
----------
-Select Distinct *
-From TSBv_PARCELMASTER AS pm
-Where pm.EffStatus = 'A'
-
+e.lrsn,
+e.extension,
+e.ext_description,
+i.imp_type,
+i.year_built
 */
-
-
-
-
-WITH
-
-CTE_ParcelMaster AS (
---------------------------------
---ParcelMaster
---------------------------------
-Select Distinct
-CASE
-  WHEN pm.neighborhood >= 9000 THEN 'Manufactured_Homes'
-  WHEN pm.neighborhood >= 6003 THEN 'District_6'
-  WHEN pm.neighborhood = 6002 THEN 'Manufactured_Homes'
-  WHEN pm.neighborhood = 6001 THEN 'District_6'
-  WHEN pm.neighborhood = 6000 THEN 'Manufactured_Homes'
-  WHEN pm.neighborhood >= 5003 THEN 'District_5'
-  WHEN pm.neighborhood = 5002 THEN 'Manufactured_Homes'
-  WHEN pm.neighborhood = 5001 THEN 'District_5'
-  WHEN pm.neighborhood = 5000 THEN 'Manufactured_Homes'
-  WHEN pm.neighborhood >= 4000 THEN 'District_4'
-  WHEN pm.neighborhood >= 3000 THEN 'District_3'
-  WHEN pm.neighborhood >= 2000 THEN 'District_2'
-  WHEN pm.neighborhood >= 1021 THEN 'District_1'
-  WHEN pm.neighborhood = 1020 THEN 'Manufactured_Homes'
-  WHEN pm.neighborhood >= 1001 THEN 'District_1'
-  WHEN pm.neighborhood = 1000 THEN 'Manufactured_Homes'
-  WHEN pm.neighborhood >= 451 THEN 'Commercial'
-  WHEN pm.neighborhood = 450 THEN 'Specialized_Cell_Towers'
-  WHEN pm.neighborhood >= 1 THEN 'Commercial'
-  WHEN pm.neighborhood = 0 THEN 'Other (PP, OP, NA, Error)'
-  ELSE NULL
-END AS District
-
--- # District SubClass
-,pm.neighborhood AS GEO
-,TRIM(pm.NeighborHoodName) AS GEO_Name
-,pm.lrsn
-,TRIM(pm.pin) AS PIN
-,TRIM(pm.AIN) AS AIN
-,pm.ClassCD
-,TRIM(pm.PropClassDescr) AS Property_Class_Description
-,TRIM(pm.TAG) AS TAG
-,TRIM(pm.DisplayName) AS Owner
-,TRIM(pm.SitusAddress) AS SitusAddress
-,TRIM(pm.SitusCity) AS SitusCity
-
-,pm.LegalAcres
-,pm.WorkValue_Land
-,pm.WorkValue_Impv
-,pm.WorkValue_Total
-,pm.CostingMethod
-,pm.Improvement_Status -- <Improved vs Vacant
-
-From TSBv_PARCELMASTER AS pm
-
-Where pm.EffStatus = 'A'
-AND pm.ClassCD NOT LIKE '070%'
-)
-
---Order By District,GEO;
-
-
-
-SELECT DISTINCT
-pmd.GEO
-,pmd.GEO_Name
-,pmd.SitusCity
-
-FROM CTE_ParcelMaster AS pmd
---  ON xxxx.lrsn = pmd.lrsn
-
-Where pmd.GEO <> 0
-And TRIM(pmd.SitusCity) IS NOT NULL
-And TRIM(pmd.SitusCity) <> '0'
-And pmd.SitusCity <> ' '
-
---Where pmd.GEO BETWEEN 1 AND 1000
-Order by GEO
+--Extensions always comes first
+FROM extensions AS e -- ON e.lrsn --lrsn link if joining this to another query
+  -- AND e.status = 'A' -- Filter if joining this to another query
+JOIN improvements AS i ON e.lrsn=i.lrsn 
+      AND e.extension=i.extension
+      AND i.status='A'
+      AND i.improvement_id IN ('M','C','D')
+--Conditions
+WHERE e.status = 'A'
+AND i.year_built = 2023
+--AND i.year_built = @TaxYear-1

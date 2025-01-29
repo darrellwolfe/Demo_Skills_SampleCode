@@ -1,0 +1,310 @@
+Attacking gets less effective over time. It should get slighlty better each time the character levels up and account for the damage slipping.
+
+Syntax Error Sprites are the only encounter, we need to add more randomness and variation there. There are additional enemies listed in the random encounters function but it never gets to any and it always selects the sprite enemy.
+
+After being defeated by any enemy at any point, the game should be over. Option to quit or load save should then be presented.
+
+When being asked what we'd like to do, using inventory items needs to be an option except for the the first time, we just need to do the prologue level on the first iteration. There doesn't need to be any option to do anything right after creating the character. Afterwards, an abbreviated prologue with the last few lines showing the character status and press enter to continue is all that's needed. Perhaps a line explaining the load.
+
+There needs to be a maximum of save spots and the ability to delete the saved entries.
+
+Spells should all have some randomness to cost.
+
+When restoring a saved game, the game shows the initial affinity spell being learned again but not all the purchased spells the user may have purchased. I'd like the list of available spells to be "learned" although they are already available.
+
+Strength potion, when used, currently reports zero effect. It should add to attack power.
+
+Camp should add the ability to quit, and thus save.
+
+Coding challenges need to be passed in order to beat each level. Exploring is great, but we need to have a path towards the completiong of the game as described.
+
+Need a coding challenge complete status to complete, not just explore, on each level once a coding challenge is done. 5 challenges beats the game, and an end condition needs to be written in with credits.
+
+Need more variety to the code challenges.
+
+When using the strength elixir or any item then we need to see the relevant results.
+
+Need more items, more loot, and to fill out the end of level reward to randomly award from a bucket of about 10 items.
+
+There needs to be different speeds for active combat instead of turn based. We need to add in the relevant details to the player and each enemy.
+
+Code Goblin went negative hp, had to flee to win.
+
+A wild Syntax Error Sprite appears!
+It seems weak against Water and strong against Fire.
+Syntax Error Sprite attacks for 1 damage!
+
+Ron HP: 130/130, MP: 55/65
+Syntax Error Sprite HP: 30
+
+As shown, damage was apparently taken yet not registered as actual damage to the player.
+
+Casting shield gained me 15 exp and defeated the code goblin enemy as shown. I'd expect it to protect me against enemy attack for some time before wearing off, perhaps even so that the effect lasts in between interactions.
+
+Choose a spell to cast: 2
+Ron casts Shield!
+Ron gained 15 experience!
+You defeated Code Goblin and gained 10 gold and 15 experience!
+You defeated the enemy!
+
+You continue your journey through Function Fjord... Progress: 4/5
+
+When user completes a challenge, it runs out of challenges that are available in the given subset. It should default to the next hardest subset of coding challenges.
+
+Decimals should be rounded to the closest whole number.
+
+It's super effective! Damage increased to 30.0!
+Code Goblin has been defeated!
+Ron gained 15 experience!
+You defeated Code Goblin and gained 10 gold and 15 experience!
+You defeated the enemy!
+
+Experience twice? defeated thrice?
+
+If full inventory is encountered upon receiving an item over the limit, give option to use or drop an item to free space
+
+Save/Quit options needs to be available in camp.
+
+Item usage should be itemized to a number to use, and if a number is selected that doesn't correspond to an item then we need to error and reprompt the user for that.
+
+When an item is used, the corresponding effect needs to be shown to the player. Currently, strength potion doesn't appear to do anything.
+
+Perhaps we should add the other attributes such as speed and stregth to the character status so the user can track the changes.
+
+Damage is always not very effective, probably because neutral damage and defence isn't accounted for as in the case of using the attack command.
+
+We need to incorporate the hello world script as a unique item that is earned if the 1st stage is completed successfully. The rest of the stages should award a random item from a list of various items upon completion, and a chest of three items if completed successfully by passing code challenge.
+
+The status of the level either been explored or being completed should be displayed on the level selection screen as completed if it is not only explored, but completed. The level should still be visitable, but in cases where a unique item is gifted on subsequent playthroughs, replace that with a random listed item.
+
+It would be cool if we could do a window with the prologue and have it look like the star wars title screen
+
+Need to incorporate level dynamics from first timed file entry into the current script.
+
+Casting a spell should show the damage and the status like the hp of the enemy needs to be displayed.
+
+1. Fireball (MP cost: 10, Element: Fire)
+Choose a spell to cast: 1
+Ron casts Fireball!
+Ron gained 20 experience!
+Ron leveled up to level 2!
+Ron's Programming skill increased to 2!
+You defeated Syntax Error Sprite and gained 15 gold and 20 experience!
+You defeated the enemy!
+
+Misses and dodges to spells and attacks need to be introduced into combat.
+
+Thank you for this detailed feedback. I'll address each point and provide suggestions for improvements:
+
+Attacking effectiveness:
+Modify the Character class to increase attack power on level up:
+
+pythonCopy
+def level_up(self):
+    # ... existing code ...
+    self.attack += 3  # Increase attack power more significantly
+	
+In the combat function, adjust damage calculation:
+pythonCopy
+damage = random.randint(max(1, player.attack - 5), player.attack + 5)
+
+Enemy variety:
+Modify the explore_area function to include more enemy types:
+
+pythonCopy
+def get_random_enemy():
+    enemies = [
+        ManualisEnemy("Syntax Error Sprite", 30, 8, 2, 15, 20, "Syntax Terror"),
+        ManualisEnemy("Logic Bug", 40, 10, 3, 20, 25, "Infinite Loop"),
+        ManualisEnemy("Exception Demon", 50, 12, 4, 25, 30, "Data Corruption"),
+        Enemy("Code Goblin", 25, 7, 1, 10, 15)
+    ]
+    return random.choice(enemies)
+
+# In explore_area function:
+enemy = get_random_enemy()
+
+Game over after defeat:
+In the combat function, add:
+
+pythonCopy
+if not player.take_damage(enemy_damage):
+    print("Game Over. Your character has been defeated.")
+    sys.exit()
+
+Inventory use and prologue:
+Modify the main game loop:
+
+pythonCopy
+def main_game_loop():
+    # ... character creation or loading ...
+    
+    # Prologue
+    print("Welcome to Python Quest: The Manualis Menace!")
+    print("You find yourself in a world where code comes to life...")
+    input("Press Enter to begin your adventure...")
+
+    while True:
+        print("\nWhat would you like to do?")
+        print("1. Explore an area")
+        print("2. Visit the spell shop")
+        print("3. View character status")
+        print("4. Use item from inventory")
+        print("5. Save game")
+        print("6. Quit game")
+        
+        choice = input("Enter your choice: ")
+        
+        if choice == "4":
+            use_item_from_inventory(player)
+        # ... handle other choices ...
+
+def use_item_from_inventory(player):
+    if not player.inventory.items:
+        print("Your inventory is empty!")
+        return
+    
+    print("Available items:")
+    items = list(player.inventory.items.keys())
+    for i, item in enumerate(items, 1):
+        print(f"{i}. {item}")
+    
+    try:
+        item_choice = int(input("Choose an item to use (0 to cancel): ")) - 1
+        if item_choice == -1:
+            return
+        if 0 <= item_choice < len(items):
+            item = items[item_choice]
+            if player.inventory.remove_item(item):
+                use_item(player, item)
+        else:
+            print("Invalid choice!")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
+def use_item(player, item):
+    if item == "Health Potion":
+        player.hp = min(player.max_hp, player.hp + 30)
+        print("You used a Health Potion and recovered 30 HP!")
+    elif item == "Mana Potion":
+        player.mp = min(player.max_mp, player.mp + 20)
+        print("You used a Mana Potion and recovered 20 MP!")
+    elif item == "Strength Elixir":
+        player.attack += 5
+        print("You used a Strength Elixir and increased your attack power by 5!")
+    else:
+        print("Unknown item effect.")
+
+Maximum save slots and deletion:
+Modify the save and load functions:
+
+pythonCopyMAX_SAVES = 5
+
+def save_game(player):
+    c.execute("SELECT COUNT(*) FROM saves")
+    save_count = c.fetchone()[0]
+    
+    if save_count >= MAX_SAVES:
+        print(f"Maximum number of saves ({MAX_SAVES}) reached.")
+        delete_save = input("Do you want to delete a save? (y/n): ").lower()
+        if delete_save == 'y':
+            delete_saved_game()
+        else:
+            return
+
+    save_data = json.dumps(player.__dict__, cls=GameEncoder)
+    c.execute("INSERT INTO saves (player_data) VALUES (?)", (save_data,))
+    conn.commit()
+    print("Game saved!")
+
+def delete_saved_game():
+    c.execute("SELECT id, player_data FROM saves")
+    saves = c.fetchall()
+    
+    print("Available saves:")
+    for save in saves:
+        save_id, save_data = save
+        player_data = json.loads(save_data)
+        print(f"{save_id}: {player_data['name']} (Level {player_data['level']})")
+
+    save_id = input("Enter the ID of the save to delete, or 'c' to cancel: ")
+    if save_id.lower() == 'c':
+        return
+
+    try:
+        save_id = int(save_id)
+        c.execute("DELETE FROM saves WHERE id = ?", (save_id,))
+        conn.commit()
+        print("Save deleted successfully.")
+    except ValueError:
+        print("Invalid save ID.")
+
+Restoring spells on load:
+Modify the load_game function:
+
+pythonCopydef load_game():
+    # ... existing code ...
+    
+    player = Character(player_data['name'], player_data['appearance'], player_data['affinity'])
+    player.__dict__.update(player_data)
+    player.inventory = Inventory()
+    player.inventory.items = player_data['inventory']['items']
+    player.spells = [reconstruct_spell(spell_data) for spell_data in player_data['spells']]
+    
+    print("Game loaded!")
+    print("Relearning spells:")
+    for spell in player.spells:
+        print(f"You relearned {spell.name}!")
+    
+    return player
+
+Strength potion effect:
+This is addressed in the use_item function above.
+Camp quitting and saving:
+Modify the camp function:
+
+pythonCopydef camp(player):
+    # ... existing code ...
+    
+    while True:
+        print("\nCamp Options:")
+        print("1. Rest (recover HP and MP)")
+        print("2. Check Inventory")
+        print("3. Check Character Status")
+        print("4. Save Game")
+        print("5. Break Camp")
+        print("6. Quit Game")
+        
+        choice = input("What would you like to do? ")
+        
+        if choice == "4":
+            save_game(player)
+        elif choice == "6":
+            save_choice = input("Do you want to save before quitting? (y/n): ")
+            if save_choice.lower() == 'y':
+                save_game(player)
+            print("Thanks for playing Python Quest: The Manualis Menace!")
+            sys.exit()
+        # ... handle other choices ...
+
+Coding challenges for level completion:
+Modify the explore_area function to include a mandatory coding challenge:
+
+pythonCopydef explore_area(player):
+    # ... existing code ...
+    
+    while exploration_progress < exploration_goal:
+        # ... existing exploration code ...
+        
+        if exploration_progress == exploration_goal - 1:
+            print("You've reached the final challenge of this area!")
+            if coding_challenge(player, difficulty):
+                print("Congratulations! You've completed this area!")
+                player.gain_experience(50)
+                return True
+            else:
+                print("You failed the final challenge. Keep exploring to try again!")
+                exploration_progress -= 1
+
+    return False
+These changes address the issues you've mentioned and should improve the overall game experience. Remember to integrate these modifications with the existing code and make any necessary adjustments to ensure everything works smoothly together.

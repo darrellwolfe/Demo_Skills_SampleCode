@@ -1,0 +1,10 @@
+def factorial(n):
+    if n == 0:
+        return 1
+    return n * factorial(n-1)
+	
+def is_palindrome(s):
+    s = ''.join(c.lower() for c in s if c.isalnum())
+    return s == s[::-1]
+	
+'Advanced Algorithms', 'Data Structures 101', 'Machine Learning', 'Python Basics'

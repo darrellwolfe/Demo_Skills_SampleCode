@@ -1,0 +1,35 @@
+//Set IGNORESPACES to 1 to force script interpreter to ignore spaces.
+//If using IGNORESPACES quote strings in {" ... "}
+//Let>IGNORESPACES=1
+//Open ProVal
+//In the application list open Tables>Neighborhood_Data>Residential_Pricing
+//Start in the Residential Improvement main table
+//Run Macro
+//Make sure to start on the NEXT button
+let>r=0
+Repeat>r
+let>r=r+1
+Press Tab * 2
+//Change to the year of the table that you would like to point to
+Send 2023
+Wait>2
+//Switch to land table
+Press Tab * 11
+Press Enter
+Wait>1
+Press Enter
+Wait>2.5
+//Tab to Model Serial Number
+Press>Tab * 6
+//Change to the year you want point at
+Send>702023
+//Switch back to Res Impr
+Press>Tab * 13
+Press>Enter
+Wait>1
+//Save
+Press Enter
+Wait>1
+//Move to Next GEO
+Press>Enter
+Until>r=50

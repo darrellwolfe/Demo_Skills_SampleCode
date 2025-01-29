@@ -1,0 +1,4 @@
+2024-11-15 15:30:38,727 - INFO - Starting TimeTracker signing process
+2024-11-15 15:30:38,727 - ERROR - Signing process failed: Certificate not found: C:\Users\rmason\Code\Repositories\KCAsrCB\Working_Ron\SignApp\TimeTracker\TimeTrackerCert.pfx
+2024-11-15 15:31:52,851 - INFO - Starting TimeTracker signing process
+2024-11-15 15:31:52,851 - ERROR - Signing process failed: Dist directory not found: C:\Users\rmason\Code\Repositories\KCAsrCB\Working_Ron\SignApp\TimeTracker\dist

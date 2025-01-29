@@ -1,5 +1,15 @@
+Select 
+lrsn,
+YEAR(CAST(MIN(last_update) AS DATE)) AS AccountCreationDate
+From parcel_base
+Group by lrsn
 
 
-Select *
-From land_types AS lt 
-  
+
+CTE_AccountCreation AS (
+Select 
+lrsn,
+YEAR(CAST(MIN(last_update) AS DATE)) AS AccountCreationDate
+From parcel_base
+Group by lrsn
+)

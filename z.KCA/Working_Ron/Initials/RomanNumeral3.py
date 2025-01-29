@@ -1,0 +1,1 @@
+print(u"\u2162")  # Prints: Ⅲ - Initials RLMⅢ

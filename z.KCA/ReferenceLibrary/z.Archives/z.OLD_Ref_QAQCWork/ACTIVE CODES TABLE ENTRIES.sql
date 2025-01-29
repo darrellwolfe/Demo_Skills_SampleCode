@@ -1,0 +1,1 @@
+select * from codes_table where code_status ='a' order by tbl_type_code

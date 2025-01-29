@@ -1,0 +1,35 @@
+To view individual tables in RStudio after connecting to the database using the `library(DBI)` and `dbConnect` functions, you need to use the `dbGetQuery` or `dbGetQuery` function to retrieve the data from the tables. The exact syntax will depend on the type of database you are connected to.
+
+Assuming you want to view all the data in a specific table, you can use the `dbGetQuery` function to fetch the data as follows:
+
+``` r
+# Assuming 'con' is your database connection object
+
+# Replace 'table_name' with the actual name of the table you want to view
+table_name <- "your_table_name"
+
+# Query to select all data from the table
+query <- paste0("SELECT * FROM ", table_name)
+
+# Fetch the data from the table
+table_data <- dbGetQuery(con, query)
+
+# Now 'table_data' will contain all the data from the specified table
+```
+
+In this example, we use a simple SQL query to select all rows and columns from the table. If you want to view specific columns or apply filters to the data, you can modify the SQL query accordingly.
+
+Remember to replace `'your_table_name'` with the actual name of the table you want to view. Also, make sure the table name matches the one present in your database.
+
+If you are unsure about the table names in your database, you can use the `dbListTables` function to list all the available tables:
+
+``` r
+# Get a list of all table names in the database
+all_tables <- dbListTables(con)
+
+# Now 'all_tables' will contain the names of all tables in the database
+```
+
+After obtaining the table names, you can choose which specific table you want to view, and then use the `dbGetQuery` method as shown in the first example.
+
+Keep in mind that the exact methods and functions might vary slightly depending on the database type (e.g., MySQL, PostgreSQL, SQL Server, etc.). The examples provided above assume you are connecting to a SQL-based database. If you are using a different type of database, some adjustments might be required.

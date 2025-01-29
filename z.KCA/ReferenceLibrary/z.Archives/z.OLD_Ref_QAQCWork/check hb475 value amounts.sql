@@ -1,0 +1,1 @@
+select * from kcv_modifiers15a where modifierid = '35' and valueamount > '0'

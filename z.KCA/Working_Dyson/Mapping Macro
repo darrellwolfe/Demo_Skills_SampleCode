@@ -1,0 +1,66 @@
+Dialog>Dialog1
+object Dialog1: TForm
+  Left = 2167
+  Top = 97
+  HelpContext = 5000
+  BorderIcons = [biSystemMenu]
+  Caption = 'CustomDialog'
+  ClientHeight = 211
+  ClientWidth = 476
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  ShowHint = True
+  OnTaskBar = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Choice1: tMSComboBox
+    Left = 163
+    Top = 62
+    Width = 145
+    Height = 21
+    TabOrder = 8
+    Text = 'Packet Type'
+    Items.Strings = (
+      'Plat'
+      'Split'
+      'Merge')
+    ListText = 'Plat'#13#10'Merge'#13#10'Split'
+
+  end
+  object MSButton1: tMSButton
+    Left = 162
+    Top = 99
+    Width = 63
+    Height = 25
+    Caption = 'Okay'
+    ModalResult = 1
+    TabOrder = 9
+    DoBrowse = False
+    BrowseStyle = fbOpen
+  end
+  object Cancel: tMSButton
+    Left = 240
+    Top = 100
+    Width = 61
+    Height = 25
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 10
+    DoBrowse = False
+    BrowseStyle = fbOpen
+  end
+end
+EndDialog>Dialog1
+Show>Dialog1,result
+  If>result=1
+  GetDialogProperty>Dialog1,Choice1,Text,CTXT
+  MessageModal>This is a %CTXT% packet
+  endif
+  IF>result=2
+  CloseDialog>Dialog1
+  Endif

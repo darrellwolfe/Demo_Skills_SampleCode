@@ -1,0 +1,55 @@
+GetDate>today
+InputBox>N,How many Parcels in this set?
+InputBox>I,What initials would like in the appraised by line?
+let>r=0
+Repeat>r
+  let>r=r+1
+  //CHANGE FOR YOUR SCREEN-FIRST CELL IN EXCEL
+  MouseMove>2111,288
+  LCLick
+  Press LCTRL
+  Send>c
+  Release LCTRL
+  press down
+  wait>1
+  //CHANGE FOR YOUR SCREEN-ADD LAND BASE LINE
+  MouseMove>1115,681
+  LClick
+  Send>f
+  Wait>1
+  Press Tab
+  //CHANGE FOR YOUR SCREEN-CLICK THE ZERO IN THE "SIZE" BOX
+  mousemove>1157,591
+  LCLICK * 3
+  RClick
+  send>p
+  press enter
+  wait>2
+  press alt
+  release alt
+  send>pi
+  wait>1
+  press tab
+  //CHANGE DATE BELOW TO TODAY'S DATE
+  send>%today%
+  press tab
+  //CHANGE INITIALS BELOW TO YOUR FULL INITIALS
+  send>DAS
+  press tab
+  // CHANGE DATE BELOW TO TODAY'S DATE
+  send>%today%
+  press tab
+  //CHANGE INITIALS BELOW TO YOUR FULL INITIALS
+  send>%I%
+  press tab
+  //CHANGE DOWN NUMBER BELOW TO: 12 FOR VACANT; 1 FOR IMPROVED
+  press down * 12
+  press tab * 5
+  press enter
+  press tab
+  wait>1
+  press enter
+  press F3
+  wait>2
+  press enter
+Until>r=N

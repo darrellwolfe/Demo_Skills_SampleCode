@@ -1,0 +1,11 @@
+2024-09-04 15:56:58,640:INFO:Initialized ProValAutomation class.
+2024-09-04 15:56:59,119:INFO:ProVal is already running.
+2024-09-04 15:56:59,686:INFO:ProVal application opened.
+2024-09-04 15:57:09,687:INFO:Data file loaded successfully.
+2024-09-04 15:57:09,687:INFO:Loaded LSRNs from data file: ['568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712', '568712']
+2024-09-04 15:57:09,687:INFO:Starting automation for LSRN: 568712
+2024-09-04 15:57:09,966:INFO:Main window focused.
+2024-09-04 15:57:09,966:INFO:Sending keyboard commands to open Parcel Selection window.
+2024-09-04 15:57:14,187:INFO:Parcel Selection window located and focused.
+2024-09-04 15:57:18,865:INFO:Focused on the main window for LSRN 568712.
+2024-09-04 15:57:19,876:INFO:Waiting for user to manually select the desired permit...

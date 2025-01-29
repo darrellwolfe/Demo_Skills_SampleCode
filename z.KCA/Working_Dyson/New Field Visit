@@ -1,0 +1,22 @@
+//Set IGNORESPACES to 1 to force script interpreter to ignore spaces.
+//If using IGNORESPACES quote strings in {" ... "}
+//Let>IGNORESPACES=1
+MouseMove>1278,745
+LClick
+Wait 1
+MouseMove>1366,650
+LClick
+Press Tab
+Send> OO
+Wait .25
+MouseMove>1367,682
+LClick
+Press Right
+Press NP4
+Press Right
+Press NP1
+Press Tab
+Press Tab
+Press Tab
+Press Tab
+Press Space
