@@ -250,6 +250,7 @@ print("Start_MLS_CSV_Combine_To_Dataframe")
 logging.info("Start_MLS_CSV_Combine_To_Dataframe")
 
 
+# I need to trim upper clean these rows
 """ Create a single combined dataframe with all the CSVs combined into one table. """
 def combine_csv_files(folder_path):
     # Use glob to find all CSV files in the folder
