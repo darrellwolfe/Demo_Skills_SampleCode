@@ -154,7 +154,8 @@ if __name__ == "__main__":
         ,UPPER(TRIM(pm.SitusZip)) AS SitusZip
         ,pm.EffStatus
         From TSBv_PARCELMASTER AS pm
-        Where pm.pin NOT LIKE 'E%'
+        Where pm.EffStatus = 'A'
+        And pm.pin NOT LIKE 'E%'
         And pm.pin NOT LIKE 'G%'
         And pm.pin NOT LIKE 'UP%'
         AND pm.ClassCD NOT LIKE '070%'
@@ -542,7 +543,7 @@ print(f"Rows in non_matched_df_AIN: {len(non_matched_df_AIN)}")
 
 # The Non-Match on PIN datafram has 586 rows, which matches PQ.
 # Debuggin Save to CSV - This CSV has duplicates. 
-# matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_AIN.csv', index=False)
+matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_AIN.csv', index=False)
 # YES Matches Power Query results 470 in this test 
 
 # 586-470 = 116
