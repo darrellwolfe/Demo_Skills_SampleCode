@@ -394,7 +394,7 @@ logging.info(f"\n{filtered_df.head(10)}")  # Logs the first 10 rows
 logging.info(f"\n{filtered_df.columns}")
 logging.info(f"Number of rows before fuzzy matching: {len(filtered_df)}")
 
-# Debuggin Save to CSV
+# Debuggin Save to CSV - This CSV has duplicates. 
 filtered_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\filtered_df.csv', index=False)
 
 print("End_CleanedVersion_Of_filtered_df")
