@@ -133,4 +133,6 @@ FROM CTE_ParcelMaster AS pmd
 --Where pm.EffStatus = 'A'
 --AND pm.ClassCD NOT LIKE '070%'
 
+Where pmd.lrsn = 500153
+
 Order by District,GEO,PIN;

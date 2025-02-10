@@ -156,7 +156,7 @@ if __name__ == "__main__":
         From TSBv_PARCELMASTER AS pm
         Where pm.pin NOT LIKE 'E%'
         And pm.pin NOT LIKE 'G%'
-        And pm.pin NOT LIKE 'U%'
+        And pm.pin NOT LIKE 'UP%'
         AND pm.ClassCD NOT LIKE '070%'
         )
         SELECT
@@ -296,7 +296,7 @@ combined_df['AIN/Tax Bill'] = combined_df['AIN/Tax Bill'].astype(str).str.strip(
 
 # Debuggin Save to CSV
 # combined_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\combined_df.csv', index=False)
-
+# Matches Power Query results
 
 
 
@@ -402,10 +402,20 @@ print(f"Number of rows after removing duplicates: {len(filtered_df)}")
 logging.info(f"Number of rows after removing duplicates: {len(filtered_df)}")
 
 # Debuggin Save to CSV - This CSV has duplicates. 
-filtered_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\filtered_df.csv', index=False)
+#filtered_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\filtered_df.csv', index=False)
+# Matches Power Query results
 
 print("End_CleanedVersion_Of_filtered_df")
 logging.info("End_CleanedVersion_Of_filtered_df")
+
+
+
+
+
+
+
+
+
 
 
 
@@ -457,6 +467,18 @@ print(f"\n{matched_df_PIN.head(10)}")  # Logs the first 10 rows
 print("NOT Matched on PIN")
 print(f"\n{non_matched_df_PIN.head(10)}")  # Logs the first 10 rows
 
+# Debuggin Save to CSV - This CSV has duplicates. 
+#matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_PIN.csv', index=False)
+# Matches Power Query results
+
+
+# Debuggin Save to CSV - This CSV has duplicates. 
+#non_matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_PIN.csv', index=False)
+# Matches Power Query results EXACTLY 586 in this test
+
+
+
+
 
 
 
@@ -504,6 +526,23 @@ print(f"\n{matched_df_AIN.head(10)}")  # Logs the first 10 rows
 
 print("NOT Matched on AIN")
 print(f"\n{non_matched_df_AIN.head(10)}")  #
+
+
+
+# The Non-Match on PIN datafram has 586 rows, which matches PQ.
+# Debuggin Save to CSV - This CSV has duplicates. 
+# matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_AIN.csv', index=False)
+# YES Matches Power Query results 470 in this test 
+
+# 586-470 = 116
+# PQ Has 116 rows, so that's the target we want. 
+# But this dataframe only has 103 rows... 
+# Debuggin Save to CSV - This CSV has duplicates. 
+non_matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_AIN.csv', index=False)
+# Matches Power Query results
+
+
+
 
 
 
@@ -570,35 +609,10 @@ print("NOT Matched on Address")
 print(f"\n{non_matched_df_address.head(10)}")  #
 
 
+# Debuggin Save to CSV - This CSV has duplicates. 
+matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_address.csv', index=False)
 
-
-""" #This creates five dataframes to this point """
-
-
-"""
-logging.info(f"Number of rows before fuzzy matching: {len(non_matched_df_AIN)}")
-non_matched_df_AIN['Matched_Address'] = non_matched_df_AIN.apply(fuzzy_match_address, axis=1, pm_addresses=pm_addresses)
-logging.info(f"Number of rows after fuzzy matching: {len(non_matched_df_AIN)}")
-
-# Ensure no duplicate columns are added during merges
-def remove_duplicate_columns(df):
-    return df.loc[:, ~df.columns.duplicated()]
-
-# Apply the function to remove duplicate columns from all DataFrames
-matched_df_PIN = remove_duplicate_columns(matched_df_PIN)
-matched_df_AIN = remove_duplicate_columns(matched_df_AIN)
-matched_df_address = remove_duplicate_columns(matched_df_address)
-"""
-
-
-
-
-
-
-
-
-
-
-
+# Debuggin Save to CSV - This CSV has duplicates. 
+non_matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_address.csv', index=False)
 
 
