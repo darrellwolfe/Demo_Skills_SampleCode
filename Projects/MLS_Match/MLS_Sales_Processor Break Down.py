@@ -417,7 +417,6 @@ logging.info("End_CleanedVersion_Of_filtered_df")
 
 
 
-
 """ We begin comparing filtered_df to pm ON PIN """
 
 print("Start_Matching_DFs_on_ParcelMaster")
@@ -539,15 +538,11 @@ print(f"\n{non_matched_df_AIN.head(10)}")  #
 print(f"Rows in non_matched_df_AIN: {len(non_matched_df_AIN)}")
 
 
-# The Non-Match on PIN datafram has 586 rows, which matches PQ.
-# Debuggin Save to CSV - This CSV has duplicates. 
+# Debuggin Save to CSVs for AIN 
+
 matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_AIN.csv', index=False)
 # Matches Power Query results
 
-# 586-470 = 116
-# PQ Has 116 rows, so that's the target we want. 
-# But this dataframe only has 103 rows... 
-# Debuggin Save to CSV - This CSV has duplicates. 
 non_matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_AIN.csv', index=False)
 # Matches Power Query results
 
@@ -559,13 +554,12 @@ non_matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExp
 """ #We begin comparing filtered_df to pm ON Address """
 
 print("Start_PM_to_Address")
-
 logging.info("Start_PM_to_Address")
 
 # Function to perform fuzzy matching on addresses
 def fuzzy_match_address(row, pm_addresses):
     match, score = process.extractOne(row['Address'], pm_addresses)
-    return match if score >= 90 else None
+    return match, score
 
 # Extract unique addresses from pm DataFrame
 pm_addresses = pm['SitusAddress'].unique()
@@ -575,22 +569,32 @@ non_matched_df_AIN = non_matched_df_AIN.copy()
 
 # Debugging Matching
 print(f"Number of rows before fuzzy matching: {len(non_matched_df_AIN)}")
-non_matched_df_AIN['Matched_Address'] = non_matched_df_AIN.apply(fuzzy_match_address, axis=1, pm_addresses=pm_addresses)
+non_matched_df_AIN[['Matched_Address', 'Match_Score']] = non_matched_df_AIN.apply(
+    lambda row: pd.Series(fuzzy_match_address(row, pm_addresses)), axis=1)
+
 print(f"Number of rows after fuzzy matching: {len(non_matched_df_AIN)}")
 
-
+# Filter out matches with a score less than 90
+non_matched_df_AIN = non_matched_df_AIN[non_matched_df_AIN['Match_Score'] >= 90]
 
 # Merge non_matched_df_AIN with pm on 'Matched_Address' and 'SitusAddress' respectively
-merged_df_address = pd.merge(non_matched_df_AIN, pm[['SitusAddress', 'lrsn', 'PIN', 'AIN']], left_on='Matched_Address', right_on='SitusAddress', how='left')
+merged_df_address = pd.merge(non_matched_df_AIN, pm[['SitusAddress', 'lrsn', 'PIN', 'AIN']], 
+                             left_on='Matched_Address', right_on='SitusAddress', how='left')
 
-# DataFrame with matches (inner join equivalent)
-matched_df_address = merged_df_address[merged_df_address['lrsn'].notna()]
+# Drop duplicates based on the original address, keeping the best match (highest score)
+matched_df_address = merged_df_address.sort_values('Match_Score', ascending=False).drop_duplicates(subset=['Address'])
+
+matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_address_1.csv', index=False)
 
 # DataFrame with non-matches (left anti join equivalent)
-non_matched_df_address = merged_df_address[merged_df_address['lrsn'].isna()]
+non_matched_df_address = non_matched_df_AIN[~non_matched_df_AIN['Address'].isin(matched_df_address['Address'])]
+
+non_matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_address_1.csv', index=False)
 
 # Drop the extra 'SitusAddress' and 'Matched_Address' columns from matched_df_address
-matched_df_address = matched_df_address.drop(columns=['SitusAddress', 'Matched_Address'])
+matched_df_address = matched_df_address.drop(columns=['SitusAddress', 'Matched_Address', 'Match_Score'])
+
+matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_address_2.csv', index=False)
 
 # Example usage of logging
 if not matched_df_address.empty:
@@ -603,28 +607,15 @@ if not non_matched_df_address.empty:
 else:
     logging.error("All records matched on Address; no non-matches found in the DataFrame.")
 
-
 logging.info(f"\n{matched_df_address.head(10)}")  # Logs the first 10 rows
-
-logging.info(f"\n{non_matched_df_address.head(10)}")  #
-
-
+logging.info(f"\n{non_matched_df_address.head(10)}")  # Logs the first 10 rows
 
 print("Check columns on address dataframes?")
-
 print("Matched on Address")
 print(f"\n{matched_df_address.head(10)}")  # Logs the first 10 rows
-
 print("NOT Matched on Address")
-print(f"\n{non_matched_df_address.head(10)}")  #
+print(f"\n{non_matched_df_address.head(10)}")  # Logs the first 10 rows
 
-
-# Address Match produced millions of rows, duplicates. 
-
-# Debuggin Save to CSV - This CSV has duplicates. 
+# Save to CSV
 matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_address.csv', index=False)
-
-# Debuggin Save to CSV - This CSV has duplicates. 
 non_matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_address.csv', index=False)
-
-
