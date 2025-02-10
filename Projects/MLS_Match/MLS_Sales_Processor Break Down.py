@@ -297,7 +297,7 @@ logging.info(f"\n{combined_df.head(10)}")  # Logs the first 10 rows
 combined_df['AIN/Tax Bill'] = combined_df['AIN/Tax Bill'].astype(str).str.strip()
 
 # Debuggin Save to CSV
-# combined_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\combined_df.csv', index=False)
+combined_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\combined_df.csv', index=False)
 # Matches Power Query results
 
 
@@ -404,7 +404,7 @@ print(f"Number of rows after removing duplicates: {len(filtered_df)}")
 logging.info(f"Number of rows after removing duplicates: {len(filtered_df)}")
 
 # Debuggin Save to CSV - This CSV has duplicates. 
-#filtered_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\filtered_df.csv', index=False)
+filtered_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\filtered_df.csv', index=False)
 # Matches Power Query results
 
 print("End_CleanedVersion_Of_filtered_df")
@@ -469,12 +469,12 @@ print(f"\n{non_matched_df_PIN.head(10)}")  # Logs the first 10 rows
 print(f"Rows in non_matched_df_PIN: {len(non_matched_df_PIN)}")
 
 # Debuggin Save to CSV - This CSV has duplicates. 
-#matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_PIN.csv', index=False)
+matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_PIN.csv', index=False)
 # Matches Power Query results
 
 # Debuggin Save to CSV - This CSV has duplicates. 
-#non_matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_PIN.csv', index=False)
-# Matches Power Query results EXACTLY 586 in this test
+non_matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_PIN.csv', index=False)
+# Matches Power Query results
 
 
 
@@ -542,7 +542,7 @@ print(f"Rows in non_matched_df_AIN: {len(non_matched_df_AIN)}")
 # The Non-Match on PIN datafram has 586 rows, which matches PQ.
 # Debuggin Save to CSV - This CSV has duplicates. 
 matched_df_AIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_AIN.csv', index=False)
-# YES Matches Power Query results 470 in this test 
+# Matches Power Query results
 
 # 586-470 = 116
 # PQ Has 116 rows, so that's the target we want. 
@@ -618,6 +618,8 @@ print(f"\n{matched_df_address.head(10)}")  # Logs the first 10 rows
 print("NOT Matched on Address")
 print(f"\n{non_matched_df_address.head(10)}")  #
 
+
+# Address Match produced millions of rows, duplicates. 
 
 # Debuggin Save to CSV - This CSV has duplicates. 
 matched_df_address.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_address.csv', index=False)
