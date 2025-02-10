@@ -350,7 +350,7 @@ if combined_df is not None:
     for column in columns_to_trim:
         filtered_df[column] = filtered_df[column].str.strip()
 
-    # Clean specified columns
+    # Clean specified columns (replace multiple spaces with a single space)
     columns_to_clean = columns_to_upper
     for column in columns_to_clean:
         filtered_df[column] = filtered_df[column].str.replace(r'\s+', ' ', regex=True)
@@ -409,9 +409,6 @@ logging.info(f"Number of rows after removing duplicates: {len(filtered_df)}")
 
 print("End_CleanedVersion_Of_filtered_df")
 logging.info("End_CleanedVersion_Of_filtered_df")
-
-
-
 
 
 
