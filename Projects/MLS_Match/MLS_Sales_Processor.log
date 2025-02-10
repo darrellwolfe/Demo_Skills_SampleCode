@@ -19,3 +19,13 @@ Empty DataFrame
 Columns: [Parcel Number, AIN/Tax Bill, List Number, Sold Date, Sold Price, Address, City, State/Province, Postal Code, County, Legal, Year, Month, Matched_Address, SitusAddress, lrsn, PIN, AIN]
 Index: []
 PS C:\Users\dwolfe\Documents\Demo_Skills_SampleCode> 
+
+
+Both my Power Query and Python are reading the same MLS files.
+When I built a model with cascading tables in Power Query, I got over a thousand rows for the MLS Cleaned table, and over a thousand matches for PIN, 
+From the table of only rejects from PIN match, I got 470 matches on AIN. 
+From the table of only rejects of PIN and AIN, I got 369 rows matching on Address.
+From the table of only rejects of PIN, AIN, and Address, I got 5 rows matching on Legal. 
+I ended up with a reject pile of 96 rows that did not match on PIN, AIN, Address, or Legal.
+This python is resulting an empty dataframe for "Not Matched on Address"
+Explain?
