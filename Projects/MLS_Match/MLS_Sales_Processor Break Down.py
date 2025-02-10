@@ -291,11 +291,11 @@ print(f"\n{combined_df.head(10)}")  # Logs the first 10 rows
 
 logging.info(f"\n{combined_df.head(10)}")  # Logs the first 10 rows
 
-
-
 # Ensure 'AIN/Tax Bill' column in the combined_df is a string
 combined_df['AIN/Tax Bill'] = combined_df['AIN/Tax Bill'].astype(str).str.strip()
 
+# Debuggin Save to CSV
+# combined_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\combined_df.csv', index=False)
 
 
 
@@ -386,20 +386,19 @@ else:
 logging.info("You should now have a cleaned from of the dataframe called filtere_df")
 
 
-
 print(f"\n{filtered_df.head(10)}")  # Logs the first 10 rows
+print(f"\n{filtered_df.columns}")
+print(f"Number of rows before fuzzy matching: {len(filtered_df)}")
 
 logging.info(f"\n{filtered_df.head(10)}")  # Logs the first 10 rows
+logging.info(f"\n{filtered_df.columns}")
+logging.info(f"Number of rows before fuzzy matching: {len(filtered_df)}")
 
-print(f"\n{filtered_df.columns}")
+# Debuggin Save to CSV
+filtered_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\filtered_df.csv', index=False)
 
-print("Start_CleanedVersion_Of_filtered_df")
-
-logging.info("Start_CleanedVersion_Of_filtered_df")
-
-
-
-
+print("End_CleanedVersion_Of_filtered_df")
+logging.info("End_CleanedVersion_Of_filtered_df")
 
 
 
@@ -501,8 +500,7 @@ print(f"\n{non_matched_df_AIN.head(10)}")  #
 
 
 
-
-""" We begin comparing filtered_df to pm ON Address """
+""" #We begin comparing filtered_df to pm ON Address """
 
 print("Start_PM_to_Address")
 
@@ -567,8 +565,10 @@ print(f"\n{non_matched_df_address.head(10)}")  #
 
 
 
-""" This creates five dataframes to this point 
+""" #This creates five dataframes to this point """
 
+
+"""
 logging.info(f"Number of rows before fuzzy matching: {len(non_matched_df_AIN)}")
 non_matched_df_AIN['Matched_Address'] = non_matched_df_AIN.apply(fuzzy_match_address, axis=1, pm_addresses=pm_addresses)
 logging.info(f"Number of rows after fuzzy matching: {len(non_matched_df_AIN)}")
