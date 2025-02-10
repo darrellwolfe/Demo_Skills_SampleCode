@@ -1,22 +1,21 @@
-ocuments\Demo_Skills_SampleCode> & C:/Users/dwolfe/AppData/Local/Programs/Python/Python312/python.exe c:/Users/dwolfe/Documents/Demo_Skills_SampleCode/Projects/MLS_Match/MLS_Sales_Processor.py
-Start_SetUp
-Start_DatabaseConnections
-Start_SQLQueiries        
-Start_MLS_CSV_Combine_To_Dataframe
-You should now have a MLS Dataframe called: combined_df
-Start_CleanedVersion_Of_combined_df
-Start_Matching_DFs_on_ParcelMaster
-Start_PM_to_AIN
-Start_PM_to_Address
-ERROR:root:All records matched on Address; no non-matches found in the DataFrame.
-Start_PM_to_LegalDescription
-Traceback (most recent call last):
-  File "c:\Users\dwolfe\Documents\Demo_Skills_SampleCode\Projects\MLS_Match\MLS_Sales_Processor.py", line 504, in <module>
-    non_matched_df_address['Matched_Legal'] = non_matched_df_address.apply(lambda row: fuzzy_match_legal(row, pm_legals)[0], axis=1)
-    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
-  File "C:\Users\dwolfe\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\frame.py", line 4301, in __setitem__
-    self._set_item_frame_value(key, value)
-  File "C:\Users\dwolfe\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\frame.py", line 4459, in _set_item_frame_value
-    raise ValueError(
-ValueError: Cannot set a DataFrame with multiple columns to the single column Matched_Legal
+Matched on Address
+
+  Parcel Number AIN/Tax Bill List Number   Sold Date  Sold Price  ...  Year Month   lrsn           PIN     AIN
+0  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70745  C17700010040  110318
+1  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70747  C17700010070  132577
+2  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70763  C17700010300  153119
+3  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70768  C17700010370  148855
+4  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70774  C177000128C0  185539
+5  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70791  C17700020130  146499
+6  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70792  C17700020140  119777
+7  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70797  C177000202A0  107962       
+8  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  70805  C17700030070  136908       
+9  NOT YET RECO       NOT YE    21-10130  2022-01-04    399000.0  ...  2022     1  71430  C484500000B0  167752       
+
+[10 rows x 16 columns]
+NOT Matched on Address
+
+Empty DataFrame
+Columns: [Parcel Number, AIN/Tax Bill, List Number, Sold Date, Sold Price, Address, City, State/Province, Postal Code, County, Legal, Year, Month, Matched_Address, SitusAddress, lrsn, PIN, AIN]
+Index: []
 PS C:\Users\dwolfe\Documents\Demo_Skills_SampleCode> 

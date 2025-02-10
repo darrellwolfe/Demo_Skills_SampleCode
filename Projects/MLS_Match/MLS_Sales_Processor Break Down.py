@@ -9,11 +9,13 @@ from sqlalchemy import create_engine  # For SQLAlchemy database connection
 
 
 
-print("Start_SetUp")
-logging.info("Start_SetUp")
 
 
 """ Sets up Dynamic Logging for the user """
+
+print("Start_SetUp")
+logging.info("Start_SetUp")
+
 # Set up logging
 def setup_logging():
     log_folder = os.path.join(os.path.expanduser('~'), 'MLS_Logs')
@@ -32,11 +34,14 @@ setup_logging()
 #file:///C:/Users/dwolfe/MLS_Logs/MLS_Sales_Processor.log
 
 
-print("Start_DatabaseConnections")
-logging.info("Start_DatabaseConnections")
+
 
 
 """ Database Connections """
+
+print("Start_DatabaseConnections")
+logging.info("Start_DatabaseConnections")
+
 # Configuration for database connection
 db_connection_string = (
     "Driver={SQL Server};"
@@ -93,6 +98,12 @@ def query_to_dataframe(connection, query, params=None):
 logging.info("Query > Dataframe")
 
 
+
+
+
+
+
+""" SQL QUERIES """
 
 print("Start_SQLQueiries")
 
@@ -209,6 +220,9 @@ if __name__ == "__main__":
     logging.info(f"\n{trnx.head(10)}")  # Logs the first 10 rows
 
 
+    print(f"\n{pm.head(10)}")  # Logs the first 10 rows
+    print(f"\n{trnx.head(10)}")  # Logs the first 10 rows
+
     # Close the connection
     conn.close()
 
@@ -219,6 +233,16 @@ if __name__ == "__main__":
         logging.error("Failed to create SQL DataFrames from database queries.")
 
 
+
+
+
+
+
+
+
+
+
+""" MLS CSVs to Combined Dataframe """
 
 print("Start_MLS_CSV_Combine_To_Dataframe")
 
@@ -263,19 +287,27 @@ print("You should now have a MLS Dataframe called: combined_df")
 
 logging.info("You should now have a MLS Dataframe called: combined_df")
 
+print(f"\n{combined_df.head(10)}")  # Logs the first 10 rows
+
 logging.info(f"\n{combined_df.head(10)}")  # Logs the first 10 rows
 
 
 
+# Ensure 'AIN/Tax Bill' column in the combined_df is a string
+combined_df['AIN/Tax Bill'] = combined_df['AIN/Tax Bill'].astype(str).str.strip()
 
 
 
+
+
+
+
+
+""" MLS Cleaned Dataframe """
 
 print("Start_CleanedVersion_Of_combined_df")
 
 logging.info("Start_CleanedVersion_Of_combined_df")
-
-
 
 """ Create a reference of that combined dataframe with only selected columns and filters  """
 """ The cleaned version will also have several transformations to make it easier to process """
@@ -353,8 +385,17 @@ else:
 
 logging.info("You should now have a cleaned from of the dataframe called filtere_df")
 
-# Ensure 'AIN/Tax Bill' column in the combined_df is a string
-combined_df['AIN/Tax Bill'] = combined_df['AIN/Tax Bill'].astype(str).str.strip()
+
+
+print(f"\n{filtered_df.head(10)}")  # Logs the first 10 rows
+
+logging.info(f"\n{filtered_df.head(10)}")  # Logs the first 10 rows
+
+print(f"\n{filtered_df.columns}")
+
+print("Start_CleanedVersion_Of_filtered_df")
+
+logging.info("Start_CleanedVersion_Of_filtered_df")
 
 
 
@@ -362,13 +403,7 @@ combined_df['AIN/Tax Bill'] = combined_df['AIN/Tax Bill'].astype(str).str.strip(
 
 
 
-
-
-
-
-
-
-
+""" We begin comparing filtered_df to pm ON PIN """
 
 print("Start_Matching_DFs_on_ParcelMaster")
 
@@ -376,7 +411,6 @@ logging.info("Start_Matching_DFs_on_ParcelMaster")
 
 logging.info("Start_PM_to_PIN")
 
-""" We begin comparing filtered_df to pm ON PIN """
 # Merge filtered_df with pm on 'Parcel Number' and 'PIN' respectively
 merged_df = pd.merge(filtered_df, pm[['PIN', 'lrsn', 'AIN']], left_on='Parcel Number', right_on='PIN', how='left')
 
@@ -402,31 +436,40 @@ else:
     logging.error("All records matched; no non-matches found in the DataFrame.")
 
 
+# Drop the extra columns from matched_df_PIN
+non_matched_df_PIN = non_matched_df_PIN.drop(columns=['PIN', 'AIN', 'lrsn'], errors='ignore')
+
+
 logging.info(f"\n{matched_df_PIN.head(10)}")  # Logs the first 10 rows
 
 logging.info(f"\n{non_matched_df_PIN.head(10)}")  # Logs the first 10 rows
 
 
+print("Matched on PIN")
+print(f"\n{matched_df_PIN.head(10)}")  # Logs the first 10 rows
+
+print("NOT Matched on PIN")
+print(f"\n{non_matched_df_PIN.head(10)}")  # Logs the first 10 rows
 
 
 
 
+
+
+""" We begin comparing filtered_df to pm ON AIN """
 
 print("Start_PM_to_AIN")
 
 logging.info("Start_PM_to_AIN")
 
-
-""" We begin comparing filtered_df to pm ON AIN """
-
 # Merge non_matched_df_PIN with pm on 'AIN' and 'AIN' respectively
 merged_df_AIN = pd.merge(non_matched_df_PIN, pm[['AIN', 'lrsn', 'PIN']], left_on='AIN/Tax Bill', right_on='AIN', how='left')
 
 # DataFrame with matches (inner join equivalent)
-matched_df_AIN = merged_df_AIN[merged_df_AIN['lrsn_y'].notna()]
+matched_df_AIN = merged_df_AIN[merged_df_AIN['lrsn'].notna()]
 
 # DataFrame with non-matches (left anti join equivalent)
-non_matched_df_AIN = merged_df_AIN[merged_df_AIN['lrsn_y'].isna()]
+non_matched_df_AIN = merged_df_AIN[merged_df_AIN['lrsn'].isna()]
 
 # Drop the extra 'AIN' column from matched_df_AIN
 matched_df_AIN = matched_df_AIN.drop(columns=['AIN_x', 'AIN_y'], errors='ignore')
@@ -442,12 +485,19 @@ if not non_matched_df_AIN.empty:
 else:
     logging.error("All records matched on AIN; no non-matches found in the DataFrame.")
 
+# Drop the extra columns from matched_df_PIN
+non_matched_df_AIN = non_matched_df_AIN.drop(columns=['PIN', 'AIN', 'lrsn'], errors='ignore')
+
 
 logging.info(f"\n{matched_df_AIN.head(10)}")  # Logs the first 10 rows
 
 logging.info(f"\n{non_matched_df_AIN.head(10)}")  #
 
+print("Matched on AIN")
+print(f"\n{matched_df_AIN.head(10)}")  # Logs the first 10 rows
 
+print("NOT Matched on AIN")
+print(f"\n{non_matched_df_AIN.head(10)}")  #
 
 
 
@@ -499,11 +549,18 @@ logging.info(f"\n{matched_df_address.head(10)}")  # Logs the first 10 rows
 logging.info(f"\n{non_matched_df_address.head(10)}")  #
 
 
-print("Test - What columns exist on these dataframes?")
 
+print("Check columns on address dataframes?")
+
+print("Matched on Address")
 print(f"\n{matched_df_address.head(10)}")  # Logs the first 10 rows
 
+print("NOT Matched on Address")
 print(f"\n{non_matched_df_address.head(10)}")  #
+
+
+
+
 
 
 
@@ -517,321 +574,6 @@ matched_df_PIN = remove_duplicate_columns(matched_df_PIN)
 matched_df_AIN = remove_duplicate_columns(matched_df_AIN)
 matched_df_address = remove_duplicate_columns(matched_df_address)
 """
-
-
-
-
-print("Start_PM_to_LegalDescription")
-
-logging.info("Start_PM_to_LegalDescription")
-
-""" We begin comparing filtered_df to pm ON LEGAL Description """
-
-# Function to perform fuzzy matching on legal descriptions
-def fuzzy_match_legal(row, pm_legals):
-    match, score = process.extractOne(row['Legal'], pm_legals)
-    return match if score >= 90 else None
-
-# Extract unique legal descriptions from pm DataFrame
-pm_legals = pm['LegalDescription'].unique()
-
-non_matched_df_address = non_matched_df_address.copy()
-non_matched_df_address['Matched_Legal'] = non_matched_df_address.apply(lambda row: fuzzy_match_legal(row, pm_legals)[0], axis=1)
-
-# Merge non_matched_df_address with pm on 'Matched_Legal' and 'LegalDescription' respectively
-merged_df_legal = pd.merge(non_matched_df_address, pm[['LegalDescription', 'lrsn', 'PIN', 'AIN']], left_on='Matched_Legal', right_on='LegalDescription', how='left')
-
-# DataFrame with matches (inner join equivalent)
-matched_df_legal = merged_df_legal[merged_df_legal['lrsn'].notna()]
-
-# DataFrame with non-matches (left anti join equivalent)
-non_matched_df_legal = merged_df_legal[merged_df_legal['lrsn'].isna()]
-
-# Drop the extra 'LegalDescription' and 'Matched_Legal' columns from matched_df_legal
-matched_df_legal = matched_df_legal.drop(columns=['LegalDescription', 'Matched_Legal'])
-
-# Example usage of logging
-if not matched_df_legal.empty:
-    logging.info("Matched DataFrame on Legal Description created successfully.")
-else:
-    logging.error("No matches found on Legal Description in the DataFrame.")
-
-if not non_matched_df_legal.empty:
-    logging.info("Non-matched DataFrame on Legal Description created successfully.")
-else:
-    logging.error("All records matched on Legal Description; no non-matches found in the DataFrame.")
-
-
-logging.info(f"\n{matched_df_legal.head(10)}")  # Logs the first 10 rows
-
-logging.info(f"\n{non_matched_df_legal.head(10)}")  #
-
-
-
-
-print("You now havew a cascade of dataframes, each unique, four with matches and one with no matches.")
-
-logging.info("You now havew a cascade of dataframes, each unique, four with matches and one with no matches.")
-
-
-
-
-
-""" The four matches are only checking for VALIDITY on the ParcelMaster, we match with Transfer Table next."""
-""" We append the four matching into one table, and the final non-matching we send to rejects."""
-#matched_df_pin - Matches on PIN.
-#matched_df_ain - Matches on AIN.
-#matched_df_address - Matches on Address.
-#matched_df_legal - Matches on Legal Description.
-#non_matched_df_legal - Records that didn't match on any of the above criteria.
-
-# Combine all matched DataFrames into one
-mls_matched_pm = pd.concat([matched_df_PIN, matched_df_AIN, matched_df_address, matched_df_legal], ignore_index=True)
-
-# DataFrame for non-matches
-mls_did_not_match_pm = non_matched_df_legal
-
-# Example usage of logging
-if not mls_matched_pm.empty:
-    logging.info("Combined matched DataFrame created successfully.")
-else:
-    logging.error("No matches found in the combined matched DataFrame.")
-
-if not mls_did_not_match_pm.empty:
-    logging.info("Non-matched DataFrame created successfully.")
-else:
-    logging.error("No non-matches found in the DataFrame.")
-
-
-
-logging.info("We now have two dataframes mls_matched_pm and mls_did_not_match_pm.")
-
-
-
-logging.info(f"\n{mls_matched_pm.head(10)}")  # Logs the first 10 rows
-
-logging.info(f"\n{mls_did_not_match_pm.head(10)}")  #
-
-
-
-print("Start_Checking Against Transfers Table.")
-
-logging.info("Start_Checking Against Transfers Table.")
-
-
-""" Now we take these two dataframes and start working them against the sales database table """
-
-# Merge mls_matched_pm with trnx on 'PIN', 'Year', and 'Month' respectively
-merged_sales_df = pd.merge(mls_matched_pm, trnx, left_on=['Parcel Number', 'Year', 'Month'], right_on=['PIN', 'PxYear', 'PxMonth'], how='left')
-
-# DataFrame with matches (inner join equivalent)
-matched_sales_df = merged_sales_df[merged_sales_df['lrsn_y'].notna()]
-
-# DataFrame with non-matches (left anti join equivalent)
-non_matched_sales_df = merged_sales_df[merged_sales_df['lrsn_y'].isna()]
-
-# Drop the extra columns from matched_sales_df
-matched_sales_df = matched_sales_df.drop(columns=['PIN', 'PxYear', 'PxMonth'])
-
-# Example usage of logging
-if not matched_sales_df.empty:
-    logging.info("Matched sales DataFrame created successfully.")
-else:
-    logging.error("No matches found in the sales DataFrame.")
-
-if not non_matched_sales_df.empty:
-    logging.info("Non-matched sales DataFrame created successfully.")
-else:
-    logging.error("All records matched in the sales DataFrame; no non-matches found.")
-
-mls_sale_validPIN_no_transfer_record = non_matched_sales_df
-logging.info("mls_sale_validPIN_no_transfer_record = non_matched_sales_df.")
-
-
-logging.info(f"\n{matched_sales_df.head(10)}")  # Logs the first 10 rows
-
-logging.info(f"\n{non_matched_sales_df.head(10)}")  #
-
-print(f"\n{matched_sales_df.head(10)}")  # Logs the first 10 rows
-
-print(f"\n{non_matched_sales_df.head(10)}")  #
-
-
-
-
-
-
-print("Rejects List.")
-
-logging.info("Rejects List.")
-
-
-""" Rejects List requires Review """
-# Combine mls_sale_validPIN_no_transfer_record and mls_did_not_match_pm into 'RejectsList'
-RejectsList = pd.concat([mls_sale_validPIN_no_transfer_record, mls_did_not_match_pm], ignore_index=True)
-
-# Example usage of logging
-if not RejectsList.empty:
-    logging.info("RejectsList DataFrame created successfully.")
-else:
-    logging.error("No records found in the RejectsList DataFrame.")
-
-
-logging.info(f"\n{RejectsList.head(10)}")  # Logs the first 10 rows
-
-
-
-
-
-
-print("Looking for sales not already entered.")
-
-logging.info("Looking for sales not already entered.")
-
-
-""" NEW matched_sales_df and re-matching it against the raw trnx table, creating three new dataframes """
-
-# Merge matched_sales_df with trnx on 'PIN', 'Year', 'Month', and 'Sold Price' respectively
-merged_sales_OnPrice_df = pd.merge(matched_sales_df, trnx, left_on=['Parcel Number', 'Year', 'Month', 'Sold Price'], right_on=['PIN', 'PxYear', 'PxMonth', 'SalesPrice_ProVal'], how='left')
-
-# DataFrame with matches (inner join equivalent)
-matched_sales_OnPrice_df = merged_sales_OnPrice_df[merged_sales_OnPrice_df['lrsn_y'].notna()]
-
-# DataFrame with non-matches (left anti join equivalent)
-non_matched_sales_OnPrice_df = merged_sales_OnPrice_df[merged_sales_OnPrice_df['lrsn_y'].isna()]
-
-# Drop the extra columns from matched_sales_OnPrice_df
-matched_sales_OnPrice_df = matched_sales_OnPrice_df.drop(columns=['PIN', 'PxYear', 'PxMonth', 'SalesPrice_ProVal'])
-
-# Example usage of logging
-if not matched_sales_OnPrice_df.empty:
-    logging.info("Matched sales DataFrame created successfully.")
-else:
-    logging.error("No matches found in the sales DataFrame.")
-
-if not non_matched_sales_OnPrice_df.empty:
-    logging.info("Non-matched sales DataFrame created successfully.")
-else:
-    logging.error("All records matched in the sales DataFrame; no non-matches found.")
-
-
-
-logging.info("You have two dataframes, but only need the one for sales to be entered.")
-
-
-logging.info(f"\n{matched_sales_OnPrice_df.head(10)}")  # Logs the first 10 rows
-
-logging.info(f"\n{non_matched_sales_OnPrice_df.head(10)}")  #
-
-
-
-
-
-
-print("Start Sales Review into Buckets.")
-
-logging.info("Start Sales Review into Buckets.")
-
-""" Valid Sales Needing Input """
-# Split matched_sales_OnPrice_df into three DataFrames based on SalesPrice_ProVal matching Sold Price
-matched_sales_price_df = matched_sales_OnPrice_df[matched_sales_OnPrice_df['SalesPrice_ProVal'] == matched_sales_OnPrice_df['Sold Price']]
-non_matched_sales_price_non_zero_df = matched_sales_OnPrice_df[(matched_sales_OnPrice_df['SalesPrice_ProVal'] != matched_sales_OnPrice_df['Sold Price']) & (matched_sales_OnPrice_df['SalesPrice_ProVal'] > 0)]
-non_matched_sales_price_zero_df = matched_sales_OnPrice_df[(matched_sales_OnPrice_df['SalesPrice_ProVal'] != matched_sales_OnPrice_df['Sold Price']) & (matched_sales_OnPrice_df['SalesPrice_ProVal'] == 0)]
-
-# Example usage of logging
-if not matched_sales_price_df.empty:
-    logging.info("Matched sales price DataFrame created successfully.")
-else:
-    logging.error("No matches found in the sales price DataFrame.")
-
-if not non_matched_sales_price_non_zero_df.empty:
-    logging.info("Non-matched sales price (non-zero) DataFrame created successfully.")
-else:
-    logging.error("No non-matches with non-zero sales price found in the DataFrame.")
-
-if not non_matched_sales_price_zero_df.empty:
-    logging.info("Non-matched sales price (zero) DataFrame created successfully.")
-else:
-    logging.error("No non-matches with zero sales price found in the DataFrame.")
-
-
-
-logging.info(f"\n{matched_sales_price_df.head(10)}")  # Logs the first 10 rows
-
-logging.info(f"\n{non_matched_sales_price_non_zero_df.head(10)}")  #
-
-logging.info(f"\n{non_matched_sales_price_zero_df.head(10)}")  #
-
-
-
-
-
-
-
-
-print("This step should spit out into CSVs but it isn't doing it?")
-
-logging.info("This step should spit out into CSVs but it isn't doing it?")
-
-
-""" Final Output """
-# Save matched_sales_price_df to CSV
-matched_sales_price_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\MLS_Already_Entered.csv', index=False)
-
-# Save non_matched_sales_price_non_zero_df to CSV
-non_matched_sales_price_non_zero_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\TrnxTable_HasPrice_NotMatching_MLS.csv', index=False)
-
-# Save non_matched_sales_price_zero_df to CSV
-non_matched_sales_price_zero_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\ReadyToImport.csv', index=False)
-
-# Save RejectsList to CSV
-RejectsList.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\MLSNeedsResearch.csv', index=False)
-
-
-
-
-
-
-
-
-
-
-
-
-"""" 
-This is for testing only
-
-# Example usage of logging
-if combined_df is not None:
-    logging.info("Filtered DataFrame created successfully.")
-else:
-    logging.error("Filtered DataFrame not created or other issues.")
-
-
-if combined_df is not None:
-    combined_df.to_csv('C:/Users/darre/OneDrive/Desktop/combined_MLS_CSVs.csv', index=False)
-    logging.info(combined_df.head())
-
-
-    # This only tests Combined DataFrame
-    # Save the combined DataFrame to the specified file path
-    #output_path = 'C:/Users/darre/OneDrive/Desktop/Test/combined_MLS_CSVs.csv'
-    #combined_df.to_csv(output_path, index=False)
-    #logging.info(f"Combined CSV saved to {output_path}")
-
-    
-
-    # This only tests Cleaned DataFrame
-    # Save the cleaned DataFrame to a new CSV file
-    filtered_df.to_csv('C:/Users/darre/OneDrive/Desktop/Test/cleaned_MLS_CSVs.csv', index=False)
-    logging.info(filtered_df.head())
-
-
-
-
-"""
-
-
 
 
 
