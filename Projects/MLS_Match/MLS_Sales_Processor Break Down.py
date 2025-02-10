@@ -375,6 +375,8 @@ if combined_df is not None:
     filtered_df['Year'] = pd.DatetimeIndex(filtered_df['Sold Date']).year
     filtered_df['Month'] = pd.DatetimeIndex(filtered_df['Sold Date']).month
 
+    # Remove duplicates based on "Parcel Number", "AIN/Tax Bill", and "List Number"
+    filtered_df = filtered_df.drop_duplicates(subset=["Parcel Number", "AIN/Tax Bill", "List Number"])
 
     logging.info("Filtered MLS CSV DataFrame created successful.")
     logging.info(f"\n{filtered_df.head(10)}")  # Logs the first 10 rows
@@ -393,6 +395,11 @@ print(f"Number of rows before fuzzy matching: {len(filtered_df)}")
 logging.info(f"\n{filtered_df.head(10)}")  # Logs the first 10 rows
 logging.info(f"\n{filtered_df.columns}")
 logging.info(f"Number of rows before fuzzy matching: {len(filtered_df)}")
+
+
+# Log the number of rows after removing duplicates
+print(f"Number of rows after removing duplicates: {len(filtered_df)}")
+logging.info(f"Number of rows after removing duplicates: {len(filtered_df)}")
 
 # Debuggin Save to CSV - This CSV has duplicates. 
 filtered_df.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\filtered_df.csv', index=False)
