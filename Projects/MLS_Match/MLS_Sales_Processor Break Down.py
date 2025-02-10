@@ -437,7 +437,7 @@ matched_df_PIN = merged_df[merged_df['lrsn'].notna()]
 non_matched_df_PIN = merged_df[merged_df['lrsn'].isna()]
 
 # Drop the extra 'PIN' column from matched_df_PIN
-matched_df_PIN = matched_df_PIN.drop(columns=['PIN'])
+# matched_df_PIN = matched_df_PIN.drop(columns=['PIN'])
 
 # Example usage of logging
 if not matched_df_PIN.empty:
@@ -451,9 +451,9 @@ if not non_matched_df_PIN.empty:
 else:
     logging.error("All records matched; no non-matches found in the DataFrame.")
 
-
 # Drop the extra columns from matched_df_PIN
 non_matched_df_PIN = non_matched_df_PIN.drop(columns=['PIN', 'AIN', 'lrsn'], errors='ignore')
+
 
 
 logging.info(f"\n{matched_df_PIN.head(10)}")  # Logs the first 10 rows
@@ -467,10 +467,11 @@ print(f"\n{matched_df_PIN.head(10)}")  # Logs the first 10 rows
 print("NOT Matched on PIN")
 print(f"\n{non_matched_df_PIN.head(10)}")  # Logs the first 10 rows
 
+print(f"Rows in non_matched_df_PIN: {len(non_matched_df_PIN)}")
+
 # Debuggin Save to CSV - This CSV has duplicates. 
 #matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\matched_df_PIN.csv', index=False)
 # Matches Power Query results
-
 
 # Debuggin Save to CSV - This CSV has duplicates. 
 #non_matched_df_PIN.to_csv(r'S:\Common\Comptroller Tech\Reports\MLS\MLS_PythonExports\non_matched_df_PIN.csv', index=False)
@@ -486,12 +487,16 @@ print(f"\n{non_matched_df_PIN.head(10)}")  # Logs the first 10 rows
 
 """ We begin comparing filtered_df to pm ON AIN """
 
+
+
 print("Start_PM_to_AIN")
 
 logging.info("Start_PM_to_AIN")
 
 # Merge non_matched_df_PIN with pm on 'AIN' and 'AIN' respectively
 merged_df_AIN = pd.merge(non_matched_df_PIN, pm[['AIN', 'lrsn', 'PIN']], left_on='AIN/Tax Bill', right_on='AIN', how='left')
+
+print(f"Rows in merged_df_AIN: {len(merged_df_AIN)}")
 
 # DataFrame with matches (inner join equivalent)
 matched_df_AIN = merged_df_AIN[merged_df_AIN['lrsn'].notna()]
@@ -501,6 +506,10 @@ non_matched_df_AIN = merged_df_AIN[merged_df_AIN['lrsn'].isna()]
 
 # Drop the extra 'AIN' column from matched_df_AIN
 matched_df_AIN = matched_df_AIN.drop(columns=['AIN_x', 'AIN_y'], errors='ignore')
+
+print(f"Rows in non_matched_df_AIN: {len(matched_df_AIN)}")
+print(f"Rows in non_matched_df_AIN: {len(non_matched_df_AIN)}")
+
 
 # Example usage of logging
 if not matched_df_AIN.empty:
@@ -523,10 +532,12 @@ logging.info(f"\n{non_matched_df_AIN.head(10)}")  #
 
 print("Matched on AIN")
 print(f"\n{matched_df_AIN.head(10)}")  # Logs the first 10 rows
+print(f"Rows in non_matched_df_AIN: {len(matched_df_AIN)}")
+
 
 print("NOT Matched on AIN")
 print(f"\n{non_matched_df_AIN.head(10)}")  #
-
+print(f"Rows in non_matched_df_AIN: {len(non_matched_df_AIN)}")
 
 
 # The Non-Match on PIN datafram has 586 rows, which matches PQ.
