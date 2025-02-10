@@ -501,7 +501,7 @@ def fuzzy_match_legal(row, pm_legals):
 pm_legals = pm['LegalDescription'].unique()
 
 non_matched_df_address = non_matched_df_address.copy()
-non_matched_df_address['Matched_Legal'] = non_matched_df_address.apply(lambda row: fuzzy_match_legal(row, pm_legals), axis=1)
+non_matched_df_address['Matched_Legal'] = non_matched_df_address.apply(lambda row: fuzzy_match_legal(row, pm_legals)[0], axis=1)
 
 # Merge non_matched_df_address with pm on 'Matched_Legal' and 'LegalDescription' respectively
 merged_df_legal = pd.merge(non_matched_df_address, pm[['LegalDescription', 'lrsn', 'PIN', 'AIN']], left_on='Matched_Legal', right_on='LegalDescription', how='left')
