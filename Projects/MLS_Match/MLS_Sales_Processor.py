@@ -486,6 +486,26 @@ logging.info(f"\n{matched_df_address.head(10)}")  # Logs the first 10 rows
 logging.info(f"\n{non_matched_df_address.head(10)}")  #
 
 
+print(f"\n{matched_df_address.head(10)}")  # Logs the first 10 rows
+
+print(f"\n{non_matched_df_address.head(10)}")  #
+
+
+
+""" This creates five dataframes to this point 
+# Ensure no duplicate columns are added during merges
+def remove_duplicate_columns(df):
+    return df.loc[:, ~df.columns.duplicated()]
+
+# Apply the function to remove duplicate columns from all DataFrames
+matched_df_PIN = remove_duplicate_columns(matched_df_PIN)
+matched_df_AIN = remove_duplicate_columns(matched_df_AIN)
+matched_df_address = remove_duplicate_columns(matched_df_address)
+"""
+
+
+
+
 print("Start_PM_to_LegalDescription")
 
 logging.info("Start_PM_to_LegalDescription")
@@ -539,7 +559,9 @@ print("You now havew a cascade of dataframes, each unique, four with matches and
 logging.info("You now havew a cascade of dataframes, each unique, four with matches and one with no matches.")
 
 
-""" This creates five dataframes to to this point """
+
+
+
 """ The four matches are only checking for VALIDITY on the ParcelMaster, we match with Transfer Table next."""
 """ We append the four matching into one table, and the final non-matching we send to rejects."""
 #matched_df_pin - Matches on PIN.
