@@ -1,3 +1,6 @@
+
+Final output:
+
 Matched on Address
 
   Parcel Number AIN/Tax Bill List Number   Sold Date  Sold Price  ...  Year Month   lrsn           PIN     AIN
@@ -21,6 +24,7 @@ Index: []
 PS C:\Users\dwolfe\Documents\Demo_Skills_SampleCode> 
 
 
+Question:
 Both my Power Query and Python are reading the same MLS files.
 When I built a model with cascading tables in Power Query, I got over a thousand rows for the MLS Cleaned table, and over a thousand matches for PIN, 
 From the table of only rejects from PIN match, I got 470 matches on AIN. 

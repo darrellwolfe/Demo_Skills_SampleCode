@@ -518,7 +518,13 @@ pm_addresses = pm['SitusAddress'].unique()
 
 # Apply fuzzy matching to non_matched_df_AIN
 non_matched_df_AIN = non_matched_df_AIN.copy()
+
+# Debugging Matching
+print(f"Number of rows before fuzzy matching: {len(non_matched_df_AIN)}")
 non_matched_df_AIN['Matched_Address'] = non_matched_df_AIN.apply(fuzzy_match_address, axis=1, pm_addresses=pm_addresses)
+print(f"Number of rows after fuzzy matching: {len(non_matched_df_AIN)}")
+
+
 
 # Merge non_matched_df_AIN with pm on 'Matched_Address' and 'SitusAddress' respectively
 merged_df_address = pd.merge(non_matched_df_AIN, pm[['SitusAddress', 'lrsn', 'PIN', 'AIN']], left_on='Matched_Address', right_on='SitusAddress', how='left')
@@ -561,10 +567,12 @@ print(f"\n{non_matched_df_address.head(10)}")  #
 
 
 
-
-
-
 """ This creates five dataframes to this point 
+
+logging.info(f"Number of rows before fuzzy matching: {len(non_matched_df_AIN)}")
+non_matched_df_AIN['Matched_Address'] = non_matched_df_AIN.apply(fuzzy_match_address, axis=1, pm_addresses=pm_addresses)
+logging.info(f"Number of rows after fuzzy matching: {len(non_matched_df_AIN)}")
+
 # Ensure no duplicate columns are added during merges
 def remove_duplicate_columns(df):
     return df.loc[:, ~df.columns.duplicated()]
