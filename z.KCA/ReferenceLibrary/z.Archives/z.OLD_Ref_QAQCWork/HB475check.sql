@@ -1,1 +1,0 @@
-select * from permits where permit_type = '1' and status ='A' and permit_desc like '%HB%'

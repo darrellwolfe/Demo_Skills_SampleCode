@@ -1,9 +1,0 @@
-SELECT p.neighborhood,
-       COUNT(DISTINCT p.lrsn) AS [Total to Reval],
-       COUNT(CASE WHEN m.Memo_ID = 'RY24'
-                  AND m.Memo_Line_Number = 2
-                  AND m.Memo_Text IS NOT NULL THEN 1 ELSE NULL END) AS [Reval sign off]
-FROM KCv_PARCELMASTER1 p
-LEFT JOIN memos m ON p.lrsn = m.lrsn
-WHERE p.EffStatus= 'A'
-GROUP BY p.neighborhood
