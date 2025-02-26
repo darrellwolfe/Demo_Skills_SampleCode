@@ -1,0 +1,42 @@
+//Set IGNORESPACES to 1 to force script interpreter to ignore spaces.
+//If using IGNORESPACES quote strings in {" ... "}
+//Let>IGNORESPACES=1
+
+//Test AIN 336880
+
+InputBox>N, What is the AIN?
+
+
+//In Aumentum to Open Modifier
+
+
+//Click Info Center
+MouseMove>2389,84
+LClick
+Wait 1
+
+//Click Tax Detail
+MouseMove>2328,112
+LClick
+Wait 1
+
+//Tab to AIN
+Press Tab *12
+
+//Paste AIN
+
+Send>n
+Wait 1
+
+
+//Click Search
+MouseMove>3440,173
+LClick
+Wait 3
+
+//Click Manager Flags
+MouseMove>1989,439
+LClick
+Wait 1
+
+

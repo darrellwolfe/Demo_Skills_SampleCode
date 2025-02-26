@@ -1,0 +1,1 @@
+select * from a_ppasset_v where listingdate is null and begtaxyear = '2013' and revobjeffstatus = 'A' order by pin

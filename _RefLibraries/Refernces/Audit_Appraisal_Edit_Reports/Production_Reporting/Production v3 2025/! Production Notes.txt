@@ -1,0 +1,61 @@
+
+If building from scratch:
+
+1. Load the SQL Queries
+    ! CTE_Production_Reval
+    ! CTE_Production_Permits
+    ! CTE_Production_TimberAg
+    ! PMGeos
+    Load all as tables, and to the Data Model
+
+2. Ensure the RevalYearKey is up to date
+Excel Table (Manually Worked)
+    RevalYearKey
+    -Merge with PM Geos and drop back only those PM Geos not in the key
+    -To use this, hit Refresh, if any Geos populate in the missing geos table, add them with the appropriate year to the key
+
+3. 
+Excel Table (Manually Worked, but queried from another location):
+    Get Data, From Excel:
+    S:\Common\Comptroller Tech\Reporting Tools\! Reporting Tools and Templates\Keys
+    - Appraiser_User Key.xlsx
+
+4. 
+Power Query Driven, Data Model, Power Pivots, DAX Formulas
+    - Power Pivots
+
+
+
+
+Reval DAX:
+TotalParcels:=CALCULATE(DISTINCTCOUNT(CTE_Production_Reval[AIN]))
+
+Reval_Complete_Count:=CALCULATE(COUNTA(CTE_Production_Reval[Reval_Status_Check]),FILTER(CTE_Production_Reval,CTE_Production_Reval[Reval_Status_Check] = "Complete"))
+
+
+Reval_Complete_Percent:=[Reval_Complete_Count]/[TotalParcels]
+
+Count_FieldedComplete:=CALCULATE(COUNTA(ref_Fielded[Reval_Status_Check]),FILTER(ref_Fielded,ref_Fielded[IR_Fielded_Check] = "Complete"))
+
+Count_AppraisedComplete:=CALCULATE(COUNTA(ref_Appraised[IR_Appraised_Check]),FILTER(ref_Appraised,ref_Appraised[IR_Appraised_Check] = "Complete"))
+
+Count_RYMemosComplete:=CALCULATE(COUNTA(ref_RYMemos[RY_Memo_Check]),FILTER(ref_RYMemos,ref_RYMemos[RY_Memo_Check] = "Complete"))
+
+
+
+Permits DAX: 
+Count Of Permits:=CALCULATE(DISTINCTCOUNT(CTE_Production_Permits[REFERENCENum]))
+Count Of Open Permits:=CALCULATE(DISTINCTCOUNT(CTE_Production_Permits[REFERENCENum]),FILTER(CTE_Production_Permits,CTE_Production_Permits[PermitStatus]="Open"))
+Count Of Completed Permits:=CALCULATE(DISTINCTCOUNT(CTE_Production_Permits[REFERENCENum]),FILTER(CTE_Production_Permits,CTE_Production_Permits[PermitStatus]="Completed"))
+
+    Percent of total permits OPEN:=[Count Of Open Permits]/[Count Of Permits]
+    Percent of total permits CLOSED:=[Count Of Completed Permits]/[Count Of Permits]
+
+
+
+
+
+Timber DAX:
+Count of Timber Worked Parcels:=CALCULATE(DISTINCTCOUNT(CTE_Production_TimberAg[lrsn]))
+
+

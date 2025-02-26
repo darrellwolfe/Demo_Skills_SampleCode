@@ -1,0 +1,29 @@
+The following are database connections used by various SQL and Pythong Scripts 
+by the Kootenai County Assessor's Office.
+
+Driver = "SQL Server",
+
+# LIVE Production Database
+Server = "AsTxDBProd",
+Database = "GRM_Main",
+
+# TEST Database
+Server = "AsTxDBpubtest",
+Database = "GRM_Test",
+
+# Public is the computers at the front desks, they are backed up from live, but not live.
+Server = "AsTxDBpubtest",
+Database = "GRM_Public",
+
+# Kootenai County permits issued by Community Development
+Server = "Permits-Prod",
+Database = "iMS",
+
+# GIS, used by Land Records
+Server = "GISDB",
+Database = "KCASRMap_Nightly",
+
+
+# Unclear
+Server = "AsTxWebProd",
+Database = "GRMReports",

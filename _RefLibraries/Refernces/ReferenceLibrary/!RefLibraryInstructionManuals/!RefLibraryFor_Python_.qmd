@@ -1,0 +1,3524 @@
+---
+title: "Python Quick Reference Library"
+format: html
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+
+# What is the Python Quick Reference Library?
+
+While learning to create Python solutions, we thought it wise to pause and document our progress, what we have learned, and what solutions worked for us. This will act as a guide for future developers within our office and beyond.
+
+
+
+#C:\Program Files\R\R-4.4.1
+#C:\Program Files\R\R-4.4.1\bin\r.exe
+#QUARTO_R: "C:/Program Files/R/R-4.4.1/bin/R.exe"
+setx QUARTO_R: "C:/Program Files/R/R-4.4.1/bin/R.exe"
+
+
+
+# Installs 
+To actually knitt/stitch this document you will need to have Python, R, and Quarto installed on your machine through Visual Studio Code (or RStudio). 
+
+[Quarto](https://quarto.org/docs/get-started/)
+
+[Install R](https://cran.r-project.org/bin/windows/base/)
+
+[Install Python](https://www.python.org/downloads/)
+
+
+
+
+## Ensure R and Python Interoperability with `reticulate` 
+
+**(this allows a .rmd or .qmd document to work)**
+
+The following code chunk will ensure that the `reticulate` package is installed, which is necessary for Python and R to work together in this document. When running this, you may get a pop-up asking you to select a `Secure CRAN mirror`, being in the Pacific Northwest (PNW) we typically use `USA (OR)[https]`, then select `OK`.
+
+```{r eval=TRUE, include=TRUE} 
+# Function to install a package if it is not already installed
+install_if_missing <- function(package) {
+  if (!requireNamespace(package, quietly = TRUE)) {
+    install.packages(package)
+  }
+}
+
+# Install and load the 'reticulate' package
+install_if_missing("reticulate")
+library(reticulate)
+```
+
+
+
+# Python Basics
+
+In Python, there isn't a single "base structure" like SQL's `SELECT * FROM Table` that is universally used to introduce beginners to the language. However, there are a few fundamental concepts and structures that are often used to start teaching Python, much like how `SELECT * FROM Table` is a common starting point in SQL.
+
+## 1. The Basic print() Function
+
+-   The print() function is often the very first thing taught in Python. It’s a simple way to display output, much like how SELECT * retrieves data in SQL.
+-   This introduces the user to the syntax of Python and demonstrates how to run a basic command.
+
+```{python eval=TRUE, include=TRUE}
+print("Hello, World!")
+
+```
+
+
+## 2. Basic Variables and Data Types
+
+-   After introducing print(), the next step is usually to show how to create and use variables.
+-   This teaches the concept of data types (str, int, bool, etc.) and how to store and use data in Python.
+
+***Note: in Python, variables do not need to be explicity called out as their data type as they do in SQL.***
+
+```{python eval=TRUE, include=TRUE}
+# Compared to a SQL Example:
+    # DECLARE name VARCHAR = 'Alice';
+
+# Assigning values to variables in Python 
+#   only requires the variable name you will call later, 
+#   and the `=` 
+#   and the variable. 
+# Python auto recognizes the data type.
+#   Also note, that strings require quotes, int and booleans do not
+name = "Alice"
+age = 30
+is_student = True
+
+# Printing the variables
+print(name)
+print(age)
+print(is_student)
+
+
+
+```
+
+## 3. Basic Data Structures
+
+-   The next step is often to introduce basic data structures like lists and dictionaries, which are central to Python programming.
+-   This gives users a sense of how Python can store collections of data.
+
+```{python eval=TRUE, include=TRUE}
+# List
+fruits = ["apple", "banana", "cherry"]
+print(fruits)
+
+# Dictionary
+person = {"name": "Alice", "age": 30, "is_student": True}
+print(person)
+
+```
+
+## 4. Control Flow Statements 
+
+***(aka If/Else logic and Loops)***
+
+-   Once variables and data types are understood, introducing control flow with if, for, and while statements is a logical next step.
+-   This introduces users to decision-making and iteration in Python.
+-   This is how you would use database connections to pull in dataframes and loop through them, more on that later.
+
+```{python eval=TRUE, include=TRUE}
+# Conditional statement
+if age > 18:
+    print("Adult")
+else:
+    print("Minor")
+
+# Loop
+for fruit in fruits:
+    print(fruit)
+
+```
+
+## 5. Functions
+
+-   Finally, teaching how to define and call functions is often a good way to encapsulate everything learned so far.
+-   Functions show how to organize code into reusable blocks, similar to how queries and procedures are organized in SQL.
+
+```{python eval=TRUE, include=TRUE}
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("Alice"))
+
+```
+
+
+## 6. Syntax
+
+-   Most code must be written in lower case for Python. 
+    -   Ex: Print ()vs PRINT() vs print()
+    -   Only print() will actually run.
+
+
+## 7. Notes/Comments
+
+-   Notes or Comments are important for leaving behind instructions or thought processess for future developers/coders to understand your script and then fix it or re-purpose it. This is especially true in an officer with other users coming behind you to use your tools. 
+-   In Python, there are essentially two ways to comment. 
+    -   Single line comments: `# This is a comment`
+    -   Multi line comments: `""" This is comment """`
+
+***Note: In Python, when you include a multi-line string that's not assigned or used in an expression, it's technically treated as an object and not just a comment, especially in the context of an interactive or execution environment like Quarto. You can either use several single line comments or use the `if False:` to keep it from rendering as an object. Outside of Quarto (.qmd) in a normal code, the triple quotes will keep it from being read as code, but this could still be good practice to keep.***
+
+```{python eval=TRUE, include=TRUE}
+# Single Line Comment
+if False:
+    """
+    This
+    Is A
+    Multi
+    Line Comment
+    """
+print("Comment Examples")
+
+```
+
+
+## 8. Indent
+
+Unlike SQL, spaces/indenting matters for Python. The script flows such that a function that is not indented to run in the right way will break the cascading logic.
+
+In the following example the function ``
+
+
+```{python eval=FALSE, include=TRUE}
+
+# Example function with indenting:
+
+def click_image(image_path, confidence=0.8):
+    try:
+        if not os.path.exists(image_path):
+            logging.error(f"Image file not found: {image_path}")
+            return False
+
+        ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+
+        screenshot = pyautogui.screenshot()
+        screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_BGR2GRAY)
+
+        result = cv2.matchTemplate(screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+        if max_val >= confidence:
+            top_left = max_loc
+            h, w = ref_image.shape
+            center_x, center_y = top_left[0] + w // 2, top_left[1] + h // 2
+
+            pyautogui.moveTo(center_x, center_y)
+            pyautogui.click()
+            logging.info(f"Clicked on the image: {image_path}")
+            return True
+        else:
+            logging.warning(f"Could not locate the image: {image_path} with confidence {confidence}")
+            return False
+    except Exception as e:
+        logging.error(f"Failed to click the image: {image_path}")
+        logging.error(f"Exception: {e}")
+        return False
+
+
+```
+
+
+
+
+# Python Code Structuring
+
+While the exact structure a script takes can vary wildy, I have found that the frist tool I built worked best with a cascading flow of content as follows. This worked to both help the script ensure things were caling on items above them, and help the human reader understand what was happening.
+
+***Include comments at each stage explaning what is happening... ***
+
+#### 1. Libraries
+
+Libraries required for the script to function.
+
+-   Import Libraries
+
+#### 2. Global Logic
+
+Functions that ensure the entire document flows and works
+
+-   Logging: A logging function to ensure all activities are logged for debugging
+-   Kill Script: A kill script function to ensure you can stop the script, calling this at appropriate times in the script to ensure it works, at the beggining of each loop.
+-   Connections:
+    -   Connection to database
+    -   Connection to stored images, image paths
+-   Glocal Logic (like ensure caps lock is off)
+-   Establishing any GUI (graphic user interface) for the end user
+
+#### 3. Specific Functions
+
+Specific functions required to make the script run the tasks assigned
+-   Screen capture OCR logic
+-   Click image logic
+-   Specific logic for script
+
+#### 4. Specific Commands and loops
+
+-   Establish/start the loop(s)
+    -   Specific commands, which may or may not call in earlier functions
+-   End loop(s)
+-   End connection(s)
+
+
+
+# Breaking it down
+
+The following will break down specific examples and use cases of those code structures.
+
+
+## 1. Python Libraries
+
+The following libraries have been found useful for the building of automation tools for the Kootenai County Assessor's Office.
+
+
+### Python Libraries we've used or found helpful
+```{python eval=FALSE, include=TRUE} 
+
+import pyautogui  # For automating GUI interactions like mouse movements and clicks
+import pyodbc  # For establishing database connections and executing SQL queries
+import time  # For adding delays and managing time-related functions
+import numpy as np  # For numerical operations and handling arrays/matrices
+import keyboard  # For detecting and handling keyboard key presses
+import threading  # For running background tasks and creating concurrent threads
+import tkinter as tk  # For creating basic GUI elements in Python applications
+from tkinter import ttk, messagebox, scrolledtext  # For advanced Tkinter widgets, dialog boxes, and scrolled text areas
+import pytesseract  # For OCR (Optical Character Recognition) to read text from images
+from PIL import Image  # For working with image data
+import cv2  # For image processing and computer vision tasks (OpenCV library)
+import ctypes  # For interacting with C data types and Windows API functions
+from tkcalendar import Calendar, DateEntry  # For adding calendar widgets to Tkinter GUIs
+import logging  # For logging events, errors, and information during script execution
+import configparser  # For handling configuration files (.ini)
+import os  # For interacting with the operating system, e.g., file and directory management
+from datetime import datetime, date  # For handling date and time operations
+import psutil  # For retrieving information on running processes and system utilization
+import pygetwindow as gw  # For getting and manipulating window information
+from pywinauto import Application  # For interacting with Windows applications programmatically
+from datetime import datetime # For handling dates and times
+
+```
+
+
+
+### Python Libraries Used
+
+##### `pyautogui`
+
+- **Purpose:** Automates GUI (Graphical User Interface) interactions such as mouse clicks, keystrokes, and screen captures.
+- **Usage:** To control mouse and keyboard actions, such as clicking buttons, typing text, and capturing screenshots of the screen.
+
+##### `pyodbc`
+
+- **Purpose:** Enables connections to databases using ODBC (Open Database Connectivity).
+- **Usage:** To connect to SQL Server databases, execute queries, and fetch results.
+
+##### `pywinauto.Application`
+
+- **Purpose:** Facilitates interaction with Windows GUI applications.
+- **Usage:** To automate tasks within Windows applications, such as focusing on specific windows.
+
+##### `time`
+
+- **Purpose:** Provides time-related functions.
+- **Usage:** To introduce delays (e.g., `time.sleep()`) between automated actions to ensure proper execution.
+
+##### `numpy`
+
+- **Purpose:** Supports large, multi-dimensional arrays and matrices, along with a large collection of mathematical functions.
+- **Usage:** To perform numerical operations, particularly in image processing.
+
+##### `keyboard`
+
+- **Purpose:** Detects and handles keyboard events.
+- **Usage:** To detect specific key presses, such as the 'esc' key to stop the script.
+
+##### `threading`
+
+- **Purpose:** Allows for running multiple threads (tasks) concurrently.
+- **Usage:** To run background tasks like monitoring for a kill key press.
+
+##### `tkinter`
+
+- **Purpose:** Provides tools for creating graphical user interfaces (GUIs).
+- **Usage:** To create input forms for collecting user inputs through a pop-up window.
+
+##### `tkinter.ttk`, `tkinter.messagebox`
+
+- **Purpose:** `ttk` offers advanced widgets for Tkinter, and `messagebox` provides standard dialogs for showing messages.
+- **Usage:** To enhance the GUI with better-looking widgets and display error messages or other notifications.
+
+##### `pytesseract`
+
+- **Purpose:** Optical Character Recognition (OCR) tool for extracting text from images.
+- **Usage:** To recognize and read text from screenshots or other images captured during the script's execution.
+
+##### `PIL.ImageGrab`
+
+- **Purpose:** Provides functionality to capture the screen or parts of it.
+- **Usage:** To capture specific regions of the screen for further processing with OCR.
+
+##### `cv2` (OpenCV)
+
+- **Purpose:** A library for computer vision tasks, including image processing.
+- **Usage:** To process images, match templates, and recognize UI elements on the screen.
+
+##### `os`
+
+- **Purpose:** Provides functions to interact with the operating system, including file handling.
+- **Usage:** To check if image files exist and interact with the file system.
+
+##### `datetime`
+
+- **Purpose:** Supplies classes for manipulating dates and times.
+- **Usage:** To generate timestamps, work with dates, and format date strings.
+
+##### `ctypes`
+
+- **Purpose:** Provides C compatible data types and allows calling functions in DLLs or shared libraries.
+- **Usage:** To interact with Windows system calls, such as checking if the CAPS LOCK key is on.
+
+##### `tkcalendar.DateEntry`
+
+- **Purpose:** A widget to select dates from a calendar.
+- **Usage:** To provide an easy way for the user to select dates in the GUI.
+
+##### `logging`
+
+- **Purpose:** Provides a way to report status, error, and informational messages to a file or console.
+- **Usage:** To record logs of the script's execution, including errors, warnings, and information for debugging.
+
+##### `pygetwindow`
+
+- **Purpose:** A simple cross-platform module to find and manipulate open windows on your computer.
+- **Usage:** To retrieve window handles, bring specific windows into focus, or manipulate window states (e.g., minimize, maximize).
+
+##### `configparser`
+
+- **Purpose:** Provides functionality for handling configuration files in the `.ini` format.
+- **Usage:** To read, write, and modify configuration settings in a structured manner, often used for setting up initial parameters or options for scripts.
+
+##### `psutil`
+
+- **Purpose:** A library for retrieving information on running processes and system utilization (CPU, memory, disks, network, sensors) in Python.
+- **Usage:** To monitor system resources, manage processes, and gather statistics, often used to check if specific processes are running or to ensure enough system resources are available before executing tasks.
+
+
+
+
+### Python Library Installation
+This section will ensure that all necessary Python libraries are installed and ready to use. If a library is missing, it will be installed automatically. You can alter this in your script to match the libraries you choose. You can also comment it out after the install if it causes run problems. These libraries work together to automate and manage the input process, ensuring a smooth and accurate transfer of data into the ProVal system.
+
+**Installing**
+```{python eval=FALSE, include=TRUE} 
+import subprocess
+import pkg_resources
+import sys
+
+def install_if_missing(package):
+    try:
+        pkg_resources.get_distribution(package)
+    except pkg_resources.DistributionNotFound:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# List of packages you want to ensure are installed
+packages = [
+    "pyautogui",       # For automating GUI interactions
+    "pyodbc",          # For database connections
+    "numpy",           # For numerical operations
+    "keyboard",        # For detecting key presses
+    "pytesseract",     # For OCR (Optical Character Recognition)
+    "Pillow",          # For image processing related to Image
+    "opencv-python",   # For image processing (cv2)
+    "tkcalendar"       # For calendar widget in Tkinter
+]
+
+# Apply the install_if_missing function to each package
+for package in packages:
+    install_if_missing(package)
+
+# After ensuring all packages are installed, you can import them as needed in your script
+import pyautogui  # For automating GUI interactions like mouse movements and clicks
+import pyodbc  # For establishing database connections and executing SQL queries
+import time  # For adding delays and managing time-related functions
+import numpy as np  # For numerical operations and handling arrays/matrices
+import keyboard  # For detecting and handling keyboard key presses
+import threading  # For running background tasks and creating concurrent threads
+import tkinter as tk  # For creating basic GUI elements in Python applications
+from tkinter import ttk, messagebox  # For advanced Tkinter widgets and displaying dialog boxes
+import pytesseract  # For OCR (Optical Character Recognition) to read text from images
+from PIL import Image  # For working with image data
+import cv2  # For image processing and computer vision tasks (OpenCV library)
+import ctypes  # For interacting with C data types and Windows API functions
+from tkcalendar import DateEntry  # For adding a calendar widget to Tkinter GUIs
+import logging  # For logging events, errors, and information during script execution
+from datetime import datetime # For handling dates and times
+
+# Basic logging setup
+logging.basicConfig(level=logging.INFO)
+```
+
+**Installing - commented out**
+```{python eval=FALSE, include=TRUE} 
+
+"""
+import subprocess
+import pkg_resources
+import sys
+
+def install_if_missing(package):
+    try:
+        pkg_resources.get_distribution(package)
+    except pkg_resources.DistributionNotFound:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# List of packages you want to ensure are installed
+packages = [
+    "pyautogui",       # For automating GUI interactions
+    "pyodbc",          # For database connections
+    "numpy",           # For numerical operations
+    "keyboard",        # For detecting key presses
+    "pytesseract",     # For OCR (Optical Character Recognition)
+    "Pillow",          # For image processing related to Image
+    "opencv-python",   # For image processing (cv2)
+    "tkcalendar"       # For calendar widget in Tkinter
+]
+
+# Apply the install_if_missing function to each package
+for package in packages:
+    install_if_missing(package)
+"""
+# After ensuring all packages are installed, you can import them as needed in your script
+import pyautogui  # For automating GUI interactions like mouse movements and clicks
+import pyodbc  # For establishing database connections and executing SQL queries
+import time  # For adding delays and managing time-related functions
+import numpy as np  # For numerical operations and handling arrays/matrices
+import keyboard  # For detecting and handling keyboard key presses
+import threading  # For running background tasks and creating concurrent threads
+import tkinter as tk  # For creating basic GUI elements in Python applications
+from tkinter import ttk, messagebox  # For advanced Tkinter widgets and displaying dialog boxes
+import pytesseract  # For OCR (Optical Character Recognition) to read text from images
+from PIL import Image  # For working with image data
+import cv2  # For image processing and computer vision tasks (OpenCV library)
+import ctypes  # For interacting with C data types and Windows API functions
+from tkcalendar import DateEntry  # For adding a calendar widget to Tkinter GUIs
+import logging  # For logging events, errors, and information during script execution
+from datetime import datetime # For handling dates and times
+
+# Basic logging setup
+logging.basicConfig(level=logging.INFO)
+```
+
+
+
+
+## 2. GLOBAL LOGICS - CONNECTIONS
+
+
+### Logging
+
+```{python eval=FALSE, include=TRUE} 
+
+
+# THIS IS THE FUNCTION
+
+
+# Change the path and file name to ensure it is unique to this script
+#    filename='S:/Common/Comptroller Tech/Reports/Python/finalfolderinpath/filename.log',
+
+logging.basicConfig(
+    filename='S:/Common/Comptroller Tech/Reports/Python/Auto_Mapping_Packet/MappingPacketsAutomation.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logging.getLogger().addHandler(console_handler)
+
+
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+# It is used much like print("Attempting to..."), but includes the printout in the log created by the function.
+
+logging.info("Attempting to locate and click on the 'Land' tab...")
+
+
+```
+
+
+### Kill Script
+
+```{python eval=FALSE, include=TRUE} 
+
+# THIS IS THE FUNCTION
+
+# Global flag to indicate if the script should be stopped
+stop_script = False
+
+def monitor_kill_key():
+    global stop_script
+    logging.info("Kill key monitor started. Press 'esc' to stop the script.")
+    keyboard.wait('esc')  # Set 'esc' as the kill key
+    stop_script = True
+    logging.info("Kill key pressed. Stopping the script...")
+
+# Start the kill key monitoring in a separate thread
+kill_key_thread = threading.Thread(target=monitor_kill_key)
+kill_key_thread.daemon = True
+kill_key_thread.start()
+
+
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+# Below in the actual code, include the following at various breakpoints,
+    # Typically at the start of loops.
+    # Ensure indentation matches the loop point
+if stop_script:
+    logging.info("Script stopping due to kill key press.")
+    break
+
+
+# Example of use and indentation
+for row in rows:
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+    DBAIN, DBACRE = row
+    ensure_capslock_off()
+
+    # Process each AIN individually
+    set_focus_and_type('ProVal', DBAIN)
+    time.sleep(1)
+
+```
+
+
+### Connections: Database
+
+```{python eval=FALSE, include=TRUE} 
+
+# THIS IS THE FUNCTION
+
+# Configuration for database connection
+db_connection_string = (
+    "Driver={SQL Server};"
+    "Server=astxdbprod;"
+    "Database=GRM_Main;"
+    "Trusted_Connection=yes;"
+)
+
+# Function to connect to the database
+def connect_to_database(connection_string):
+    return pyodbc.connect(connection_string)
+
+# Function to execute a SQL query and fetch data
+def execute_query(cursor, query):
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+
+"""
+Connect to the database, 
+pull a simple SQL query with two columns,
+then the  for row in rows assigns those columns as variables 
+"""
+
+conn = connect_to_database(db_connection_string)
+cursor = conn.cursor()
+
+# The query should accommodate multiple AINs in a list
+# Note: in-between the quotes is a SQL script that uses the user input field function as a condition.
+#   In this use-case, the user-input gui pop-up function would be between the database function and this call, but theoretically you could call the connection later when you are ready to use it.
+
+query = f"SELECT TRIM(pm.AIN), pm.LegalAcres FROM TSBv_Parcelmaster AS pm WHERE pm.AIN IN ({','.join(AINLIST)})"
+rows = execute_query(cursor, query)
+
+
+
+
+```
+
+
+
+
+
+#### Graphic User Interface (GUI) Logic - START
+
+```{python eval=FALSE, include=TRUE} 
+
+### Graphic User Interface (GUI) Logic - START
+
+# Initialize variables to avoid 'NameError', will call them into the final product after variable selections
+MemoTXT = ""
+PDESC = ""
+
+def on_submit():
+    ensure_capslock_off()
+
+    global AINLIST, AINFROM, AINTO, PDESC, PFILE, PNUMBER, TREVIEW, MappingPacketType, Initials, MemoTXT, ForYear
+
+    # Collect inputs for AINFROM and AINTO, and split by commas
+    AINFROM = [ain.strip() for ain in entry_ainfrom.get().strip().upper().split(",")]
+    AINTO = [ain.strip() for ain in entry_ainto.get().strip().upper().split(",")]
+
+    # Combine the AINFROM and AINTO lists, removing duplicates
+    combined_ain_list = list(set(AINFROM + AINTO))
+
+    # Replace AINLIST with the combined list
+    AINLIST = combined_ain_list
+
+    PFILE = entry_pfile.get().strip().upper()
+    PNUMBER = entry_pnumber.get().strip().upper()
+    TREVIEW = entry_treview.get().strip().upper()
+    MappingPacketType = combobox_mappingpackettype.get().strip().upper()
+    Initials = entry_initials.get().strip().upper()
+    ForYear = for_year_combobox.get().strip()  # Get the selected year
+
+    the_month = datetime.now().month
+    the_day = datetime.now().day
+    the_year = datetime.now().year
+    
+    #the_month = datetime.datetime.now().month
+    #the_day = datetime.datetime.now().day
+    #the_year = datetime.datetime.now().year
+
+
+    AINFROM_str = ', '.join(AINFROM)
+    AINTO_str = ', '.join(AINTO)
+    MemoTXT = f"{Initials}-{the_month}/{str(the_year)[-2:]} {MappingPacketType} from {AINFROM_str} into {AINTO_str} for {ForYear}"
+    logging.info(f"Generated MemoTXT: {MemoTXT}")
+
+    PDESC = f"{MappingPacketType} for {ForYear}"
+
+    if not AINLIST or not PFILE or not PNUMBER or not TREVIEW or not MappingPacketType or not Initials or not MemoTXT or not PDESC:
+        messagebox.showerror("Input Error", "All input fields are required.")
+        return
+
+    root.destroy()  # Close the GUI
+
+def setup_gui():
+    root = tk.Tk()
+    root.title("User Input Form")
+    setup_widgets(root)
+    return root
+
+def validate_initials(action, value_if_allowed):
+    # Allow only alphabetic characters and limit to 3 characters
+    if action == '1':  # 1 means an insertion operation
+        if len(value_if_allowed) > 3:
+            return False
+        return value_if_allowed.isalpha()
+    return True
+
+def setup_widgets(root):
+    global entry_ainfrom, entry_ainto, entry_pfile, entry_pnumber, entry_treview, combobox_mappingpackettype, entry_initials, for_year_combobox
+
+    # Get the current and next year
+    current_year = datetime.now().year
+    next_year = current_year + 1
+
+    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=1, padx=10, pady=5)
+    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
+    for_year_combobox.grid(column=1, row=1, padx=10, pady=5)
+    for_year_combobox.current(0)  # Set default selection to the current year
+
+    # AINFROM input
+    ttk.Label(root, text="List AINs FROM (separated by comma):").grid(column=0, row=0, padx=10, pady=5)
+    entry_ainfrom = ttk.Entry(root, width=50)
+    entry_ainfrom.grid(column=1, row=0, padx=10, pady=5)
+
+    # AINTO input
+    ttk.Label(root, text="List AINs TO (separated by comma):").grid(column=0, row=1, padx=10, pady=5)
+    entry_ainto = ttk.Entry(root, width=50)
+    entry_ainto.grid(column=1, row=1, padx=10, pady=5)
+
+    # Existing fields continue below...
+    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=2, padx=10, pady=5)
+    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
+    for_year_combobox.grid(column=1, row=2, padx=10, pady=5)
+    for_year_combobox.current(0)  # Set default selection to the current year
+
+    ttk.Label(root, text="Filing Date (Top Date):").grid(column=0, row=3, padx=10, pady=5)
+    entry_pfile = ttk.Entry(root, width=50)
+    entry_pfile.grid(column=1, row=3, padx=10, pady=5)
+
+    ttk.Label(root, text="Permit Number (Bottom Date):").grid(column=0, row=4, padx=10, pady=5)
+    entry_pnumber = ttk.Entry(root, width=50)
+    entry_pnumber.grid(column=1, row=4, padx=10, pady=5)
+
+    ttk.Label(root, text="Timber or AG review? Y/N:").grid(column=0, row=5, padx=10, pady=5)
+    entry_treview = ttk.Entry(root, width=50)
+    entry_treview.grid(column=1, row=5, padx=10, pady=5)
+
+    ttk.Label(root, text="Select Mapping Packet Type:").grid(column=0, row=6, padx=10, pady=5)
+    
+    mapping_packet_types = [
+        "MERGE", "SPLIT", "BLA", "LLA", "RW VACATION", "RW SPLIT", "REDESCRIBE",
+        "RW AUDIT", "RW Cat19", "AIRPORT LEASE NEW PARCEL", "PLAT VACATION",
+        "PARCEL DELETED", "ACERAGE AUDIT", "NEW PLAT"
+    ]
+    combobox_mappingpackettype = ttk.Combobox(root, values=mapping_packet_types, width=47)
+    combobox_mappingpackettype.grid(column=1, row=6, padx=10, pady=5)
+    combobox_mappingpackettype.current(0)  # Set default selection to the first item
+
+    # Validation for the Initials Entry
+    vcmd = (root.register(validate_initials), '%d', '%P')
+    
+    ttk.Label(root, text="Enter (3) Initials:").grid(column=0, row=7, padx=10, pady=5)
+    entry_initials = ttk.Entry(root, width=50, validate='key', validatecommand=vcmd)
+    entry_initials.grid(column=1, row=7, padx=10, pady=5)
+    entry_initials.insert(0, "DGW")
+
+    submit_button = ttk.Button(root, text="Submit", command=on_submit)
+    submit_button.grid(column=0, row=8, columnspan=2, pady=20)
+
+
+root = setup_gui()
+
+### Graphic User Interface (GUI) Logic - END
+
+
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+# EXAMPLES OF USE CASES
+
+if not AINLIST or not MemoTXT or not PDESC or not PFILE or not PNUMBER or not TREVIEW:
+    logging.error("All input fields are required.")
+    exit()
+
+conn = connect_to_database(db_connection_string)
+cursor = conn.cursor()
+
+# The query should accommodate multiple AINs in a list
+query = f"SELECT TRIM(pm.AIN), pm.LegalAcres FROM TSBv_Parcelmaster AS pm WHERE pm.AIN IN ({','.join(AINLIST)})"
+rows = execute_query(cursor, query)
+
+pyautogui.typewrite(str(DBAIN))
+logging.info(f"Sent AIN {DBAIN}.")
+
+pyautogui.typewrite(MemoTXT)
+
+pyautogui.typewrite(PNUMBER)
+
+
+
+
+```
+
+
+
+
+## 3. GLOBAL LOGICS - LOGIC FUNCTIONS
+
+
+#### CAPS LOCK
+
+```{python eval=FALSE, include=TRUE} 
+
+# THIS IS THE FUNCTION
+
+# CAPS Lock Logic
+def is_capslock_on():
+    # This will return 1 if CAPS LOCK is on, 0 if it's off
+    hllDll = ctypes.WinDLL("User32.dll")
+    VK_CAPITAL = 0x14
+    return hllDll.GetKeyState(VK_CAPITAL) & 1
+
+def ensure_capslock_off():
+    if is_capslock_on():
+        pyautogui.press('capslock')
+        logging.info("CAPS LOCK was on. It has been turned off.")
+    else:
+        logging.info("CAPS LOCK is already off.")
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+    ensure_capslock_off()
+
+    pyautogui.typewrite(MemoTXT)
+    time.sleep(1)
+
+```
+
+
+
+#### SET FOCUS
+
+```{python eval=FALSE, include=TRUE} 
+
+# THIS IS THE FUNCTION
+
+"""
+SET FOCUS LOGIC - can be called to set focus to different screens at different points in the process
+"""
+
+def set_focus_and_type(window_title, keys):
+    window = pyautogui.getWindowsWithTitle(window_title)
+    if window:
+        window[0].activate()
+        pyautogui.typewrite(keys)
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+set_focus_and_type('ProVal', DBAIN)
+time.sleep(1)
+logging.info("set_focus_and_type")
+
+```
+
+
+#### PRESS & CLICK KEY LOGIC
+
+```{python eval=FALSE, include=TRUE} 
+
+# THIS IS THE FUNCTION
+"""
+PRESS & CLICK LOGIC -- sets logic for various kinds of click tasks
+"""
+
+def press_key_with_modifier_multiple_times(modifier, key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.hotkey(modifier, key)
+
+def press_key_multiple_times(key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.press(key)
+
+def triple_click(x, y):
+    pyautogui.click(x, y, clicks=3)
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+
+press_key_with_modifier_multiple_times('shift', 'tab', 6)
+time.sleep(1)
+
+
+press_key_multiple_times('up', 12)
+logging.info("press_key_multiple_times")
+
+
+
+```
+
+
+
+## 4. GLOBAL LOGICS - SCREEN HANDLING FUNCTIONS
+
+
+### Connections: OCR and Image Paths
+
+#### OCR
+
+OCR stands for Optical Character Recognition. It is a technology used to convert different types of documents, such as scanned paper documents, PDF files, or images captured by a digital camera, into editable and searchable data. OCR software analyzes the shapes and patterns of the characters in the image and translates them into machine-readable text.
+
+In our use-case, OCR can be used to read ProVal and Aumentum screens, match a stored image to that screenshot, find the location of that image on the current screen, and then click that image.
+
+OCR requires downloading and installing the `tesseract` OCR tool from the GitHub repo.
+
+```{python eval=FALSE, include=TRUE} 
+
+
+"""
+# GLOBAL LOGICS - SCREEN HANDLING FUNCTIONS
+"""
+
+### Connections: OCR and Image Paths
+
+#### OCR
+
+# This OCR program is required to work with this script, it is available on GitHub
+# Set the tesseract executable path if not in the system path
+# Update this path as necessary by user you will need to download and install tesseract from GitHub
+# Link https://github.com/tesseract-ocr/tesseract
+# Link https://github.com/UB-Mannheim/tesseract/wiki
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\dwolfe\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+
+
+#### Image Paths - Active and Inactive
+land_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab_active.PNG'
+]
+land_base_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab_active.PNG'
+]
+permits_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab_active.PNG'
+]
+
+permits_add_permit_button = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_permit_button.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_permit_button_active.PNG'
+]
+
+#### Image Paths - Single Images Only
+duplicate_memo_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_memo_duplicate.PNG'
+add_field_visit_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_fieldvisit_button.PNG'
+aggregate_land_type_add_button = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_aggregate_land_type_add_button.PNG'
+farm_total_acres_image = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_farm_total_acres.PNG'
+permit_description = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permit_description.PNG'
+
+
+
+```
+
+
+
+
+#### 1 CAPTURE SCREEN IN GREYSCALE & 2 CLICK USING A REFERENCE GREYSCALE SCREENSHOT TO A STORED GREYSCALE IMAGE INCLUDES ABILITY TO CLICK RELATIVE POSITION
+
+-   `capture_and_convert_screenshot`, captures the screen in greyscale
+-   `click_on_image`, pulls the captured screen from `capture_and_convert_screenshot` and determines location
+
+```{python eval=FALSE, include=TRUE} 
+
+# 1 CAPTURE SCREEN IN GREYSCALE
+def capture_and_convert_screenshot():
+    # Capture the screenshot using pyautogui
+    screenshot = pyautogui.screenshot()
+
+    # Convert the screenshot to a numpy array, then to BGR, and finally to greyscale
+    screenshot_np = np.array(screenshot)
+    screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
+    grey_screenshot = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
+
+    return grey_screenshot
+# 2 CLICK USING A REFERENCE GREYSCALE SCREENSHOT TO A STORED GREYSCALE IMAGE INCLUDES ABILITY TO CLICK RELATIVE POSITION
+def click_on_image(image_path, direction='center', offset=10, inset=7, confidence=0.8):
+    grey_screenshot = capture_and_convert_screenshot()
+
+    # Load the reference image in greyscale
+    ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if ref_image is None:
+        logging.error(f"Failed to load reference image from {image_path}")
+        return False
+
+    # Perform template matching
+    result = cv2.matchTemplate(grey_screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= confidence:
+        top_left = max_loc
+        h, w = ref_image.shape
+        right = top_left[0] + w
+        bottom = top_left[1] + h
+
+        # Calculate click position based on direction and inset/offset
+        click_positions = {
+            'right': (right + offset, top_left[1] + h // 2),
+            'left': (top_left[0] - offset, top_left[1] + h // 2),
+            'above': (top_left[0] + w // 2, top_left[1] - offset),
+            'below': (top_left[0] + w // 2, bottom + offset),
+            'bottom_right_corner': (right - inset, bottom - inset),
+            'bottom_left_corner': (top_left[0] + inset, bottom - inset),
+            'top_right_corner': (right - inset, top_left[1] + inset),
+            'top_left_corner': (top_left[0] + inset, top_left[1] + inset),
+            'bottom_center': (top_left[0] + w // 2, bottom - inset),
+            'top_center': (top_left[0] + w // 2, top_left[1] + inset),
+            'center': (top_left[0] + w // 2, top_left[1] + h // 2)
+        }
+        click_x, click_y = click_positions[direction]
+
+        # Perform the click
+        pyautogui.click(click_x, click_y)
+        logging.info(f"Clicked {direction} of the image at ({click_x}, {click_y})")
+        return True
+    else:
+        logging.warning(f"No good match found at the confidence level of {confidence}.")
+        return False
+
+        """
+        # Ref Function click_on_image in the following functions 3, 4, 5, etc... 
+        # These reference functions can be called in the final automation script 
+        """
+
+
+```
+
+
+
+#### 3 USING click_on_image FUNCTION
+
+Both version of the following click_images functions will call an image and click on it. However, in some cases, the image may look slightly different if it is already selected vs if it is not. In those cases, having more than one optoin to click is helpful. Therefore:
+-   `click_images_multiple`, will cycle through image options (selected vs not-selected, or, active vs inactive)
+-   `click_image_single`, will click the single stored image
+
+```{python eval=FALSE, include=TRUE} 
+
+# 3 USING click_on_image FUNCTION
+#Specific Click Functions Here, See click_on_image for directionals, and image pathes for images
+def click_images_multiple(paths, direction='center', offset=50, inset=7, confidence=0.75):
+    for image_path in paths:
+        logging.info(f"Trying to click {direction} on image: {image_path}")
+        if click_on_image(image_path, direction=direction, offset=offset, inset=inset, confidence=confidence):
+            logging.info(f"Successfully clicked {direction} of {image_path}.")
+            return True
+        else:
+            logging.warning(f"Failed to click {direction} of {image_path}.")
+    return False
+
+def click_image_single(image_path, direction='center', offset=50, inset=7, confidence=0.75):
+    logging.info(f"Trying to click {direction} on image: {image_path}")
+    if click_on_image(image_path, direction=direction, offset=offset, inset=inset, confidence=confidence):
+        logging.info(f"Successfully clicked {direction} of {image_path}.")
+        return True
+    else:
+        logging.warning(f"Failed to click {direction} of {image_path}.")
+    return False
+
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+    # How to use these click_images_multiple & click_image_single functions in script
+ 
+    # Click below all specified images
+    if click_images_multiple(multiple_image_path_name_here, direction='below', offset=100, confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the center of a single image
+    if click_image_single(single_image_path_name_here, direction='center', confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the bottom right corner of a single image
+    if click_image_single(single_image_path_name_here, direction='bottom_right_corner', inset=10, confidence=0.8):
+        logging.info("Clicked successfully.")
+    
+    # Click to right of permit_description, by calling offset=5 it was just barely below the image, which is what I wanted
+    if click_image_single(permit_description, direction='below', offset=5, confidence=0.8):
+        logging.info("Clicked successfully permit_description.")
+    time.sleep(1)
+
+```
+
+
+#### 4 CHECKING IF IMAGE IS PRESENT
+
+
+-   `is_image_found`, performs a simple logical test to see if the image is present, which can then be used to create branched senarios.
+
+
+```{python eval=FALSE, include=TRUE} 
+
+# 4 CHECKING IF IMAGE IS PRESENT
+def is_image_found(image_path, confidence=0.8):
+    """
+    Check if an image is present on the screen with a specified confidence level.
+    :param image_path: Path to the image file to be checked.
+    :param confidence: The confidence level for the image matching.
+    :return: bool - True if image is found, False otherwise.
+    """
+    # Use the existing function to capture and convert the screenshot
+    grey_screenshot = capture_and_convert_screenshot()
+
+    # Load the reference image in greyscale
+    ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if ref_image is None:
+        logging.error(f"Failed to load reference image from {image_path}")
+        return False
+
+    # Perform template matching
+    result = cv2.matchTemplate(grey_screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, _ = cv2.minMaxLoc(result)
+
+    found = max_val >= confidence
+    if found:
+        logging.info(f"Image found with confidence {max_val}: {image_path}")
+    else:
+        logging.info(f"Image not found with sufficient confidence {confidence}: {image_path}")
+    
+    return found
+
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+# How to use the is_image_found function below in script:
+
+# Check if the image is found and decide based on that
+if is_image_found(image_path_name_here, confidence=0.8):
+    logging.info("Image was found - executing related tasks.")
+    # Perform tasks related to the image being found
+else:
+    logging.info("Image was not found - executing alternative tasks.")
+    # Perform alternative tasks
+
+
+# Example:
+
+    # Check if the image is found and decide based on that
+    if is_image_found(farm_total_acres_image, confidence=0.8):
+        logging.info("Image was found - executing related tasks.")
+        # Perform tasks related to the image being found
+
+        # Click to the right of Farm Acres
+        if click_image_single(farm_total_acres_image, direction='right', offset=15, confidence=0.8):
+            logging.info("Clicked successfully farm_total_acres_image.")
+        time.sleep(1)
+
+        # Delete the contents and send DBACRE
+        pyautogui.press('delete')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(str(DBACRE))
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+    else:
+        logging.info("farm_total_acres_image Image was not found - executing alternative tasks.")
+        # Perform alternative tasks
+
+        # Click to the right of Farm Acres
+        if click_image_single(aggregate_land_type_add_button, direction='bottom_right_corner', inset=10, confidence=0.8):
+            logging.info("Clicked successfully aggregate_land_type_add_button.")
+        time.sleep(1)
+
+        # Send the DBACRE value after clicking the fallback button
+        pyautogui.typewrite('f')
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(str(DBACRE))
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+
+
+
+```
+
+
+
+
+
+
+#### 5 READ TEXT FROM SCREEN
+
+
+-   `check_for_text_on_screen`, performs a check to see if particular text is found on the screen at this stage in the script, then branches based on the outcome.
+
+```{python eval=FALSE, include=TRUE} 
+
+# 5 READ TEXT FROM SCREEN
+def check_for_text_on_screen(target_text):
+    """
+    Captures the screen, converts it to greyscale, performs OCR, and checks for the specified text.
+    
+    :param target_text: Text to search for in the OCR results.
+    :return: True if the text is found, False otherwise.
+    """
+    grey_screenshot = capture_and_convert_screenshot()
+    grey_screenshot_pil = Image.fromarray(grey_screenshot)  # Convert numpy array back to a PIL Image
+    screen_text = pytesseract.image_to_string(grey_screenshot_pil)
+    return target_text in screen_text
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+
+# How to use the check_for_text_on_screen function below in script:
+
+# Define the specific text you're looking for
+specific_text = "text_you_want_to_check_here"
+
+# Use the variable in your function call and print statements
+if check_for_text_on_screen(specific_text):
+    logging.info(f"Found '{specific_text}' on the screen.")
+else:
+    logging.info(f"Did not find '{specific_text}' on the screen.")
+
+
+
+
+
+# Example:
+    # Process: Enter Land Memos
+    # CHECK IF LAND
+    # Define the specific text you're looking for
+    specific_text = "LAND"
+    # Use the variable in your function call and print statements
+    if check_for_text_on_screen(specific_text):
+        logging.info(f"Found '{specific_text}' on the screen.")
+    
+        pyautogui.press('l')
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(MemoTXT)
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+    else:
+        logging.info(f"Did not find '{specific_text}' on the screen.")
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        pyautogui.press('l')
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(MemoTXT)
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+
+```
+
+
+
+
+# KEYBOARD AUTOMATION -- USING `pyautogui` TO AUTOMATE VARIOUS KEYBOARD ACTIONS
+
+### pyautogui automations
+
+The `pyautogui` library can be used either directly in the script or as part of a larger function, but examples below.
+
+#### `pyautogui` As stand-alone
+
+-   pyautogui.press()
+-   pyautogui.typewrite()
+-   pyautogui.hotkey()
+
+
+#### `pyautogui` As part of a function
+
+-   press_key_multiple_times
+-   press_key_with_modifier_multiple_times
+
+-   pyautogui.click() > This one is only used once in my script, as part of a function, and then that function is called many times in various ways.
+
+
+```{python eval=FALSE, include=TRUE} 
+
+
+#### `pyautogui` As stand-alone
+
+
+# pyautogui.typewrite()
+
+pyautogui.typewrite(str(DBACRE))
+pyautogui.typewrite(str(DBAIN))
+pyautogui.typewrite(MemoTXT)
+pyautogui.typewrite(PNUMBER)
+pyautogui.typewrite('f')
+pyautogui.typewrite(f"04/01/{ForYear}")
+pyautogui.typewrite(f"{PDESC} FOR TIMBER REVIEW")
+pyautogui.typewrite('p')
+
+
+
+# pyautogui.hotkey()
+pyautogui.hotkey('ctrl', 'o')
+pyautogui.hotkey('ctrl', 'shift', 'm')
+
+
+
+# pyautogui.press()
+pyautogui.press(['tab'])
+pyautogui.press(['delete'])
+pyautogui.press('enter')
+pyautogui.press('l')
+pyautogui.press('space')
+pyautogui.press('right')
+
+
+
+
+
+
+
+
+#### `pyautogui` As part of a function
+
+def press_key_multiple_times(key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.press(key)
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+press_key_multiple_times('up', 12)
+press_key_multiple_times('down', 4)
+press_key_multiple_times(['tab'], 3)
+
+
+
+
+
+
+def press_key_with_modifier_multiple_times(modifier, key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.hotkey(modifier, key)
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+press_key_with_modifier_multiple_times('shift', 'tab', 6)
+
+
+
+
+
+
+# pyautogui.click()
+
+# 2 CLICK USING A REFERENCE GREYSCALE SCREENSHOT TO A STORED GREYSCALE IMAGE INCLUDES ABILITY TO CLICK RELATIVE POSITION
+def click_on_image(image_path, direction='center', offset=10, inset=7, confidence=0.8):
+    grey_screenshot = capture_and_convert_screenshot()
+
+    # Load the reference image in greyscale
+    ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if ref_image is None:
+        logging.error(f"Failed to load reference image from {image_path}")
+        return False
+
+    # Perform template matching
+    result = cv2.matchTemplate(grey_screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= confidence:
+        top_left = max_loc
+        h, w = ref_image.shape
+        right = top_left[0] + w
+        bottom = top_left[1] + h
+
+        # Calculate click position based on direction and inset/offset
+        click_positions = {
+            'right': (right + offset, top_left[1] + h // 2),
+            'left': (top_left[0] - offset, top_left[1] + h // 2),
+            'above': (top_left[0] + w // 2, top_left[1] - offset),
+            'below': (top_left[0] + w // 2, bottom + offset),
+            'bottom_right_corner': (right - inset, bottom - inset),
+            'bottom_left_corner': (top_left[0] + inset, bottom - inset),
+            'top_right_corner': (right - inset, top_left[1] + inset),
+            'top_left_corner': (top_left[0] + inset, top_left[1] + inset),
+            'bottom_center': (top_left[0] + w // 2, bottom - inset),
+            'top_center': (top_left[0] + w // 2, top_left[1] + inset),
+            'center': (top_left[0] + w // 2, top_left[1] + h // 2)
+        }
+        click_x, click_y = click_positions[direction]
+
+        
+        # pyautogui.click()
+        # Perform the click
+        pyautogui.click(click_x, click_y)
+
+
+        logging.info(f"Clicked {direction} of the image at ({click_x}, {click_y})")
+        return True
+    else:
+        logging.warning(f"No good match found at the confidence level of {confidence}.")
+        return False
+
+```
+
+
+
+# PUTTING IT ALL TOGETHER INTO A FINAL SCRIPT
+
+## EXAMPLE: `MappingPacketsAutomation_FINAL.py`
+
+The previous example portions were taken from the `MappingPacketsAutomation_FINAL.py` script, here is the final script in it's final form.
+
+```{python eval=FALSE, include=TRUE} 
+
+
+
+import subprocess
+import pkg_resources
+import sys
+
+def install_if_missing(package):
+    try:
+        pkg_resources.get_distribution(package)
+    except pkg_resources.DistributionNotFound:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# List of packages you want to ensure are installed
+packages = [
+    "pyautogui",       # For automating GUI interactions
+    "pyodbc",          # For database connections
+    "numpy",           # For numerical operations
+    "keyboard",        # For detecting key presses
+    "pytesseract",     # For OCR (Optical Character Recognition)
+    "Pillow",          # For image processing related to Image
+    "opencv-python",   # For image processing (cv2)
+    "tkcalendar"       # For calendar widget in Tkinter
+]
+
+# Apply the install_if_missing function to each package
+for package in packages:
+    install_if_missing(package)
+
+# After ensuring all packages are installed, you can import them as needed in your script
+import pyautogui  # For automating GUI interactions like mouse movements and clicks
+import pyodbc  # For establishing database connections and executing SQL queries
+import time  # For adding delays and managing time-related functions
+import numpy as np  # For numerical operations and handling arrays/matrices
+import keyboard  # For detecting and handling keyboard key presses
+import threading  # For running background tasks and creating concurrent threads
+import tkinter as tk  # For creating basic GUI elements in Python applications
+from tkinter import ttk, messagebox  # For advanced Tkinter widgets and displaying dialog boxes
+import pytesseract  # For OCR (Optical Character Recognition) to read text from images
+from PIL import Image  # For working with image data
+import cv2  # For image processing and computer vision tasks (OpenCV library)
+import ctypes  # For interacting with C data types and Windows API functions
+from tkcalendar import DateEntry  # For adding a calendar widget to Tkinter GUIs
+import logging  # For logging events, errors, and information during script execution
+from datetime import datetime # For handling dates and times
+
+
+
+"""
+# GLOBAL LOGICS - CONNECTIONS
+"""
+
+
+### Logging
+
+logging.basicConfig(
+    filename='S:/Common/Comptroller Tech/Reports/Python/Auto_Mapping_Packet/MappingPacketsAutomation.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logging.getLogger().addHandler(console_handler)
+
+
+### Kill Script
+
+# Global flag to indicate if the script should be stopped
+stop_script = False
+
+def monitor_kill_key():
+    global stop_script
+    logging.info("Kill key monitor started. Press 'esc' to stop the script.")
+    keyboard.wait('esc')  # Set 'esc' as the kill key
+    stop_script = True
+    logging.info("Kill key pressed. Stopping the script...")
+
+# Start the kill key monitoring in a separate thread
+kill_key_thread = threading.Thread(target=monitor_kill_key)
+kill_key_thread.daemon = True
+kill_key_thread.start()
+
+
+
+### Connections: Database
+
+# Configuration for database connection
+db_connection_string = (
+    "Driver={SQL Server};"
+    "Server=astxdbprod;"
+    "Database=GRM_Main;"
+    "Trusted_Connection=yes;"
+)
+
+# Function to connect to the database
+def connect_to_database(connection_string):
+    return pyodbc.connect(connection_string)
+
+# Function to execute a SQL query and fetch data
+def execute_query(cursor, query):
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+### Graphic User Interface (GUI) Logic - START
+
+# Initialize variables to avoid 'NameError', will call them into the final product after variable selections
+MemoTXT = ""
+PDESC = ""
+
+def on_submit():
+    ensure_capslock_off()
+
+    global AINLIST, AINFROM, AINTO, PDESC, PFILE, PNUMBER, TREVIEW, MappingPacketType, Initials, MemoTXT, ForYear
+
+    # Collect inputs for AINFROM and AINTO, and split by commas
+    AINFROM = [ain.strip() for ain in entry_ainfrom.get().strip().upper().split(",")]
+    AINTO = [ain.strip() for ain in entry_ainto.get().strip().upper().split(",")]
+
+    # Combine the AINFROM and AINTO lists, removing duplicates
+    combined_ain_list = list(set(AINFROM + AINTO))
+
+    # Replace AINLIST with the combined list
+    AINLIST = combined_ain_list
+
+    PFILE = entry_pfile.get().strip().upper()
+    PNUMBER = entry_pnumber.get().strip().upper()
+    TREVIEW = entry_treview.get().strip().upper()
+    MappingPacketType = combobox_mappingpackettype.get().strip().upper()
+    Initials = entry_initials.get().strip().upper()
+    ForYear = for_year_combobox.get().strip()  # Get the selected year
+
+    the_month = datetime.now().month
+    the_day = datetime.now().day
+    the_year = datetime.now().year
+    
+    #the_month = datetime.datetime.now().month
+    #the_day = datetime.datetime.now().day
+    #the_year = datetime.datetime.now().year
+
+
+    AINFROM_str = ', '.join(AINFROM)
+    AINTO_str = ', '.join(AINTO)
+    MemoTXT = f"{Initials}-{the_month}/{str(the_year)[-2:]} {MappingPacketType} from {AINFROM_str} into {AINTO_str} for {ForYear}"
+    logging.info(f"Generated MemoTXT: {MemoTXT}")
+
+    PDESC = f"{MappingPacketType} for {ForYear}"
+
+    if not AINLIST or not PFILE or not PNUMBER or not TREVIEW or not MappingPacketType or not Initials or not MemoTXT or not PDESC:
+        messagebox.showerror("Input Error", "All input fields are required.")
+        return
+
+    root.destroy()  # Close the GUI
+
+def setup_gui():
+    root = tk.Tk()
+    root.title("User Input Form")
+    setup_widgets(root)
+    return root
+
+def validate_initials(action, value_if_allowed):
+    # Allow only alphabetic characters and limit to 3 characters
+    if action == '1':  # 1 means an insertion operation
+        if len(value_if_allowed) > 3:
+            return False
+        return value_if_allowed.isalpha()
+    return True
+
+def setup_widgets(root):
+    global entry_ainfrom, entry_ainto, entry_pfile, entry_pnumber, entry_treview, combobox_mappingpackettype, entry_initials, for_year_combobox
+
+    # Get the current and next year
+    current_year = datetime.now().year
+    next_year = current_year + 1
+
+    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=1, padx=10, pady=5)
+    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
+    for_year_combobox.grid(column=1, row=1, padx=10, pady=5)
+    for_year_combobox.current(0)  # Set default selection to the current year
+
+    # AINFROM input
+    ttk.Label(root, text="List AINs FROM (separated by comma):").grid(column=0, row=0, padx=10, pady=5)
+    entry_ainfrom = ttk.Entry(root, width=50)
+    entry_ainfrom.grid(column=1, row=0, padx=10, pady=5)
+
+    # AINTO input
+    ttk.Label(root, text="List AINs TO (separated by comma):").grid(column=0, row=1, padx=10, pady=5)
+    entry_ainto = ttk.Entry(root, width=50)
+    entry_ainto.grid(column=1, row=1, padx=10, pady=5)
+
+    # Existing fields continue below...
+    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=2, padx=10, pady=5)
+    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
+    for_year_combobox.grid(column=1, row=2, padx=10, pady=5)
+    for_year_combobox.current(0)  # Set default selection to the current year
+
+    ttk.Label(root, text="Filing Date (Top Date):").grid(column=0, row=3, padx=10, pady=5)
+    entry_pfile = ttk.Entry(root, width=50)
+    entry_pfile.grid(column=1, row=3, padx=10, pady=5)
+
+    ttk.Label(root, text="Permit Number (Bottom Date):").grid(column=0, row=4, padx=10, pady=5)
+    entry_pnumber = ttk.Entry(root, width=50)
+    entry_pnumber.grid(column=1, row=4, padx=10, pady=5)
+
+    ttk.Label(root, text="Timber or AG review? Y/N:").grid(column=0, row=5, padx=10, pady=5)
+    entry_treview = ttk.Entry(root, width=50)
+    entry_treview.grid(column=1, row=5, padx=10, pady=5)
+
+    ttk.Label(root, text="Select Mapping Packet Type:").grid(column=0, row=6, padx=10, pady=5)
+    
+    mapping_packet_types = [
+        "MERGE", "SPLIT", "BLA", "LLA", "RW VACATION", "RW SPLIT", "REDESCRIBE",
+        "RW AUDIT", "RW Cat19", "AIRPORT LEASE NEW PARCEL", "PLAT VACATION",
+        "PARCEL DELETED", "ACERAGE AUDIT", "NEW PLAT"
+    ]
+    combobox_mappingpackettype = ttk.Combobox(root, values=mapping_packet_types, width=47)
+    combobox_mappingpackettype.grid(column=1, row=6, padx=10, pady=5)
+    combobox_mappingpackettype.current(0)  # Set default selection to the first item
+
+    # Validation for the Initials Entry
+    vcmd = (root.register(validate_initials), '%d', '%P')
+    
+    ttk.Label(root, text="Enter (3) Initials:").grid(column=0, row=7, padx=10, pady=5)
+    entry_initials = ttk.Entry(root, width=50, validate='key', validatecommand=vcmd)
+    entry_initials.grid(column=1, row=7, padx=10, pady=5)
+    entry_initials.insert(0, "DGW")
+
+    submit_button = ttk.Button(root, text="Submit", command=on_submit)
+    submit_button.grid(column=0, row=8, columnspan=2, pady=20)
+
+
+root = setup_gui()
+
+### Graphic User Interface (GUI) Logic - END
+
+
+
+
+"""
+# GLOBAL LOGICS - LOGIC FUNCTIONS
+"""
+
+#### CAPS LOCK
+def is_capslock_on():
+    # This will return 1 if CAPS LOCK is on, 0 if it's off
+    hllDll = ctypes.WinDLL("User32.dll")
+    VK_CAPITAL = 0x14
+    return hllDll.GetKeyState(VK_CAPITAL) & 1
+
+def ensure_capslock_off():
+    if is_capslock_on():
+        pyautogui.press('capslock')
+        logging.info("CAPS LOCK was on. It has been turned off.")
+    else:
+        logging.info("CAPS LOCK is already off.")
+
+#### SET FOCUS
+def set_focus_and_type(window_title, keys):
+    window = pyautogui.getWindowsWithTitle(window_title)
+    if window:
+        window[0].activate()
+        pyautogui.typewrite(keys)
+
+#### PRESS & CLICK KEY LOGIC
+def press_key_with_modifier_multiple_times(modifier, key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.hotkey(modifier, key)
+
+def press_key_multiple_times(key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.press(key)
+
+def triple_click(x, y):
+    pyautogui.click(x, y, clicks=3)
+
+
+"""
+# GLOBAL LOGICS - SCREEN HANDLING FUNCTIONS
+"""
+
+### Connections: OCR and Image Paths
+
+#### OCR
+
+# This OCR program is required to work with this script, it is available on GitHub
+# Set the tesseract executable path if not in the system path
+# Update this path as necessary by user you will need to download and install tesseract from GitHub
+# Link https://github.com/tesseract-ocr/tesseract
+# Link https://github.com/UB-Mannheim/tesseract/wiki
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\dwolfe\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+
+
+#### Image Paths - Active and Inactive
+land_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab_active.PNG'
+]
+land_base_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab_active.PNG'
+]
+permits_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab_active.PNG'
+]
+
+permits_add_permit_button = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_permit_button.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_permit_button_active.PNG'
+]
+
+#### Image Paths - Single Images Only
+duplicate_memo_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_memo_duplicate.PNG'
+add_field_visit_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_fieldvisit_button.PNG'
+aggregate_land_type_add_button = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_aggregate_land_type_add_button.PNG'
+farm_total_acres_image = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_farm_total_acres.PNG'
+permit_description = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permit_description.PNG'
+
+
+# 1 CAPTURE SCREEN IN GREYSCALE
+def capture_and_convert_screenshot():
+    # Capture the screenshot using pyautogui
+    screenshot = pyautogui.screenshot()
+
+    # Convert the screenshot to a numpy array, then to BGR, and finally to greyscale
+    screenshot_np = np.array(screenshot)
+    screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
+    grey_screenshot = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
+
+    return grey_screenshot
+# 2 CLICK USING A REFERENCE GREYSCALE SCREENSHOT TO A STORED GREYSCALE IMAGE INCLUDES ABILITY TO CLICK RELATIVE POSITION
+def click_on_image(image_path, direction='center', offset=10, inset=7, confidence=0.8):
+    grey_screenshot = capture_and_convert_screenshot()
+
+    # Load the reference image in greyscale
+    ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if ref_image is None:
+        logging.error(f"Failed to load reference image from {image_path}")
+        return False
+
+    # Perform template matching
+    result = cv2.matchTemplate(grey_screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= confidence:
+        top_left = max_loc
+        h, w = ref_image.shape
+        right = top_left[0] + w
+        bottom = top_left[1] + h
+
+        # Calculate click position based on direction and inset/offset
+        click_positions = {
+            'right': (right + offset, top_left[1] + h // 2),
+            'left': (top_left[0] - offset, top_left[1] + h // 2),
+            'above': (top_left[0] + w // 2, top_left[1] - offset),
+            'below': (top_left[0] + w // 2, bottom + offset),
+            'bottom_right_corner': (right - inset, bottom - inset),
+            'bottom_left_corner': (top_left[0] + inset, bottom - inset),
+            'top_right_corner': (right - inset, top_left[1] + inset),
+            'top_left_corner': (top_left[0] + inset, top_left[1] + inset),
+            'bottom_center': (top_left[0] + w // 2, bottom - inset),
+            'top_center': (top_left[0] + w // 2, top_left[1] + inset),
+            'center': (top_left[0] + w // 2, top_left[1] + h // 2)
+        }
+        click_x, click_y = click_positions[direction]
+
+        # Perform the click
+        pyautogui.click(click_x, click_y)
+        logging.info(f"Clicked {direction} of the image at ({click_x}, {click_y})")
+        return True
+    else:
+        logging.warning(f"No good match found at the confidence level of {confidence}.")
+        return False
+
+        """
+        # Ref Function click_on_image in the following functions 3, 4, 5, etc... 
+        # These reference functions can be called in the final automation script 
+        """
+
+# 3 USING click_on_image FUNCTION
+#Specific Click Functions Here, See click_on_image for directionals, and image pathes for images
+def click_images_multiple(paths, direction='center', offset=50, inset=7, confidence=0.75):
+    for image_path in paths:
+        logging.info(f"Trying to click {direction} on image: {image_path}")
+        if click_on_image(image_path, direction=direction, offset=offset, inset=inset, confidence=confidence):
+            logging.info(f"Successfully clicked {direction} of {image_path}.")
+            return True
+        else:
+            logging.warning(f"Failed to click {direction} of {image_path}.")
+    return False
+
+def click_image_single(image_path, direction='center', offset=50, inset=7, confidence=0.75):
+    logging.info(f"Trying to click {direction} on image: {image_path}")
+    if click_on_image(image_path, direction=direction, offset=offset, inset=inset, confidence=confidence):
+        logging.info(f"Successfully clicked {direction} of {image_path}.")
+        return True
+    else:
+        logging.warning(f"Failed to click {direction} of {image_path}.")
+    return False
+
+    """
+    # How to use these click_images_multiple & click_image_single functions in script
+ 
+    # Click below all specified images
+    if click_images_multiple(multiple_image_path_name_here, direction='below', offset=100, confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the center of a single image
+    if click_image_single(single_image_path_name_here, direction='center', confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the bottom right corner of a single image
+    if click_image_single(single_image_path_name_here, direction='bottom_right_corner', inset=10, confidence=0.8):
+        logging.info("Clicked successfully.")
+    
+    # Click to right of permit_description, by calling offset=5 it was just barely below the image, which is what I wanted
+    if click_image_single(permit_description, direction='below', offset=5, confidence=0.8):
+        logging.info("Clicked successfully permit_description.")
+    time.sleep(1)
+
+
+    """
+
+
+# 4 CHECKING IF IMAGE IS PRESENT
+def is_image_found(image_path, confidence=0.8):
+    """
+    Check if an image is present on the screen with a specified confidence level.
+    :param image_path: Path to the image file to be checked.
+    :param confidence: The confidence level for the image matching.
+    :return: bool - True if image is found, False otherwise.
+    """
+    # Use the existing function to capture and convert the screenshot
+    grey_screenshot = capture_and_convert_screenshot()
+
+    # Load the reference image in greyscale
+    ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if ref_image is None:
+        logging.error(f"Failed to load reference image from {image_path}")
+        return False
+
+    # Perform template matching
+    result = cv2.matchTemplate(grey_screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, _ = cv2.minMaxLoc(result)
+
+    found = max_val >= confidence
+    if found:
+        logging.info(f"Image found with confidence {max_val}: {image_path}")
+    else:
+        logging.info(f"Image not found with sufficient confidence {confidence}: {image_path}")
+    
+    return found
+
+    """
+    # How to use the is_image_found function below in script:
+
+    # Check if the image is found and decide based on that
+    if is_image_found(image_path_name_here, confidence=0.8):
+        logging.info("Image was found - executing related tasks.")
+        # Perform tasks related to the image being found
+    else:
+        logging.info("Image was not found - executing alternative tasks.")
+        # Perform alternative tasks
+
+    """
+
+
+# 5 READ TEXT FROM SCREEN
+def check_for_text_on_screen(target_text):
+    """
+    Captures the screen, converts it to greyscale, performs OCR, and checks for the specified text.
+    
+    :param target_text: Text to search for in the OCR results.
+    :return: True if the text is found, False otherwise.
+    """
+    grey_screenshot = capture_and_convert_screenshot()
+    grey_screenshot_pil = Image.fromarray(grey_screenshot)  # Convert numpy array back to a PIL Image
+    screen_text = pytesseract.image_to_string(grey_screenshot_pil)
+    return target_text in screen_text
+
+
+
+    """
+    # How to use the check_for_text_on_screen function below in script:
+
+    # Define the specific text you're looking for
+    specific_text = "text_you_want_to_check_here"
+
+    # Use the variable in your function call and print statements
+    if check_for_text_on_screen(specific_text):
+        logging.info(f"Found '{specific_text}' on the screen.")
+    else:
+        logging.info(f"Did not find '{specific_text}' on the screen.")
+    """
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+# Start the GUI event loop
+"""
+root.mainloop()
+
+if not AINLIST or not MemoTXT or not PDESC or not PFILE or not PNUMBER or not TREVIEW:
+    logging.error("All input fields are required.")
+    exit()
+
+"""
+Connect to the database, 
+pull a simple SQL query with two columns,
+then the  for row in rows assigns those columns as variables 
+"""
+
+conn = connect_to_database(db_connection_string)
+cursor = conn.cursor()
+
+# The query should accommodate multiple AINs in a list
+query = f"SELECT TRIM(pm.AIN), pm.LegalAcres FROM TSBv_Parcelmaster AS pm WHERE pm.AIN IN ({','.join(AINLIST)})"
+rows = execute_query(cursor, query)
+
+# Iterate through each row in the results
+for row in rows:
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+    DBAIN, DBACRE = row
+    ensure_capslock_off()
+
+    # Process each AIN individually
+    set_focus_and_type('ProVal', DBAIN)
+    time.sleep(1)
+    logging.info("set_focus_and_type")
+
+    """
+    Officially begins the automation and screen navigation
+    """
+
+
+    # Process: Open an AIN in ProVal
+    set_focus_and_type('ProVal', DBAIN)
+    time.sleep(1)
+    logging.info("set_focus_and_type")
+
+    pyautogui.hotkey('ctrl', 'o')
+    time.sleep(1)
+    logging.info("hotkey")
+
+    press_key_multiple_times('up', 12)
+    logging.info("press_key_multiple_times")
+    
+    press_key_multiple_times('down', 4)
+    logging.info("press_key_multiple_times")
+    
+    pyautogui.press(['tab'])
+    logging.info("press")
+    
+    pyautogui.press(['delete'])
+    logging.info("press")
+    
+    pyautogui.typewrite(str(DBAIN))
+    logging.info(f"Sent AIN {DBAIN}.")
+    time.sleep(1)
+
+    pyautogui.press('enter')
+    time.sleep(1)
+    logging.info("xxxxx")
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+
+
+
+
+
+    """
+    ## NOW BEGIN AUTOMATION STEPS FOR THIS TOOL
+    """
+
+    
+    # Process: Open Memos
+    pyautogui.hotkey('ctrl', 'shift', 'm')
+    time.sleep(1)
+
+
+
+    # Process: Enter Land Memos
+    # CHECK IF LAND
+    # Define the specific text you're looking for
+    specific_text = "LAND"
+    # Use the variable in your function call and print statements
+    if check_for_text_on_screen(specific_text):
+        logging.info(f"Found '{specific_text}' on the screen.")
+    
+        pyautogui.press('l')
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(MemoTXT)
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+    else:
+        logging.info(f"Did not find '{specific_text}' on the screen.")
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        pyautogui.press('l')
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(MemoTXT)
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        pyautogui.press('enter')
+        time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+
+
+    # Process: Enter Land Farm Acres
+
+    # Click Land_Tab
+    if click_images_multiple(land_tab_images, direction='center', offset=100, confidence=0.8):
+        logging.info("Clicked successfully land_tab_images.")
+    time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+    # Click Land_Base_Tab
+    if click_images_multiple(land_base_tab_images, direction='center', confidence=0.8):
+        logging.info("Clicked successfully land_base_tab_images.")
+    time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+    # Check if the image is found and decide based on that
+    if is_image_found(farm_total_acres_image, confidence=0.8):
+        logging.info("Image was found - executing related tasks.")
+        # Perform tasks related to the image being found
+
+        # Click to the right of Farm Acres
+        if click_image_single(farm_total_acres_image, direction='right', offset=15, confidence=0.8):
+            logging.info("Clicked successfully farm_total_acres_image.")
+        time.sleep(1)
+
+        # Delete the contents and send DBACRE
+        pyautogui.press('delete')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(str(DBACRE))
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+    else:
+        logging.info("farm_total_acres_image Image was not found - executing alternative tasks.")
+        # Perform alternative tasks
+
+        # Click to the right of Farm Acres
+        if click_image_single(aggregate_land_type_add_button, direction='bottom_right_corner', inset=10, confidence=0.8):
+            logging.info("Clicked successfully aggregate_land_type_add_button.")
+        time.sleep(1)
+
+        # Send the DBACRE value after clicking the fallback button
+        pyautogui.typewrite('f')
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        pyautogui.typewrite(str(DBACRE))
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+
+
+
+
+
+    # Process: Enter Permit 1/2
+
+    # Click Permits_Tab
+    if click_images_multiple(permits_tab_images, direction='center', inset=10, confidence=0.8):
+        logging.info("Clicked successfully permits_tab_images.")
+    time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+    
+    # Click Permits_Add_Button
+    if click_images_multiple(permits_add_permit_button, direction='center', offset=100, confidence=0.8):
+        logging.info("Clicked successfully permits_add_permit_button.")
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        # Send Permit Number
+        pyautogui.typewrite(PNUMBER)
+        time.sleep(1)
+
+        pyautogui.press(['tab'])
+        time.sleep(1)
+        
+        #Different down to Timber 2 vs Mandatory 11.
+        press_key_multiple_times('down', 11)
+        time.sleep(1)
+
+        press_key_multiple_times(['tab'], 3)
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        # Send Permit Filing Date
+        pyautogui.typewrite(PFILE)
+        time.sleep(1)
+
+        press_key_multiple_times(['tab'], 3)
+        time.sleep(1)
+
+        # Close Add Permit Pop-Up Box
+        pyautogui.press('space')
+        logging.info("Closing Add Permit pop-up, then waiting to send description")
+        time.sleep(3)
+    time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+    
+    # Click to right of permit_description
+    if click_image_single(permit_description, direction='below', offset=5, confidence=0.8):
+        logging.info("Clicked successfully permit_description.")
+    time.sleep(1)
+
+    ensure_capslock_off()
+
+    # Send Permit Description
+    pyautogui.typewrite(PDESC)
+    time.sleep(1)
+    logging.info("Send description")
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+
+    # Process: Enter Permit 2/2
+    # Click FieldVisit_Add_Button
+    if click_image_single(add_field_visit_image_path, direction='center', inset=10, confidence=0.8):
+        logging.info("Clicked successfully add_field_visit_image_path.")
+
+        # If found, complete adding Field Visit process
+        press_key_with_modifier_multiple_times('shift', 'tab', 6)
+        time.sleep(1)
+
+        pyautogui.press('space')
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        pyautogui.typewrite('p')
+        time.sleep(1)
+
+        pyautogui.press('tab')
+        time.sleep(1)
+
+        pyautogui.press('space')
+        time.sleep(1)
+
+        pyautogui.press('right')
+        time.sleep(1)
+
+        # Permit Due Date
+        pyautogui.typewrite(f"04/01/{ForYear}")
+        time.sleep(1)
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+
+
+
+    # Process: CHECK FOR TIMBER
+    # Timber Review Logic
+    if TREVIEW in ["Yes", "YES", "Y", "y"]:
+        logging.info("Timber YES.")
+        """
+        # Send Appraiser Permit for TIMBER
+
+        """
+        # Same as permit process except for two changes. Different down to Timber vs Mandatory. Add to Permit Description.
+        # Process: Enter Permit 1/2
+
+        # Click Permits_Tab
+        if click_images_multiple(permits_tab_images, direction='center', inset=10, confidence=0.8):
+            logging.info("Clicked successfully permits_tab_images.")
+        time.sleep(1)
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        
+        # Click Permits_Add_Button
+        if click_images_multiple(permits_add_permit_button, direction='center', offset=100, confidence=0.8):
+            logging.info("Clicked successfully permits_add_permit_button.")
+            time.sleep(1)
+
+            ensure_capslock_off()
+
+            # Send Permit Number
+            pyautogui.typewrite(PNUMBER)
+            time.sleep(1)
+
+            pyautogui.press(['tab'])
+            time.sleep(1)
+            
+            #Different down to Timber 2 vs Mandatory 11.
+            press_key_multiple_times('down', 2)
+            time.sleep(1)
+
+            press_key_multiple_times(['tab'], 3)
+            time.sleep(1)
+
+            ensure_capslock_off()
+
+            # Send Permit Filing Date
+            pyautogui.typewrite(PFILE)
+            time.sleep(1)
+
+            press_key_multiple_times(['tab'], 3)
+            time.sleep(1)
+
+            # Close Add Permit Pop-Up Box
+            pyautogui.press('space')
+            logging.info("Closing Add Permit pop-up, then waiting to send description")
+            time.sleep(3)
+        time.sleep(1)
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        
+        # Click to right of permit_description
+        if click_image_single(permit_description, direction='below', offset=5, confidence=0.8):
+            logging.info("Clicked successfully permit_description.")
+        time.sleep(1)
+
+        ensure_capslock_off()
+
+        # Send Permit Description -- Add to Permit Description.
+        pyautogui.typewrite(f"{PDESC} FOR TIMBER REVIEW")
+        time.sleep(1)
+        logging.info("Send description")
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+
+        # Process: Enter Permit 2/2
+        # Click FieldVisit_Add_Button
+        if click_image_single(add_field_visit_image_path, direction='center', inset=10, confidence=0.8):
+            logging.info("Clicked successfully add_field_visit_image_path.")
+
+            # If found, complete adding Field Visit process
+            press_key_with_modifier_multiple_times('shift', 'tab', 6)
+            time.sleep(1)
+
+            pyautogui.press('space')
+            time.sleep(1)
+
+            pyautogui.press('tab')
+            time.sleep(1)
+
+            pyautogui.typewrite('p')
+            time.sleep(1)
+
+            pyautogui.press('tab')
+            time.sleep(1)
+
+            pyautogui.press('space')
+            time.sleep(1)
+
+            pyautogui.press('right')
+            time.sleep(1)
+
+            # Permit Due Date
+            pyautogui.typewrite(f"04/01/{ForYear}")
+            time.sleep(1)
+            if stop_script:
+                logging.info("Script stopping due to kill key press.")
+                break
+
+    else:
+        logging.info("Timber review not required, skipping this step.")
+        time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+   
+   
+   
+   
+   
+    # Save Account
+    pyautogui.hotkey('ctrl', 's')
+    logging.info("Save.")
+    time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+
+    # END ALL PROCESSESS
+    logging.info("THE END...")
+    time.sleep(1)
+
+# Close the database connection
+conn.close()
+logging.info("Database Connection Closed")
+"""
+Notes:
+if AIN:
+    press_key_multiple_times('down', 4)
+elif PIN:
+    press_key_multiple_times('down', 0)
+
+## For testing purposes, 
+# PIN: KC-DGW = AIN: 345134
+# PIN: KC-DAS = AIN: 348586
+
+345134,348586
+
+DGW-08/24 SEG ...
+SEG PACKET
+01/01/2024
+01/01/2025
+
+
+### LEFT OFF HERE NEEDS MORE DIRECTION
+    time.sleep(1000)
+
+# Version History
+# NEW v1 07/26/2024
+# 07/30/2024, I give up for now, I'll circle back to this when I'm done training Pat.
+# 08/07/2024, successfully used the OCR to read and nagivate several screens in ProVal. 
+    # One huge key was to shift the screenshot reading to Greyscale and then actually change the stored images to Greyscale as well.
+#08/13/2024, updated to include the capacity to click around images found, to the left of, right of, bottom corner of, etc. 
+    # Added multiple functionalities 
+    # Possibly ready for testing?
+    # Added logging and tweaks to inputs
+    # After running through one live mapping packet, realized the MemoTXT was including brackets and literals
+    # Updated to remove these and make the MemoTXT clean
+    # Should be ready to test on another nmapping packet tomorrow.
+#08/20/2024, entirely new v3, streamlined, simplified, built in re-usable blocks for future templates
+    # After much review and many ChatGPT conversations and many tests... v3 is ready to be used as a template for other automations
+    # Next ... 
+    # Write documenation and instruction manual
+    # Save Template Version
+    # Write a Plat version
+    
+"""
+```
+
+
+# TEMPLATE - AUTOMATION TEMPLATE
+
+The following template can be used to auomate your tasks.
+
+```{python eval=FALSE, include=TRUE} 
+# NOTE_StartHERE: Copy, Paste, Rename before making changes to this template
+# Generally, you should be able to skip over most functions and start building from START_HERE below
+# Possibly, you may need to take new images and store those image paths, make sure to greyscale the final image on the shared image location
+
+
+"""
+import subprocess
+import pkg_resources
+import sys
+
+def install_if_missing(package):
+    try:
+        pkg_resources.get_distribution(package)
+    except pkg_resources.DistributionNotFound:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# List of packages you want to ensure are installed
+packages = [
+    "pyautogui",       # For automating GUI interactions
+    "pyodbc",          # For database connections
+    "numpy",           # For numerical operations
+    "keyboard",        # For detecting key presses
+    "pytesseract",     # For OCR (Optical Character Recognition)
+    "Pillow",          # For image processing related to Image
+    "opencv-python",   # For image processing (cv2)
+    "tkcalendar"       # For calendar widget in Tkinter
+]
+
+# Apply the install_if_missing function to each package
+for package in packages:
+    install_if_missing(package)
+"""
+# After ensuring all packages are installed, you can import them as needed in your script
+import pyautogui  # For automating GUI interactions like mouse movements and clicks
+import pyodbc  # For establishing database connections and executing SQL queries
+import time  # For adding delays and managing time-related functions
+import numpy as np  # For numerical operations and handling arrays/matrices
+import keyboard  # For detecting and handling keyboard key presses
+import threading  # For running background tasks and creating concurrent threads
+import tkinter as tk  # For creating basic GUI elements in Python applications
+from tkinter import ttk, messagebox  # For advanced Tkinter widgets and displaying dialog boxes
+import pytesseract  # For OCR (Optical Character Recognition) to read text from images
+from PIL import Image  # For working with image data
+import cv2  # For image processing and computer vision tasks (OpenCV library)
+import ctypes  # For interacting with C data types and Windows API functions
+from tkcalendar import DateEntry  # For adding a calendar widget to Tkinter GUIs
+import logging  # For logging events, errors, and information during script execution
+from datetime import datetime # For handling dates and times
+
+
+
+"""
+# GLOBAL LOGICS - CONNECTIONS
+"""
+
+
+### Logging
+
+logging.basicConfig(
+    filename='S:/Common/Comptroller Tech/Reports/Python/Auto_Mapping_Packet/MappingPacketsAutomation.log',
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logging.getLogger().addHandler(console_handler)
+
+
+### Kill Script
+
+# Global flag to indicate if the script should be stopped
+stop_script = False
+
+def monitor_kill_key():
+    global stop_script
+    logging.info("Kill key monitor started. Press 'esc' to stop the script.")
+    keyboard.wait('esc')  # Set 'esc' as the kill key
+    stop_script = True
+    logging.info("Kill key pressed. Stopping the script...")
+
+# Start the kill key monitoring in a separate thread
+kill_key_thread = threading.Thread(target=monitor_kill_key)
+kill_key_thread.daemon = True
+kill_key_thread.start()
+
+
+
+### Connections: Database
+
+# Configuration for database connection
+db_connection_string = (
+    "Driver={SQL Server};"
+    "Server=astxdbprod;"
+    "Database=GRM_Main;"
+    "Trusted_Connection=yes;"
+)
+
+# Function to connect to the database
+def connect_to_database(connection_string):
+    return pyodbc.connect(connection_string)
+
+# Function to execute a SQL query and fetch data
+def execute_query(cursor, query):
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+
+
+# VARIABLES MAY BE UPDATED HERE
+
+
+
+
+### Graphic User Interface (GUI) Logic - START
+
+# Initialize variables to avoid 'NameError', will call them into the final product after variable selections
+MemoTXT = ""
+PDESC = ""
+
+def on_submit():
+    ensure_capslock_off()
+
+    global AINLIST, AINFROM, AINTO, PDESC, PFILE, PNUMBER, TREVIEW, MappingPacketType, Initials, MemoTXT, ForYear
+
+    # Collect inputs for AINFROM and AINTO, and split by commas
+    AINFROM = [ain.strip() for ain in entry_ainfrom.get().strip().upper().split(",")]
+    AINTO = [ain.strip() for ain in entry_ainto.get().strip().upper().split(",")]
+
+    # Combine the AINFROM and AINTO lists, removing duplicates
+    combined_ain_list = list(set(AINFROM + AINTO))
+
+    # Replace AINLIST with the combined list
+    AINLIST = combined_ain_list
+
+    PFILE = entry_pfile.get().strip().upper()
+    PNUMBER = entry_pnumber.get().strip().upper()
+    TREVIEW = entry_treview.get().strip().upper()
+    MappingPacketType = combobox_mappingpackettype.get().strip().upper()
+    Initials = entry_initials.get().strip().upper()
+    ForYear = for_year_combobox.get().strip()  # Get the selected year
+
+    the_month = datetime.now().month
+    the_day = datetime.now().day
+    the_year = datetime.now().year
+    
+    #the_month = datetime.datetime.now().month
+    #the_day = datetime.datetime.now().day
+    #the_year = datetime.datetime.now().year
+
+
+    AINFROM_str = ', '.join(AINFROM)
+    AINTO_str = ', '.join(AINTO)
+    MemoTXT = f"{Initials}-{the_month}/{str(the_year)[-2:]} {MappingPacketType} from {AINFROM_str} into {AINTO_str} for {ForYear}"
+    logging.info(f"Generated MemoTXT: {MemoTXT}")
+
+    PDESC = f"{MappingPacketType} for {ForYear}"
+
+    if not AINLIST or not PFILE or not PNUMBER or not TREVIEW or not MappingPacketType or not Initials or not MemoTXT or not PDESC:
+        messagebox.showerror("Input Error", "All input fields are required.")
+        return
+
+    root.destroy()  # Close the GUI
+
+def setup_gui():
+    root = tk.Tk()
+    root.title("User Input Form")
+    setup_widgets(root)
+    return root
+
+def validate_initials(action, value_if_allowed):
+    # Allow only alphabetic characters and limit to 3 characters
+    if action == '1':  # 1 means an insertion operation
+        if len(value_if_allowed) > 3:
+            return False
+        return value_if_allowed.isalpha()
+    return True
+
+def setup_widgets(root):
+    global entry_ainfrom, entry_ainto, entry_pfile, entry_pnumber, entry_treview, combobox_mappingpackettype, entry_initials, for_year_combobox
+
+    # Get the current and next year
+    current_year = datetime.now().year
+    next_year = current_year + 1
+
+    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=1, padx=10, pady=5)
+    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
+    for_year_combobox.grid(column=1, row=1, padx=10, pady=5)
+    for_year_combobox.current(0)  # Set default selection to the current year
+
+    # AINFROM input
+    ttk.Label(root, text="List AINs FROM (separated by comma):").grid(column=0, row=0, padx=10, pady=5)
+    entry_ainfrom = ttk.Entry(root, width=50)
+    entry_ainfrom.grid(column=1, row=0, padx=10, pady=5)
+
+    # AINTO input
+    ttk.Label(root, text="List AINs TO (separated by comma):").grid(column=0, row=1, padx=10, pady=5)
+    entry_ainto = ttk.Entry(root, width=50)
+    entry_ainto.grid(column=1, row=1, padx=10, pady=5)
+
+    # Existing fields continue below...
+    ttk.Label(root, text="Mapping packet FOR what year?:").grid(column=0, row=2, padx=10, pady=5)
+    for_year_combobox = ttk.Combobox(root, values=[current_year, next_year], width=47)
+    for_year_combobox.grid(column=1, row=2, padx=10, pady=5)
+    for_year_combobox.current(0)  # Set default selection to the current year
+
+    ttk.Label(root, text="Filing Date (Top Date):").grid(column=0, row=3, padx=10, pady=5)
+    entry_pfile = ttk.Entry(root, width=50)
+    entry_pfile.grid(column=1, row=3, padx=10, pady=5)
+
+    ttk.Label(root, text="Permit Number (Bottom Date):").grid(column=0, row=4, padx=10, pady=5)
+    entry_pnumber = ttk.Entry(root, width=50)
+    entry_pnumber.grid(column=1, row=4, padx=10, pady=5)
+
+    ttk.Label(root, text="Timber or AG review? Y/N:").grid(column=0, row=5, padx=10, pady=5)
+    entry_treview = ttk.Entry(root, width=50)
+    entry_treview.grid(column=1, row=5, padx=10, pady=5)
+
+    ttk.Label(root, text="Select Mapping Packet Type:").grid(column=0, row=6, padx=10, pady=5)
+    
+    mapping_packet_types = [
+        "MERGE", "SPLIT", "BLA", "LLA", "RW VACATION", "RW SPLIT", "REDESCRIBE",
+        "RW AUDIT", "RW Cat19", "AIRPORT LEASE NEW PARCEL", "PLAT VACATION",
+        "PARCEL DELETED", "ACERAGE AUDIT", "NEW PLAT"
+    ]
+    combobox_mappingpackettype = ttk.Combobox(root, values=mapping_packet_types, width=47)
+    combobox_mappingpackettype.grid(column=1, row=6, padx=10, pady=5)
+    combobox_mappingpackettype.current(0)  # Set default selection to the first item
+
+    # Validation for the Initials Entry
+    vcmd = (root.register(validate_initials), '%d', '%P')
+    
+    ttk.Label(root, text="Enter (3) Initials:").grid(column=0, row=7, padx=10, pady=5)
+    entry_initials = ttk.Entry(root, width=50, validate='key', validatecommand=vcmd)
+    entry_initials.grid(column=1, row=7, padx=10, pady=5)
+    entry_initials.insert(0, "DGW")
+
+    submit_button = ttk.Button(root, text="Submit", command=on_submit)
+    submit_button.grid(column=0, row=8, columnspan=2, pady=20)
+
+
+root = setup_gui()
+
+### Graphic User Interface (GUI) Logic - END
+
+
+
+
+"""
+# GLOBAL LOGICS - LOGIC FUNCTIONS
+"""
+
+#### CAPS LOCK
+def is_capslock_on():
+    # This will return 1 if CAPS LOCK is on, 0 if it's off
+    hllDll = ctypes.WinDLL("User32.dll")
+    VK_CAPITAL = 0x14
+    return hllDll.GetKeyState(VK_CAPITAL) & 1
+
+def ensure_capslock_off():
+    if is_capslock_on():
+        pyautogui.press('capslock')
+        logging.info("CAPS LOCK was on. It has been turned off.")
+    else:
+        logging.info("CAPS LOCK is already off.")
+
+#### SET FOCUS
+def set_focus_and_type(window_title, keys):
+    window = pyautogui.getWindowsWithTitle(window_title)
+    if window:
+        window[0].activate()
+        pyautogui.typewrite(keys)
+
+#### PRESS & CLICK KEY LOGIC
+def press_key_with_modifier_multiple_times(modifier, key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.hotkey(modifier, key)
+
+def press_key_multiple_times(key, times):
+    for _ in range(times):
+        if stop_script:
+            logging.info("Script stopping due to kill key press.")
+            break
+        pyautogui.press(key)
+
+
+
+"""
+# GLOBAL LOGICS - SCREEN HANDLING FUNCTIONS
+"""
+
+### Connections: OCR and Image Paths
+
+#### OCR
+
+# This OCR program is required to work with this script, it is available on GitHub
+# Set the tesseract executable path if not in the system path
+# Update this path as necessary by user you will need to download and install tesseract from GitHub
+# Link https://github.com/tesseract-ocr/tesseract
+# Link https://github.com/UB-Mannheim/tesseract/wiki
+pytesseract.pytesseract.tesseract_cmd = r'C:\Users\dwolfe\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+
+
+
+
+
+# IMAGES MAY BE UPDATED HERE
+
+
+
+
+#### Image Paths - Active and Inactive
+land_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_tab_active.PNG'
+]
+land_base_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_land_base_tab_active.PNG'
+]
+permits_tab_images = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_tab_active.PNG'
+]
+
+permits_add_permit_button = [
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_permit_button.PNG',
+    r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_permit_button_active.PNG'
+]
+
+#### Image Paths - Single Images Only
+duplicate_memo_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_memo_duplicate.PNG'
+add_field_visit_image_path = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permits_add_fieldvisit_button.PNG'
+aggregate_land_type_add_button = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_aggregate_land_type_add_button.PNG'
+farm_total_acres_image = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_farm_total_acres.PNG'
+permit_description = r'S:\Common\Comptroller Tech\Reports\Python\py_images\Proval_permit_description.PNG'
+
+
+
+
+
+# 1 CAPTURE SCREEN IN GREYSCALE
+def capture_and_convert_screenshot():
+    # Capture the screenshot using pyautogui
+    screenshot = pyautogui.screenshot()
+
+    # Convert the screenshot to a numpy array, then to BGR, and finally to greyscale
+    screenshot_np = np.array(screenshot)
+    screenshot_np = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2BGR)
+    grey_screenshot = cv2.cvtColor(screenshot_np, cv2.COLOR_BGR2GRAY)
+
+    return grey_screenshot
+# 2 CLICK USING A REFERENCE GREYSCALE SCREENSHOT TO A STORED GREYSCALE IMAGE INCLUDES ABILITY TO CLICK RELATIVE POSITION
+def click_on_image(image_path, direction='center', offset=10, inset=7, confidence=0.8):
+    grey_screenshot = capture_and_convert_screenshot()
+
+    # Load the reference image in greyscale
+    ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if ref_image is None:
+        logging.error(f"Failed to load reference image from {image_path}")
+        return False
+
+    # Perform template matching
+    result = cv2.matchTemplate(grey_screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= confidence:
+        top_left = max_loc
+        h, w = ref_image.shape
+        right = top_left[0] + w
+        bottom = top_left[1] + h
+
+        # Calculate click position based on direction and inset/offset
+        click_positions = {
+            'right': (right + offset, top_left[1] + h // 2),
+            'left': (top_left[0] - offset, top_left[1] + h // 2),
+            'above': (top_left[0] + w // 2, top_left[1] - offset),
+            'below': (top_left[0] + w // 2, bottom + offset),
+            'bottom_right_corner': (right - inset, bottom - inset),
+            'bottom_left_corner': (top_left[0] + inset, bottom - inset),
+            'top_right_corner': (right - inset, top_left[1] + inset),
+            'top_left_corner': (top_left[0] + inset, top_left[1] + inset),
+            'bottom_center': (top_left[0] + w // 2, bottom - inset),
+            'top_center': (top_left[0] + w // 2, top_left[1] + inset),
+            'center': (top_left[0] + w // 2, top_left[1] + h // 2)
+        }
+        click_x, click_y = click_positions[direction]
+
+        # Perform the click
+        pyautogui.click(click_x, click_y)
+        logging.info(f"Clicked {direction} of the image at ({click_x}, {click_y})")
+        return True
+    else:
+        logging.warning(f"No good match found at the confidence level of {confidence}.")
+        return False
+
+        """
+        # Ref Function click_on_image in the following functions 3, 4, 5, etc... 
+        # These reference functions can be called in the final automation script 
+        """
+
+# 3 USING click_on_image FUNCTION
+#Specific Click Functions Here, See click_on_image for directionals, and image pathes for images
+def click_images_multiple(paths, direction='center', offset=50, inset=7, confidence=0.75):
+    for image_path in paths:
+        logging.info(f"Trying to click {direction} on image: {image_path}")
+        if click_on_image(image_path, direction=direction, offset=offset, inset=inset, confidence=confidence):
+            logging.info(f"Successfully clicked {direction} of {image_path}.")
+            return True
+        else:
+            logging.warning(f"Failed to click {direction} of {image_path}.")
+    return False
+
+def click_image_single(image_path, direction='center', offset=50, inset=7, confidence=0.75):
+    logging.info(f"Trying to click {direction} on image: {image_path}")
+    if click_on_image(image_path, direction=direction, offset=offset, inset=inset, confidence=confidence):
+        logging.info(f"Successfully clicked {direction} of {image_path}.")
+        return True
+    else:
+        logging.warning(f"Failed to click {direction} of {image_path}.")
+    return False
+
+    """
+    # How to use these click_images_multiple & click_image_single functions in script
+ 
+    # Click below all specified images
+    if click_images_multiple(multiple_image_path_name_here, direction='below', offset=100, confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the center of a single image
+    if click_image_single(single_image_path_name_here, direction='center', confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the bottom right corner of a single image
+    if click_image_single(single_image_path_name_here, direction='bottom_right_corner', inset=10, confidence=0.8):
+        logging.info("Clicked successfully.")
+    
+    # Click to right of permit_description, by calling offset=5 it was just barely below the image, which is what I wanted
+    if click_image_single(permit_description, direction='below', offset=5, confidence=0.8):
+        logging.info("Clicked successfully permit_description.")
+    time.sleep(1)
+
+
+    """
+
+
+# 4 CHECKING IF IMAGE IS PRESENT
+def is_image_found(image_path, confidence=0.8):
+    """
+    Check if an image is present on the screen with a specified confidence level.
+    :param image_path: Path to the image file to be checked.
+    :param confidence: The confidence level for the image matching.
+    :return: bool - True if image is found, False otherwise.
+    """
+    # Use the existing function to capture and convert the screenshot
+    grey_screenshot = capture_and_convert_screenshot()
+
+    # Load the reference image in greyscale
+    ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if ref_image is None:
+        logging.error(f"Failed to load reference image from {image_path}")
+        return False
+
+    # Perform template matching
+    result = cv2.matchTemplate(grey_screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, _ = cv2.minMaxLoc(result)
+
+    found = max_val >= confidence
+    if found:
+        logging.info(f"Image found with confidence {max_val}: {image_path}")
+    else:
+        logging.info(f"Image not found with sufficient confidence {confidence}: {image_path}")
+    
+    return found
+
+    """
+    # How to use the is_image_found function below in script:
+
+    # Check if the image is found and decide based on that
+    if is_image_found(image_path_name_here, confidence=0.8):
+        logging.info("Image was found - executing related tasks.")
+        # Perform tasks related to the image being found
+    else:
+        logging.info("Image was not found - executing alternative tasks.")
+        # Perform alternative tasks
+
+    """
+
+
+# 5 READ TEXT FROM SCREEN
+def check_for_text_on_screen(target_text):
+    """
+    Captures the screen, converts it to greyscale, performs OCR, and checks for the specified text.
+    
+    :param target_text: Text to search for in the OCR results.
+    :return: True if the text is found, False otherwise.
+    """
+    grey_screenshot = capture_and_convert_screenshot()
+    grey_screenshot_pil = Image.fromarray(grey_screenshot)  # Convert numpy array back to a PIL Image
+    screen_text = pytesseract.image_to_string(grey_screenshot_pil)
+    return target_text in screen_text
+
+
+
+    """
+    # How to use the check_for_text_on_screen function below in script:
+
+    # Define the specific text you're looking for
+    specific_text = "text_you_want_to_check_here"
+
+    # Use the variable in your function call and print statements
+    if check_for_text_on_screen(specific_text):
+        logging.info(f"Found '{specific_text}' on the screen.")
+    else:
+        logging.info(f"Did not find '{specific_text}' on the screen.")
+    """
+
+
+
+
+"""
+# Start the GUI event loop
+"""
+root.mainloop()
+
+if not AINLIST or not MemoTXT or not PDESC or not PFILE or not PNUMBER or not TREVIEW:
+    logging.error("All input fields are required.")
+    exit()
+
+"""
+Connect to the database, 
+pull a simple SQL query with two columns,
+then the  for row in rows assigns those columns as variables 
+"""
+
+conn = connect_to_database(db_connection_string)
+cursor = conn.cursor()
+
+# The query should accommodate multiple AINs in a list
+query = f"SELECT TRIM(pm.AIN), pm.LegalAcres FROM TSBv_Parcelmaster AS pm WHERE pm.AIN IN ({','.join(AINLIST)})"
+rows = execute_query(cursor, query)
+
+# Iterate through each row in the results
+for row in rows:
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+    DBAIN, DBACRE = row
+    ensure_capslock_off()
+
+    # Process each AIN individually
+    set_focus_and_type('ProVal', DBAIN)
+    time.sleep(1)
+    logging.info("set_focus_and_type")
+
+    """
+    Officially begins the automation and screen navigation
+    """
+
+
+    # Process: Open an AIN in ProVal
+    set_focus_and_type('ProVal', DBAIN)
+    time.sleep(1)
+    logging.info("set_focus_and_type")
+
+    pyautogui.hotkey('ctrl', 'o')
+    time.sleep(1)
+    logging.info("hotkey")
+
+    press_key_multiple_times('up', 12)
+    logging.info("press_key_multiple_times")
+    
+    press_key_multiple_times('down', 4)
+    logging.info("press_key_multiple_times")
+    
+    pyautogui.press(['tab'])
+    logging.info("press")
+    
+    pyautogui.press(['delete'])
+    logging.info("press")
+    
+    pyautogui.typewrite(str(DBAIN))
+    logging.info(f"Sent AIN {DBAIN}.")
+    time.sleep(1)
+
+    pyautogui.press('enter')
+    time.sleep(1)
+    logging.info("Close Pop-Up, Open the {DBAIN}}")
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+
+
+
+
+
+    """
+    ## NOW BEGIN AUTOMATION STEPS FOR THIS TOOL
+    """
+
+
+
+
+
+    """
+    ## START EXAMPLE EXECUTIONS TO BE REPLACE BY YOUR ACTUAL SCRIPT
+    """
+    # is_image_found
+    # How to use the is_image_found function below in script:
+    # Check if the image is found and decide based on that
+    if is_image_found(image_path_name_here, confidence=0.8):
+        logging.info("Image was found - executing related tasks.")
+        # Perform tasks related to the image being found
+    else:
+        logging.info("Image was not found - executing alternative tasks.")
+        # Perform alternative tasks
+
+
+    # check_for_text_on_screen
+    # How to use the check_for_text_on_screen function below in script:
+    # Define the specific text you're looking for
+    specific_text = "text_you_want_to_check_here"
+    # Use the variable in your function call and print statements
+    if check_for_text_on_screen(specific_text):
+        logging.info(f"Found '{specific_text}' on the screen.")
+    else:
+        logging.info(f"Did not find '{specific_text}' on the screen.")
+
+
+    # click_images_multiple
+    # How to use these click_images_multiple & click_image_single functions in script
+    # Click below all specified images
+    if click_images_multiple(multiple_image_path_name_here, direction='below', offset=100, confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the center of a single image
+    if click_image_single(single_image_path_name_here, direction='center', confidence=0.8):
+        logging.info("Clicked successfully.")
+
+    # Click at the bottom right corner of a single image
+    if click_image_single(single_image_path_name_here, direction='bottom_right_corner', inset=10, confidence=0.8):
+        logging.info("Clicked successfully.")
+    
+    # Click to right of permit_description, by calling offset=5 it was just barely below the image, which is what I wanted
+    if click_image_single(permit_description, direction='below', offset=5, confidence=0.8):
+        logging.info("Clicked successfully permit_description.")
+    time.sleep(1)
+
+
+    # pyautogui.typewrite()
+    pyautogui.typewrite(str(DBACRE))
+    pyautogui.typewrite(str(DBAIN))
+    pyautogui.typewrite(MemoTXT)
+    pyautogui.typewrite(PNUMBER)
+    pyautogui.typewrite('f')
+    pyautogui.typewrite(f"04/01/{ForYear}")
+    pyautogui.typewrite(f"{PDESC} FOR TIMBER REVIEW")
+    pyautogui.typewrite('p')
+
+    # pyautogui.hotkey()
+    pyautogui.hotkey('ctrl', 'o')
+    pyautogui.hotkey('ctrl', 'shift', 'm')
+
+    # pyautogui.press()
+    pyautogui.press(['tab'])
+    pyautogui.press(['delete'])
+    pyautogui.press('enter')
+    pyautogui.press('l')
+    pyautogui.press('space')
+    pyautogui.press('right')
+
+    # press_key_multiple_times
+    press_key_multiple_times('up', 12)
+    press_key_multiple_times('down', 4)
+    press_key_multiple_times(['tab'], 3)
+
+    # press_key_with_modifier_multiple_times
+    press_key_with_modifier_multiple_times('shift', 'tab', 6)
+
+    """
+    ## END EXAMPLE EXECUTIONS TO BE REPLACE BY YOUR ACTUAL SCRIPT
+    """
+
+
+
+
+    
+    
+    # Save Account
+    pyautogui.hotkey('ctrl', 's')
+    logging.info("Save.")
+    time.sleep(1)
+    if stop_script:
+        logging.info("Script stopping due to kill key press.")
+        break
+
+
+    # END ALL PROCESSESS
+    logging.info("THE END...")
+    time.sleep(1)
+
+# Close the database connection
+conn.close()
+logging.info("Database Connection Closed")
+
+"""
+TEMPLATE 08/20/2024
+
+Notes:
+if AIN:
+    press_key_multiple_times('down', 4)
+elif PIN:
+    press_key_multiple_times('down', 0)
+
+## For testing purposes, 
+# PIN: KC-DGW = AIN: 345134
+# PIN: KC-DAS = AIN: 348586
+
+345134,348586
+"""
+```
+
+
+# ADDITIONAL INFORMAITON 
+
+### BUTTON LOGIC
+
+***NOTE: This button logic fails with ProVal because it is so badly designed that it fails to include on-screen labels and definitions for the buttons. We had to default back to using OCR in lieu of this, but with other programs it could work, possibly. ***
+
+```{python eval=FALSE, include=TRUE} 
+
+# THIS IS THE FUNCTION
+button_info = {
+    "window_title": "ProVal",
+    "class_name": "WindowsForms10.BUTTON.app.0.13965fa_r8_ad19",
+    "button_text": "Add",
+    "region_title": "Aggregate Land"
+}
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+
+
+```
+
+# Arguments (Args)
+
+The term "Args" in the documentation of a Python function is short for "arguments." It refers to the parameters that you can pass to the function when you call it. These arguments are essentially inputs that the function uses to perform its operations or calculations. Here’s a quick rundown of what each part of the function documentation typically includes:
+
+-   Args (or Parameters): This section lists all the parameters that the function expects, along with a brief description of each one. It often specifies the type of data each parameter should be (like string, integer, list, etc.) and a short explanation of what it's used for in the function.
+
+In the example I provided for the handle_image_detection function, the "Args" section looks like this:
+
+
+```{python eval=FALSE, include=TRUE} 
+
+Args:
+    image_path (str): Path to the image file to look for.
+    on_found (callable, optional): Function to execute if the image is found. It should accept no arguments.
+    on_not_found (callable, optional): Function to execute if the image is not found. It should accept no arguments.
+    confidence (float): Confidence level for image detection.
+
+
+```
+
+Each line in this section describes one of the function’s parameters:
+
+-   image_path: A string that specifies the path to the image file the function needs to search for.
+-   on_found: A callable (like a function) that is executed if the image is found. It's optional because you might not always need to perform an action if the image is found.
+-   on_not_found: A callable that is executed if the image is not found, which is also optional.
+-   confidence: A floating-point number that sets the threshold for deciding whether the detected image matches the target image.
+
+This part of the documentation helps users understand how to use the function properly by specifying what kind of data to provide and what each piece of data represents. 
+
+
+
+
+
+# EXAMPLE: Breaking down a function into blocks of code chunks
+
+ChatGPT Explains: Let's break down the code snippet you've provided, which encapsulates a sequence of operations for image detection and subsequent actions in an automation script using Python. This will help ensure you understand each part before integrating it into your projects:
+
+## 1. Try-Except Block
+
+This block is used to catch and handle any exceptions that might occur during the execution of the code within the try block. It prevents the entire script from crashing and allows for logging specific errors.
+
+```{python eval=FALSE, include=TRUE} 
+try:
+    # Code that might throw an exception
+except Exception as e:
+    # Handling the exception
+
+```
+
+
+
+## 2. Taking a Screenshot
+
+The function pyautogui.screenshot() captures the current screen, which is then used for image detection. This screenshot is the basis for all subsequent operations.
+
+```{python eval=FALSE, include=TRUE} 
+
+screenshot = pyautogui.screenshot()
+
+```
+
+
+## 3. Converting Screenshot to Grayscale
+
+The screenshot is converted to grayscale using OpenCV (cv2). Grayscale conversion is common in image processing tasks like template matching because it simplifies the image, reducing the computational complexity.
+
+```{python eval=FALSE, include=TRUE} 
+
+screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_BGR2GRAY)
+
+```
+
+
+## 4. Reading the Reference Image
+
+The reference image (ref_image) is loaded in grayscale. This is the image you are looking for on the screen. The path to this image is specified by image_path.
+
+```{python eval=FALSE, include=TRUE} 
+
+ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+
+```
+
+
+## 5. Template Matching
+
+The cv2.matchTemplate function is used to find the reference image within the screenshot. It slides the reference image over the screenshot and calculates match scores based on the similarity between the reference image and the part of the screenshot it covers.
+
+-   TM_CCOEFF_NORMED: A method for template matching which returns a coefficient that normalizes the matching process, giving a score between -1 and 1 where 1 indicates a perfect match.
+
+```{python eval=FALSE, include=TRUE} 
+
+result = cv2.matchTemplate(screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+
+```
+
+
+
+## 6. Finding the Maximum Match Value
+
+cv2.minMaxLoc is used to find the location of the best match in the result matrix returned by matchTemplate. It returns the minimum and maximum values and their locations within the result matrix.
+
+```{python eval=FALSE, include=TRUE} 
+
+min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+
+```
+
+
+## 7. Evaluating the Match
+
+The maximum value (max_val) is compared against a threshold (confidence). If max_val is greater than or equal to confidence, it is assumed that the image has been found.
+
+-   If Found: If the image is found (max_val >= confidence), log that the image is found and call the on_found function if it is provided.
+-   If Not Found: If the image is not found, log that the image is not found and call the on_not_found function if it is provided.
+
+```{python eval=FALSE, include=TRUE} 
+
+if max_val >= confidence:
+    logging.info(f"Image found: {image_path}")
+    if on_found:
+        on_found()
+else:
+    logging.info(f"Image not found: {image_path}")
+    if on_not_found:
+        on_not_found()
+
+```
+
+
+## 8. Exception Handling
+
+If any errors occur during the execution of the image detection code (like file not found, or an error in the OpenCV operations), they are caught in the except block. The error is logged, providing details that can help in debugging.
+
+```{python eval=FALSE, include=TRUE} 
+
+except Exception as e:
+    logging.error(f"Failed to check image: {image_path}")
+    logging.error(f"Exception: {e}")
+
+```
+
+
+This comprehensive breakdown clarifies the sequence of operations involved in image detection using Python with pyautogui and OpenCV, providing robust error handling and flexible response mechanisms through callbacks (on_found and on_not_found).
+
+
+## 9. User defined confidence vs default confidence
+
+### Understanding cv2.minMaxLoc
+
+The function cv2.minMaxLoc() finds the minimum and maximum values and their positions in a given array (in your case, the result of the template matching operation). It returns four values:
+
+-   minVal: The minimum value in the array.
+-   maxVal: The maximum value in the array.
+-   minLoc: The position of the minimum value.
+-   maxLoc: The position of the maximum value.
+
+### Explanation of the Line
+
+In the line _, max_val, _, _ = cv2.minMaxLoc(result), here's what each part does:
+
+-   The first _ is used to ignore the minVal.
+-   max_val captures the maxVal, which is what you're interested in for checking the confidence of the match.
+-   The second and third _ ignore the minLoc and maxLoc respectively.
+
+This usage of underscores is helpful for keeping your code cleaner and more focused on the variables you actually need, avoiding the clutter of unused variables. It's particularly useful in cases like image processing where a function may return multiple pieces of information, but only some of them are relevant to your specific task.
+
+The max_val obtained is then compared against a user-set confidence threshold to decide whether the match is strong enough to be considered valid. For example:
+
+```{python eval=FALSE, include=TRUE} 
+
+
+# Example try/except
+
+    try:
+        # Check if the image is on the screen
+        screenshot = pyautogui.screenshot()
+        screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_BGR2GRAY)
+        ref_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        result = cv2.matchTemplate(screenshot, ref_image, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+        # _, max_val, _, _ = cv2.minMaxLoc(result)
+
+        if max_val >= confidence:
+            logging.info(f"Image found: {image_path}")
+            if on_found:
+                on_found()
+        else:
+            logging.info(f"Image not found: {image_path}")
+            if on_not_found:
+                on_not_found()
+    except Exception as e:
+        logging.error(f"Failed to check image: {image_path}")
+        logging.error(f"Exception: {e}")
+
+
+
+# default confidence level
+min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+handle_image_detection(
+    image_path=r'S:\Common\Comptroller Tech\Reports\Python\py_images\Settings_icon.PNG',
+    on_found=access_settings,
+    on_not_found=settings_icon_missing
+)
+    
+
+
+# VERSUS
+
+
+
+# user defined confidence level
+_, max_val, _, _ = cv2.minMaxLoc(result)
+
+# High confidence needed for accessing settings
+handle_image_detection(
+    image_path=r'S:\Common\Comptroller Tech\Reports\Python\py_images\Settings_icon.PNG',
+    on_found=access_settings,
+    on_not_found=settings_icon_missing,
+    confidence=0.95  # High confidence for critical settings adjustment
+)
+
+# Lower confidence for less critical actions
+handle_image_detection(
+    image_path=r'S:\Common\Comptroller Tech\Reports\Python\py_images\Optional_feature_icon.PNG',
+    on_found=enable_optional_feature,
+    on_not_found=optional_feature_missing,
+    confidence=0.7  # Lower confidence might be acceptable here
+)
+
+
+
+# Alternatively
+confidence_threshold = 0.8  # User-set confidence
+if max_val >= confidence_threshold:
+    # Proceed with the action because the image match is strong enough
+else:
+    # Handle the case where the image match is too weak
+
+```
+
+
+
+
+
+
+# Sample Section Header For Future Additions To This Ref Guide
+
+### SampleSubHeader
+
+-   List
+-   List
+    -   List indented
+    -   List indented
+
+This is a code chuck
+```{python eval=FALSE, include=TRUE} 
+
+# THIS IS THE FUNCTION
+
+
+# THIS IS CALLING THE FUNCTION BELOW IN SCRIPT
+
+
+
+```
+
+
+

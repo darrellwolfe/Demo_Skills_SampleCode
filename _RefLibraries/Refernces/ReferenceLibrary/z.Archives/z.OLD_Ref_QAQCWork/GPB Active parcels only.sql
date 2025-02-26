@@ -1,0 +1,1 @@
+select * from improvements where imp_type = 'POLEBLDG' and status = 'A'

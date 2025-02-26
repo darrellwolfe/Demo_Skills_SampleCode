@@ -1,0 +1,1 @@
+select * from income_computation where year_group = '1' and rent_class = '4' and neighborhood = '2999'

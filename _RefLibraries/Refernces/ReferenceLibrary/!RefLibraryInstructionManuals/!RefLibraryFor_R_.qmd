@@ -1,0 +1,1104 @@
+---
+title: "R Quick Reference Library"
+format: html
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+# Welcome to Learn_R
+
+
+# Using this document
+
+## Code Chunks - FYI
+When creating .qmd documents you can use the following to create code chunks. Eval (evaluation) means you want the code chunk to actually run and display its results in the final document, 
+while include means that you want to display the code chunk (false would mean to hide it) in the final document.
+
+```{r eval=TRUE, include=TRUE} 
+```
+
+```{SQL eval=TRUE, include=TRUE} 
+```
+
+```{python eval=TRUE, include=TRUE} 
+```
+
+# Links
+This is an example of a link format
+`[Link text](https://example.com)`
+
+
+# To actually knitt/stitch this document you will need to have Python, R, and Quarto installed on your machine through Visual Studio Code (or RStudio). 
+
+[Quarto](https://quarto.org/docs/get-started/)
+
+[Install R](https://cran.r-project.org/bin/windows/base/)
+
+[Install Python](https://www.python.org/downloads/)
+
+
+# by Darrell Wolfe, & R_Analysis CodeBase
+
+```{r echo = TRUE}
+print("Hello, World!") # Welcome to my corner of the digi-verse.
+```
+
+This document exists to
+
+1.  Practice using RStudio,
+
+2.  Practice using RMarkdown (both the style and file-type),
+
+3.  To document my process of learning R and create a future-reference resource, and
+
+4.  To preserve the best of my understanding and resources for my friends who are also learning R (now and in the future).
+
+Checkout the [RStudio RMarkdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf), which I referenced while creating this document.
+
+```         
+#Example:
+Checkout the [RStudio RMarkdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf), which I referenced while creating this document.
+```
+
+```{r eval=TRUE, include=TRUE}
+options(repos = c(CRAN = "https://cloud.r-project.org/"))
+```
+
+------------------------------------------------------------------------
+
+# The following packages are required to run this docoment in .rmd or .qmd
+If the following packages are not included this document will fail to stitch/knitt
+
+
+```{r eval=TRUE, include=TRUE}
+# List of all packages to be installed
+packages <- c(
+  "tidyverse",
+  "palmerpenguins",
+  "here",
+  "skimr",
+  "janitor",
+  "SimDesign",
+  "Tmisc",
+  "ggplot2"
+)
+
+# Install any packages that are not yet installed
+install_if_missing <- function(p) {
+  if (!requireNamespace(p, quietly = TRUE)) {
+    install.packages(p)
+  }
+}
+
+# Apply the installation function to all packages
+invisible(lapply(packages, install_if_missing))
+
+# Load the libraries
+lapply(packages, library, character.only = TRUE)
+
+```
+
+
+
+
+## This is a basic intro to R, I will be creating the following:
+
+*All of this is subject to change. I started writing these in .R and now I'm writing in RMarkdown.* \*
+
+-   [LearnR_StarterGuide](http://www.toposcreative.com/p/learnr.html).R - That's where you are now
+
+    -   This will be links to Videos, Blogs, and Websites about R
+
+    -   This will be covering the very basic elements of R syntax, vocabulary, etc.
+
+-   [Learn_R_Packages](http://www.toposcreative.com/p/learnrpackages.html)\_.R - Supplemental Information on important or interesting packages I find along the way.
+
+*Interesting - To create that list, I used an asterisk, which is what RMarkdown Cheat Sheet suggested. It didn't take. When I wrote it in the Visual vs Source, using the buttons, and went back to the code, it showed a new format. This can happen when updates come through.*
+
+This is what I used:
+
+```         
+# This is what I used:
+* Learn_R_ref_Intro_to.R - That's where you are now
+* Learn_R_ref_Resources.html - This will be links to Videos, Blogs, and Websites about R
+* Learn_R_ref_Basics_of.R - This will be covering the very basic elements of R syntax, vocabulary, etc.
+* Learn_R_4_Packages\_.R - Information on important or interesting packages I find along the way.
+* Learn_R_ref_HowTo_TBC -
+```
+
+This is what it was corrected to:
+
+```         
+# This is what it was corrected to:
+-   Learn_R_ref_Intro_to.R - That's where you are now
+
+-   Learn_R_ref_Resources.html - This will be links to Videos, Blogs, and Websites about R
+
+-   Learn_R_ref_Basics_of.R - This will be covering the very basic elements of R syntax, vocabulary, etc.
+
+-   Learn_R_4_Packages\_.R - Information on important or interesting packages I find along the way.
+
+-   Learn_R_ref_HowTo_TBC -
+```
+
+------------------------------------------------------------------------
+
+## Citing ChatGPT / GPT-4
+
+A quick side-note about ChatGPT/GPT-4 citations in this document.
+
+If you (*somehow*) don't already know what ChatGPT (or GPT-4) is, then I wanted to provide a quick note.
+
+First (1st), periodically, I will be citing content provided by GPT-4. With a history in scholarship, I did not feel comfortable passing it off as my own. When I use GPT-4 to help me provide a summary or tutorial, I will cite that source directly.
+
+As such, all citations of GPT-4 below are from OpenAI's GPT-4 product. I have almost completely replace Google Searches with GPT-4 since I started using the ChatGPT in December 2022. While I still use Google, I use it less frequently as the days go by. The only reason I haven't completely replace Google with GPT-4 is because it is not (currently 08/05/2023) tied live-to-internet. So for store hours, directions, recent events, etc., I still use Google.
+
+Second (2nd), while I've used it to do tasks for me (like: "Strip this SQL Select list of comments and aliases, and provide it back in a comma delimited list of table.column" - so I can use them in a Group By list), I have not found that to be my primary use of GPT-4.
+
+The real power of GPT-4 isn't as a task-doer but as a tutor. I don't want the code written for me, I want to understand the code and syntax. When I use GPT-4 as a tutor, I begin to understand the concepts and how to use them. I can take three things I know, and have a logical idea of what I want to accomplish, and have GPT-4 show me the syntax steps I was missing to finalize the outcome I'm working for. It works with SQL, Macros, DAX, and R (probably Python too, but I haven't started Python yet, that's next).
+
+Below, you will see me asking GPT-4 to provide a summary. This mirrors how I use this as a tutor for teaching myself. Therefore, since I'm using it anyway, I decided to incorporate this into my guide, so anyone reading the guide can see how I use it effectively and adapt that for their own uses.
+
+If you're new to ChatGPT:
+
+[ChatGPT](https://chat.openai.com "Go to ChatGPT / GPT-4") is OpenAI's free version. [GPT-4](https://chat.openai.com/ "Go to ChatGPT / GPT-4") is the paid upgrade. Go to "chat.openai.com", create and account, and ask it "What can you do?"
+
+Example: "In one complex sentence, explain what you are and how you can be used effectively."
+
+> GPT-4: "I am ChatGPT, a state-of-the-art language model developed by OpenAI, based on the GPT-4 architecture, designed to understand and generate human-like text based on the input provided, and when used effectively, I can assist users in a myriad of tasks ranging from answering questions and providing explanations to creative writing and problem-solving."
+
+Example: "How can open a dataset in R, and plot the data?"
+
+GPT-4:
+
+"To open a dataset in R and plot the data, you'd typically follow these general steps:
+
+1.  **Load necessary libraries**: To handle data and plot it, you might want to use libraries like `tidyverse` which includes both `ggplot2` for plotting and `readr` for reading data.
+
+    ``` r
+    install.packages("tidyverse")
+    library(tidyverse)
+    ```
+
+2.  **Import your dataset**: Depending on the format of your dataset (e.g., CSV, Excel, RData), you'd use different functions. For a CSV file:
+
+    ``` r
+    dataset <- read_csv("path_to_your_file.csv")
+    ```
+
+3.  **Inspect your data**: Before plotting, always take a moment to inspect your data to understand its structure.
+
+    ``` r
+    head(dataset)
+    ```
+
+4.  **Plot the data**: With `ggplot2`, you can make a variety of plots. Here's a simple scatter plot assuming you have variables named `x` and `y`:
+
+    1.  Define: aes -\> aesthetic ( visual property of an object)
+
+        ``` r
+        ggplot(dataset, aes(x=x, y=y)) + geom_point() + theme_minimal()
+        ```
+
+The above steps offer a very basic introduction. Both the process of importing data and creating plots have many nuances depending on the specifics of your dataset and the type of visualization you want to create. It would be helpful to consult the `tidyverse` and `ggplot2` documentation for more detailed information. "
+
+On with our tutorial...
+
+------------------------------------------------------------------------
+
+## Training
+
+I'm creating this as I'm learning R through Coursera. For information on the course I'm taking to kick-off this project:
+
+#### Coursera : [Data Analysis with R Programming](https://www.coursera.org/learn/data-analysis-r/home/welcome)
+
+```         
+[Data Analysis with R Programming](https://www.coursera.org/learn/data-analysis-r/home/welcome) 
+```
+
+------------------------------------------------------------------------
+
+#### Other Resources
+
+I will also be implementing strategies I find from any helpful resources, including the native help documentation, YouTube videos, TikTok posts, articles, and of course: GPT-4! I'll link to anything I find that is useful.
+
+One perfect example of a resource is the YouTube video: "[Learn R in 39 minutes](https://www.youtube.com/watch?v=yZ0bV2Afkjc "YouTube: Learn R in 39 minutes")" by **Equitable Equations.** This video was comprehensive but not too long. The last portion of the video informed me about RMarkdown documents (which I'm using to write this now). Definitely subscribe to his channel.
+
+With all that established, let's get to learning R.
+
+#### List of Helpful R Resources:
+
+-   [Learn R in 39 minutes](https://www.youtube.com/watch?v=yZ0bV2Afkjc "YouTube: Learn R in 39 minutes") by **Equitable Equations**
+
+-   [Data analysis using R (2021)](https://youtube.com/playlist?list=PLhR2Go-lh6X6ZJnN4WQScB4qjO4GYTO0S "YouTube: Data analysis using R (2021)") by Danny Arends
+
+-   [R programming in one hour](https://youtu.be/eR-XRSKsuR4 "YouTube: R programming in one hour") - a crash course for beginners by R Programming 101
+
+-   [Visualize your data using ggplot. R programming is the best platform for creating plots and graphs](https://youtu.be/rfR9Nrpfnyg "YouTube: Visualize your data using ggplot"). by R Programming 101
+
+------------------------------------------------------------------------
+
+## What is "R"?
+
+To get started on this reference guide, I asked ChatGPT-4 to summarize.
+
+#### BACKGROUND OF R per GPT-4:
+
+> *The "R" in R programming doesn't officially stand for anything. The language was named "R" by its creators, Ross Ihaka and Robert Gentleman, from the University of Auckland, New Zealand. It can be viewed as a play on their names' initial letter.*
+>
+> *However, the language is also considered as an implementation of the S programming language, so sometimes "R" is referred to as a sort of play on the name "S".*
+>
+> *S was created by John Chambers and colleagues at Bell Laboratories.*
+>
+> *R has become a go-to language for statistical computing and graphics, widely used among statisticians and data analysts."*
+
+------------------------------------------------------------------------
+
+## I assume you are using RStudio Desktop:
+
+IF you are reading this in RStudio Cloud / Posit Cloud or in GitHub or online in some way...but you want to use this reference guide to follow along and repeat the processes in your own, you will really want RStudio. While you can use RStudio Cloud/Posit Cloud, the native desktop environment is good to use and get used to.
+
+*If you are a GitHub user and you're not reading this there, my profile is [darrellwolfe](https://github.com/darrellwolfe "GitHub_darrellwolfe"), and my repository for this project is [R_Analysis](https://github.com/darrellwolfe/R_Analysis "GitHub_R_Analysis").*
+
+If you choose to download RStudio Desktop, you will want to install both:
+
+1.  R - That is the code and operating system information you need running in the background.
+
+2.  RStudio - That is the Graphic User Interface (GUI) that you will primarily interact with.
+
+------------------------------------------------------------------------
+
+#### Download: [Download both_R_And_RStudio_Here](https://posit.co/download/rstudio-desktop/)
+
+```{r echo = TRUE}
+#### Download: [Download_R_And_RStudio_Here](https://posit.co/download/rstudio-desktop/)
+# Inside a Doc.R document, use: Ctrl + (Mouse Left Click)
+```
+
+------------------------------------------------------------------------
+
+## RStudio Desktop Overview
+
+```{r echo = TRUE}
+print("RStudio")
+```
+
+------------------------------------------------------------------------
+
+## SYSTEM INFORMATION
+
+To run code, place cursor in the same line as the code, press Ctrl+Enter (or, click "Run" icon at the top right of the .R docment box). Additionally, highlight multiple lines of code and then do either of the above.
+
+In your session of RStudio (or RStudio Cloud) type:
+
+To see which version of RStudio you are on, type 'version' (without the quotes) place cursor in the same line as the code, press Ctrl+Enter. You should get a result like this:
+
+```{r echo = TRUE}
+version
+
+```
+
+------------------------------------------------------------------------
+
+## The Basics of R
+
+Here are the things you NEED to know to get started. This won't be comprehensive, just an overview of the basic syntax, vocab, etc.
+
+*NOTE: MAC vs PC - I am going to say Ctrl+, if you use Mac, you know to use Command instead.*
+
+### 1. RUN (or EXCUTE) COMMANDS
+
+To run a command, place your cursor in the line of code (or highlight if multiple lines) B. Press Ctrl+Enter (or Command+Enter for Mac)
+
+Except website links, for those [Ctrl+(Left Click with Mouse)]
+
+Example:
+
+```{R echo = TRUE}
+print("Hello, World!")  # Type this in your session, place your cursor on the line, Press Ctrl+Enter
+```
+
+### 2. COMMENTS
+
+The hash-tag/number sign (\#) is a comment marker, R ignores everything after Comments \#
+
+```{R eval=FALSE, include=TRUE}
+installed.packages() #Comments can come after live code too! Click here() then Ctrl+Enter
+```
+
+### 3. WHERE is stuff?
+
+This is based on the default layout, you can also move these around:
+
+#### Top Left - Source -
+
+This text-box-area you may do most of your active writing within. You may have several files/windows open at once, writing code in each. You can have files/windows of different types (R, SQL, HTML, Text, VBA, etc.) open at once.
+
+If you use Ctrl+F - a Find and Replace capability will work just like it does in Word or Excel.
+
+If you run the following three in order, the "view" function will open a tab in this section of RStudio
+
+```         
+library(tidyverse) # Cursor on this line, Press Ctrl+Enter
+library("palmerpenguins") # Cursor on this line, Press Ctrl+Enter
+view(penguins) # Cursor on this line, Press Ctrl+Enter
+```
+
+#### Bottom Left - Console -
+
+Below the Source is the "Console" area. Commands can be typed directly into the console too; however, they don't get saved that way. Commands may give a Warning or Error, read those. Command outputs show in the console, that is its primary function.
+
+*NOTE: Commands ARE case sensitive library() and Library() are not the same.*
+
+#### Top Right - Environment -
+
+Environment tab will tell you which libraries and datasets you have open (loaded)
+
+History will tell you what you have been doing.
+
+Connections will tell if you have a live connection to the database.
+
+Git (if a GitHub project is loaded) is to create a new Project with an existing GitHub repo.
+
+*To do this:* File \> New Project \> Version Control \> Git (then paste link from GitHub)
+
+*To open an existing GitHub Project* File \> Open Project (navigate to the folder, click on the "NameOfFile.R" file) Tutorials - will walk you through the basics of R.
+
+### Bottom Right - Files -
+
+Lets you navigate all the files on your PC.
+
+*Note: You can import a .csv or .xls file from this section.*
+
+*To do this:* Navigate to the file from within the Files window, right click file, "Import"
+
+Plots is where your visuals will appear once you create them.
+
+Packages - Lists your packages, click the name to read about the package.
+
+Help - Type a "?" in front of any command or name, run the command, info will appear in Help.
+
+```{R eval=FALSE, include=FALSE}
+?library(tidyverse)  Cursor on this line, Press Ctrl+Enter 
+?tidyverse  Cursor on this line, Press Ctrl+Enter
+```
+
+------------------------------------------------------------------------
+
+## RStudio Visual Tour
+
+### RStudio Desktop
+
+![](y.Images/RStudio_Desktop_Full.jpg)
+
+### Document Type .R
+
+![](y.Images/RStudio_Desktop_Docments_Views.jpg)
+
+### view() - Shows up in the Top Left panel by default.
+
+![](y.Images/RStudio_Desktop_Top_Left_View.jpg)
+
+### Top Left - Environment
+
+This shows datasets and values and stored values. If you set x \<- 10, it will show that x equals ten.
+
+![](y.Images/RStudio_Desktop_Right_Top.jpg)
+
+### Files
+
+My files are constantly evolving. Even since taking this screenshot last night, it changed. However, this is where you fill find all the files you have written. You can code in R, RMarkdown, SQL, Python, vba and others, and have them all linked to your GitHub code base.
+
+![](y.Images/RStudio_Desktop_Right_Bottom_Files.jpg)
+
+### Plots
+
+Plots is where your visuals will appear once you have run them.
+
+![](y.Images/RStudio_Desktop_Bottom_Right_Plot.jpg)
+
+### GitHub
+
+Optional but recommended. If you create a GitHub Repository, then link that repo to RStudio, you can push all your code to the cloud easily. This way, you can also recover it from anywhere and share it with others. This my [R_Analysis repo here](https://github.com/darrellwolfe/R_Analysis "R_Analysis repo here").
+
+![](y.Images/RStudio_Desktop_Right_Top_GitHub.jpg)
+
+------------------------------------------------------------------------
+
+## R \<- 101
+
+At its core, R is a place to build and run RStudio R code. However, RStudio has evolved to be a full-service code editor (R, SQL, Python, HTML, and more). I have grown to enjoy it more than Visual Studio.
+
+Even more basic than R, RStudio can operate as a calculator.
+
+Here are few intro to RStudio items that you can use right now on your own session just to get used to running commands or math in the editor.
+
+### Calculator
+
+##### Basic Math
+
+```{R echo=TRUE}
+1+1 #Now run this calculation, place cursor on this line and then Ctrl+Enter
+```
+
+##### Variables
+
+Note: To assign a variable use (\<-). While you can use (=), don't for reasons I don't fully understand yet.
+
+```{R echo=TRUE}
+x <- 10 #This assigns the variable, place cursor on this line and then Ctrl+Enter
+10 * x #Now run this calculation, place cursor on this line and then Ctrl+Enter
+```
+
+##### Vectors
+
+GPT-4 on vectors: " In R, a vector is a sequence of data elements of the same basic type. Members in a vector are officially called components. However, we will often use the term "elements" interchangeably.
+
+There are two key points here:
+
+1.  The data elements of a vector must all be of the same type. Thus, we may have a vector of integers, a vector of real numbers, a vector of complex numbers, a vector of logical values, a vector of characters, etc.
+2.  The order of elements in a vector matters.
+
+The "c()" function in R is used to create vectors. The "c" stands for concatenate, which means to join or link things together in a chain or series.
+
+Let's take your example, `c(10,1,5,60)`. This code is creating a vector in R with four elements: 10, 1, 5, and 60. This vector is of numeric type, meaning all elements are numbers.
+
+You can assign this vector to a variable like this:
+
+``` r
+my_vector <- c(10,1,5,60)
+```
+
+Now, `my_vector` holds your vector and you can use it in calculations, pass it to functions, etc. For example, if you want to calculate the sum of all elements in the vector, you would use the `sum()` function:
+
+``` r
+sum(my_vector)
+```
+
+This would output `76`, the sum of 10, 1, 5, and 60.
+
+R has many functions to manipulate vectors, including mathematical operations, sorting, and statistical analysis. These are one of the basic data structures of R and fundamental to how it operates. "
+
+```{R echo=TRUE}
+my_vector <- c(10,1,5,60) #Now run this calculation, place cursor on this line and then Ctrl+Enter
+sum(my_vector) #Now run this calculation, place cursor on this line and then Ctrl+Enter
+```
+
+### Help
+
+If you need to understand something or how a code works you can place a question mark in front of any code and run that. It will show up in your Help tab at the bottom right.
+
+```{R eval=FALSE, include=TRUE}
+?print() #Now run this calculation, place cursor on this line and then Ctrl+Enter
+?c() #Now run this calculation, place cursor on this line and then Ctrl+Enter
+?library(tidyverse) #Now run this calculation, place cursor on this line and then Ctrl+Enter
+```
+
+------------------------------------------------------------------------
+
+## PACKAGES
+
+*There are thousands!*
+
+Packages are built either by Posit directly or by various third parties and users. One of the (if not the) first packages you will install is "tidyverse", which has become an industry standard package, providing several functionalities that are used frequently.
+
+Packages come with datasets, new functionality, and other items. In some rare cases, packages can come with conflicting functions (meaning two packages could assign the same name to different functions within the package), but most of this is circumvented by which library you have loaded.
+
+### Install a Package
+
+On your machine, run the following:
+
+install.packages("tidyverse") then Ctrl+Enter
+
+You should see this:
+
+```{r eval=FALSE, include=TRUE}
+install.packages("tidyverse") # You can place your cursor anywhere on this line and it would run in your RStudio
+
+```
+
+### Installed Packages
+
+To see which packages are already installed, place cursor in the same line as the code, press Ctrl+Enter: installed.packages()
+
+```{r eval=FALSE, include=TRUE}
+installed.packages() #Ctrl+Enter}
+
+# Example ![](y.Images/installed.packages.jpg)
+
+```
+
+The print out is long on installed.packages, but it will tell you every package you have on your system.
+
+![](y.Images/installed.packages.jpg)
+
+To install packages, place cursor in the same line as the code, press Ctrl+Enter: "tidyverse" is the first package you should install, it is one of the first everyone installs after the basic load-in.
+
+```         
+install.packages("tidyverse")
+```
+
+To load the library from installed packages, place cursor in the same line as the code, press Ctrl+Enter: This is your first installed library, you will use this often. More on that later.
+
+```         
+library(tidyverse)
+```
+
+## Libraries
+
+Once packages are installed, they are on your machine unless you delete them. However, the individual functions of any given package won't be available unless you load them into the current session. Consider each R file-type "Document_Name.R" to be a new blank slate.
+
+Once you load the library, those functions and datasets are available to use within the session. This may be the first thing you want to do after naming your .R file.
+
+### library() as a function
+
+You will load the packages you want to use by using "library".
+
+*Note: CAPITAL vs lowercase matters in R. library() \<is not equal to\> Library()*
+
+Example:
+
+```         
+Library(tidyverse) #Ctrl+Enter This probably gives you an error.
+```
+
+vs
+
+```         
+library(tidyverse) #Ctrl+Enter This probably works.
+```
+
+```{r eval=FALSE, include=TRUE}
+library(tidyverse) #Ctrl+Enter
+
+```
+
+------------------------------------------------------------------------
+
+## Change Appearance
+
+To change the appearance of your desktop, or theme do the following:
+
+1.  From the Tools menu at the top of the page, select "Global Options" at the bottom of the list.
+
+2.  From the left hand menu, select "Appearance".
+
+3.  Select the editor themes until you find one you like.
+
+4.  Click Apply, then click OK to save.
+
+[![Change Appearance](y.Images/RStudio_Desktop_Change_Appearance.jpg){width="606"}](Change%20Appearance)
+
+------------------------------------------------------------------------
+
+## Viewing Data
+
+In R, there are several different ways of viewing information within a dataset. If the set is small (Ex: five columns, fifteen rows), using view() or looking at it in a CSV or Excel works fine. But for most Data Analysts, the datasets will be large, hundreds, thousands, or even millions of rows of data. R gives us different options to understand the dataset we are working with, without loading it into an Excel sheet.
+
+GPT-4 Summarizes:
+
+> Certainly! Here's a short summary of options in R to view information about a dataset:
+>
+> 1.  **dim(dataset)**: Returns the dimensions (number of rows and columns) of the dataset.
+> 2.  **colnames(dataset)**: Retrieves the column names of the dataset.
+> 3.  **rownames(dataset)**: Retrieves the row names of the dataset.
+> 4.  **summary(dataset)**: Provides a statistical summary of each column in the dataset.
+> 5.  **str(dataset)**: Displays the structure of the dataset including data types and the first few entries.
+> 6.  **head(dataset, n)**: Shows the first `n` rows of the dataset (default is 6).
+> 7.  **tail(dataset, n)**: Shows the last `n` rows of the dataset (default is 6).
+> 8.  **View(dataset)**: Opens the dataset in a spreadsheet-like viewer (RStudio specific).
+> 9.  **glimpse(dataset)** (tidyverse): Offers a transposed version of `str()`, making it more concise especially for datasets with many columns.
+> 10. **dplyr::tbl_sum(dataset)** (tidyverse): Briefly summarizes the dataset, displaying its type and dimensions.
+> 11. **skimr::skim(dataset)**: Produces a detailed summary of each variable including histograms (from the skimr package).
+>
+> Each of these commands provides a different perspective on the dataset, helping the user to understand its structure, content, and key statistical properties.
+
+------------------------------------------------------------------------
+
+## Pipes %\>%
+
+The Pipe (%\>%) is a way of passing data and variables through to the next command. Think of it as "and then".
+
+You can type this by holding Shift and then % \> %, or you can use the hotkey in RStudio.
+
+> -   Windows/Linux: Ctrl + Shift + M
+> -   Mac: Cmd + Shift + M
+
+This will add the pipe ( %\>% ) automatically. We'll be using piples more later, but an example is here below.
+
+------------------------------------------------------------------------
+
+# Data Cleaning
+
+This is Week 3, Coursera, "Cleaning up with the basics" video content.
+
+```{R eval=FALSE, include=TRUE}
+# Install these packages
+install.packages("here")
+install.packages("skimr")
+install.packages("janitor")
+```
+
+```{R eval=FALSE, include=TRUE}
+# Load these packages
+library(tidyverse)
+library(here)
+library(skimr)
+library(janitor)
+
+# Install and load the practice dataset
+install.packages("palmerpenguins")
+library(palmerpenguins)
+
+# Some ways to view data
+skim_without_charts(penguins)
+glimpse(penguins)
+head(penguins)
+select(penguins)
+
+penguins %>% # passess this dataset into the following argument. 
+  rename(island_new=island) # Changes the column name from "island" to "island_new"
+# 1. give me the penguins dataset (and then %>% ) 2. rename this column.
+
+```
+
+------------------------------------------------------------------------
+
+## Coursera - Transforming and Summarising Data
+
+### Penguin Summary Information
+
+Getting a quick summary view of the data to understand quickly the answer to a question, such as, "What is the penguin type with the shortest flipper?
+
+```{r eval=FALSE, include=TRUE}
+# Minimum is min
+penguins  %>% 
+  drop_na()  %>% 
+    group_by(species, sex)  %>% 
+      summarise(min_flipper_length = min(flipper_length_mm))
+
+# Alternatively, max
+      # summarise(max_flipper_length = max(flipper_length_mm))
+```
+
+### Seperate (R) \<- Split (SQL)
+
+In SQL (and Excel Power Query), taking data from one column into two columns is called "Split", which can be accomplished through Split by Delimiter or Split by Character.
+
+In R, this is called "separate".
+
+```{r eval=FALSE, include=TRUE}
+seperate (employee, name, into=c('first_name','last_name'), sep=' |')
+# Take the employee table, name column, separate/split that column into two columns using the space as a delimiter.
+```
+
+### Unite (R) \<- Merge (SQL)
+
+Likewise, "Merge" in SQL or Excel Power Query is called "unite" in R.
+
+```{r eval=FALSE, include=TRUE}
+unite(employee,'name',first_name,last_name,sep=' ')
+```
+
+### Mutate (R) \<- Add Conditional Columns (Power Query) \<- Derived/Computed Columns (SQL)
+
+If you want to add a new column in R, you can use "mutate".
+
+```{r eval=FALSE, include=TRUE}
+mutate(body_mass_kg=body_mass_g/1000)
+#This adds a new column that converts Kilograms to Grams.
+```
+
+#### Side Bar: SQL Add Columns
+
+GPT-4 Explains:
+
+> When you create a new column in SQL by combining or performing some operation (like addition) on two or more existing columns, the new column is often referred to as a "derived column" or "computed column." Here's why:
+>
+> 1.  **Derived Column**: This term is used to describe a column that is derived from one or more existing columns in a table. For instance, if you're selecting from a table and you want to add together the values of two columns for your result set, the resulting column would be a derived column.
+>
+> 2.  **Computed Column**: This term is often used in the context of adding a new permanent column to a database table where the values are computed based on other columns. In some database systems, you can actually create computed columns that will automatically update their values based on the values of other columns.
+>
+> Here's a simple example of creating a derived column using SQL:
+>
+> ``` sql
+> SELECT first_name, last_name, salary, bonus, (salary + bonus) AS total_compensation
+> FROM employees;
+> ```
+>
+> In this example, `total_compensation` is a derived column that adds the `salary` and `bonus` columns together.
+>
+> Remember that the terminology might vary slightly based on context or the specific database platform. The most general term for such operations would be "derived column."
+
+### Bias Function
+
+In R, there is a bias() function that helps to see if there is any bias in the data. The lower the result, the less bias is present.
+
+#### Coursera:
+
+##### Data Analysis with R Programming \> Week 3 \>The bias function
+
+> *"When we run this we find out that the result Is 0.71. That's pretty close to zero but the prediction seemed biased towards lower temperatures which, means they aren't as accurate as they could be. And now that the local weather channel knows about this, they can find the problem in their system that's causing biased predictions. This doesn't mean that their predictions will be perfect all the time, but they'll be more accurate overall."*
+
+```{r eval=TRUE, include=TRUE}
+install.packages("SimDesign")
+# Example
+library(SimDesign)
+actual_temp <- c(68.3, 70 ,72.4, 71, 67, 70)
+predicted_temp <- c(67.9, 69, 71.5, 70, 67, 69)
+bias(actual_temp, predicted_temp)
+```
+
+### Clean Names
+
+```{r eval=FALSE, include=TRUE}
+clean_names(penguins) # What does this actually do?
+```
+
+### Arrange (R) \<- Order By (SQL) \<- Sort By (Excel/Power Query)
+
+```{r eval=FALSE, include=TRUE}
+penguins %>% arrange(body_mass_g)
+head(penguins)
+```
+
+### Statistical Differences
+
+```{r eval=TRUE, include=TRUE}
+
+install.packages('Tmisc')
+library(tidyverse)
+library(Tmisc)
+data(quartet)
+# View(quartet) # Use View to see the table.
+
+quartet %>% 
+  group_by(set) %>% 
+  summarise(mean(x), sd(x), mean(y), sd (y), cor(x,y))
+# Mean Averages are similar
+# Standard Deviation (sd), the standard deviation is similar in both sets , x & y
+# Correlation for each set, the correllation seems similar.
+```
+
+### Visualizing sd() and cor()
+
+```{r eval=TRUE, include=TRUE}
+ggplot(quartet, aes(x,y)) + geom_point() + geom_smooth(method=lm,se=FALSE) + facet_wrap(~set)
+# Taking the above summary, and then visualizing the data may tell a story that the numbers themslves did not. 
+```
+
+### Visualizing penguins data with ggplot2
+
+In this section, we take the Palmer Penguins dataset, and plot it using ggplot2. See also, the [ggplot2 Cheat Sheet](https://ggplot2.tidyverse.org/).
+
+Coursera: How to work with "ggplot2"
+
+1.  Start with the ggplot function and choose a dataset to work with.
+
+2.  Add a geom\_ function to display your data.
+
+3.  Map the variables you want to plot in the arguments of the aes() function.
+
+Install.packages
+
+```{r eval=TRUE, include=TRUE}
+
+install.packages("ggplot2")
+install.packages("palmerpenguins")
+```
+
+Load libraries
+
+```{r eval=TRUE, include=TRUE}
+
+library(ggplot2)
+library(palmerpenguins)
+```
+
+View the dataset:
+
+```{r eval=TRUE, include=TRUE}
+
+data("penguins")
+View(penguins)
+```
+
+Explained:
+
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+-   ggplot(data = penguins) - Creates the coordinate system to add layers on.
+
+-   geom_point() - Scatterplot vs goem_bar - bar chart - "A geom is the geometric object used to represent your data. In this case, the function geom_point() tells R to represent your data with points. The ggplot() function creates a coordinate system that you can add layers to. The first argument of the ggplot() function is the dataset to use in the plot. In this case, it's "penguins."" - Coursera, Week 4, Hands-On Activity
+
+-   (mapping = aes(x=,y=)) - What figures to place where on vizualization.
+
+-   aes(): "In the ggplot2 package of R, the function aes() stands for"aesthetic mappings." When you're using ggplot2 to create visualizations, you often use aes() to map variables in your data to visual properties (or "aesthetics") of the plot, such as the x and y position, color, size, shape, etc." GPT-4
+
+```{r eval=TRUE, include=TRUE}
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+```
+
+Adding layers to this plot:
+
+```{r eval=TRUE, include=TRUE}
+
+library(ggplot2)
+library(palmerpenguins)
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color=species, shape = species)) # , size = species This made it worse but was an option.
+  
+
+```
+
+------------------------------------------------------------------------
+
+## Annotating Viz
+
+We can add:
+
+-   Title - Bold top of visualization
+
+-   Subtitle - Smaller below title
+
+-   Caption - below graph
+
+-   Annotation - Label inside graph
+
+```{r eval=TRUE, include=TRUE}
+
+library(ggplot2)
+library(palmerpenguins)
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color=species, shape = species)) +
+labs(title = "Palmer Penguins: Body Mass vs Flipper Length", subtitle = "SubTitle Here", caption = "Data collected by Dr. Kristen Gorman, 2007-2009") +
+annotate("text",x=220,y=3500,label="The Gentoos are the Largest", color = "purple",fontface = "bold", size=4.0, angle=25)
+
+```
+
+------------------------------------------------------------------------
+
+## Assigning a variable to an entire plotted graph
+
+Type anything you want (letters before numbers) followed by the assignment (\<-) and place the ggplot after this. Than you can add things to the variable.
+
+```{r eval=TRUE, include=TRUE}
+
+library(ggplot2)
+library(palmerpenguins)
+
+
+p <- ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color=species, shape = species)) +
+labs(title = "Palmer Penguins: Body Mass vs Flipper Length", subtitle = "SubTitle Here", caption = "Data collected by Dr. Kristen Gorman, 2007-2009")
+
+
+psaved <- p + annotate("text",x=220,y=3500,label="The Gentoos are the Largest", color = "purple",fontface = "bold", size=4.0, angle=25)
+
+```
+
+------------------------------------------------------------------------
+
+## Saving Work
+
+In the Plots tab in RStudio, you can export the images (png, jpg, etc.) to a specified location.
+
+Alternatively, you can use `ggsave("Title.png")` and it will automatically save this to your RStudio Files.
+
+```{r eval=TRUE, include=TRUE}
+
+library(ggplot2)
+library(palmerpenguins)
+
+
+p <- ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color=species, shape = species)) +
+labs(title = "Palmer Penguins: Body Mass vs Flipper Length", subtitle = "SubTitle Here", caption = "Data collected by Dr. Kristen Gorman, 2007-2009")
+
+
+psaved <- p + annotate("text",x=220,y=3500,label="The Gentoos are the Largest", color = "purple",fontface = "bold", size=4.0, angle=25)
+
+ggsave("Three Penguins.png")
+
+
+```
+
+------------------------------------------------------------------------
+
+# Other ggplot2 options
+
+1.  Facests
+2.  Smooth
+3.  Alpha
+
+GPT-4: "Certainly! In the `ggplot2` package in R, visualization is built up through layers, allowing users to iteratively add elements to their plots. Let's go through each of the items you listed:
+
+1.  **Facets**:
+    -   Facets are a way to create multiple small plots (sub-plots) that share the same x and y axes, arranged in a grid. This is extremely useful for visualizing data across different subgroups or categories.
+    -   Two primary functions are used to create facets:
+        -   `facet_wrap(~variable, nrow = , ncol = )`: It wraps a 1D sequence of panels into a 2D grid.
+        -   `facet_grid(rows = ~variable1, cols = ~variable2)`: It creates a 2D grid of panels. You can facet by a variable on rows and/or columns.
+    -   Example: `R      library(ggplot2)      ggplot(mpg, aes(x=displ, y=hwy)) +          geom_point() +          facet_wrap(~class, nrow=2)`
+2.  **Smooth**:
+    -   The `geom_smooth()` function adds a smoothed line (typically a regression line) to a scatter plot, helping to show trends or patterns in the data. By default, if the dataset is large, it uses a method called 'loess' (locally estimated scatterplot smoothing). For smaller datasets or for categorical x-axis, it will compute a linear model.
+    -   You can specify the method you want using the `method` argument.
+    -   Example: `R      ggplot(mpg, aes(x=displ, y=hwy)) +          geom_point() +          geom_smooth()`
+3.  **Alpha**:
+    -   Alpha refers to the transparency level of a geom (graphic element). It takes values between 0 (completely transparent) and 1 (completely opaque).
+    -   Adjusting the alpha level can be particularly useful when dealing with overlapping points in scatter plots, as it helps to visualize the density of points.
+    -   The `alpha` argument can be set in most geoms to adjust transparency.
+    -   Example: `R      ggplot(mpg, aes(x=displ, y=hwy)) +          geom_point(alpha=0.5)` In this example, points in the scatter plot will be semi-transparent.
+
+These are just basic overviews of each concept. The flexibility and power of `ggplot2` allow for much deeper customization and control over visualizations."
+
+```{r eval=TRUE, include=TRUE}
+
+library(ggplot2)
+library(palmerpenguins)
+
+
+p <- ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color=species, shape = species, alpha=0.5)) +
+labs(title = "Palmer Penguins: Body Mass vs Flipper Length", subtitle = "SubTitle Here", caption = "Data collected by Dr. Kristen Gorman, 2007-2009")
+
+
+psaved <- p + annotate("text",x=220,y=3500,label="The Gentoos are the Largest", color = "purple",fontface = "bold", size=4.0, angle=25) +
+    facet_wrap(~species, nrow=2)
+
+# ggsave("Three Penguins.png")
+
+
+```
+
+------------------------------------------------------------------------
+
+# Future Sections Under Construction ...
+
+TEXT
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+## Section
+
+TEXT
+
+```{r eval=FALSE, include=TRUE}
+
+
+
+```
+
+------------------------------------------------------------------------
+
+# TO BE CONTINUED...

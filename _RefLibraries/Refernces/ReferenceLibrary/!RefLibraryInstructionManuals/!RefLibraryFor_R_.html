@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R Quick Reference Library</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="!RefLibraryFor_R__files/libs/clipboard/clipboard.min.js"></script>
+<script src="!RefLibraryFor_R__files/libs/quarto-html/quarto.js"></script>
+<script src="!RefLibraryFor_R__files/libs/quarto-html/popper.min.js"></script>
+<script src="!RefLibraryFor_R__files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="!RefLibraryFor_R__files/libs/quarto-html/anchor.min.js"></script>
+<link href="!RefLibraryFor_R__files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="!RefLibraryFor_R__files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="!RefLibraryFor_R__files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="!RefLibraryFor_R__files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="!RefLibraryFor_R__files/libs/bootstrap/bootstrap-8a79a254b8e706d3c925cde0a310d4f0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">R Quick Reference Library</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="welcome-to-learn_r" class="level1">
+<h1>Welcome to Learn_R</h1>
+</section>
+<section id="using-this-document" class="level1">
+<h1>Using this document</h1>
+<section id="code-chunks---fyi" class="level2">
+<h2 class="anchored" data-anchor-id="code-chunks---fyi">Code Chunks - FYI</h2>
+<p>When creating .qmd documents you can use the following to create code chunks. Eval (evaluation) means you want the code chunk to actually run and display its results in the final document, while include means that you want to display the code chunk (false would mean to hide it) in the final document.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="links" class="level1">
+<h1>Links</h1>
+<p>This is an example of a link format <code>[Link text](https://example.com)</code></p>
+</section>
+<section id="to-actually-knittstitch-this-document-you-will-need-to-have-python-r-and-quarto-installed-on-your-machine-through-visual-studio-code-or-rstudio." class="level1">
+<h1>To actually knitt/stitch this document you will need to have Python, R, and Quarto installed on your machine through Visual Studio Code (or RStudio).</h1>
+<p><a href="https://quarto.org/docs/get-started/">Quarto</a></p>
+<p><a href="https://cran.r-project.org/bin/windows/base/">Install R</a></p>
+<p><a href="https://www.python.org/downloads/">Install Python</a></p>
+</section>
+<section id="by-darrell-wolfe-r_analysis-codebase" class="level1">
+<h1>by Darrell Wolfe, &amp; R_Analysis CodeBase</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Hello, World!"</span>) <span class="co"># Welcome to my corner of the digi-verse.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello, World!"</code></pre>
+</div>
+</div>
+<p>This document exists to</p>
+<ol type="1">
+<li><p>Practice using RStudio,</p></li>
+<li><p>Practice using RMarkdown (both the style and file-type),</p></li>
+<li><p>To document my process of learning R and create a future-reference resource, and</p></li>
+<li><p>To preserve the best of my understanding and resources for my friends who are also learning R (now and in the future).</p></li>
+</ol>
+<p>Checkout the <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">RStudio RMarkdown Cheat Sheet</a>, which I referenced while creating this document.</p>
+<pre><code>#Example:
+Checkout the [RStudio RMarkdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf), which I referenced while creating this document.</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repos =</span> <span class="fu">c</span>(<span class="at">CRAN =</span> <span class="st">"https://cloud.r-project.org/"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+<section id="the-following-packages-are-required-to-run-this-docoment-in-.rmd-or-.qmd" class="level1">
+<h1>The following packages are required to run this docoment in .rmd or .qmd</h1>
+<p>If the following packages are not included this document will fail to stitch/knitt</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of all packages to be installed</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>packages <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"tidyverse"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"palmerpenguins"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"here"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"skimr"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"janitor"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SimDesign"</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Tmisc"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"ggplot2"</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Install any packages that are not yet installed</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>install_if_missing <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(p, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(p)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the installation function to all packages</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">lapply</span>(packages, install_if_missing))</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the libraries</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(packages, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+here() starts at C:/Users/dwolfe/Documents/Kootenai_County_Assessor_CodeBase-1
+
+
+Attaching package: 'janitor'
+
+
+The following objects are masked from 'package:stats':
+
+    chisq.test, fisher.test</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] "lubridate" "forcats"   "stringr"   "dplyr"     "purrr"     "readr"    
+ [7] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
+[13] "grDevices" "utils"     "datasets"  "methods"   "base"     
+
+[[2]]
+ [1] "palmerpenguins" "lubridate"      "forcats"        "stringr"       
+ [5] "dplyr"          "purrr"          "readr"          "tidyr"         
+ [9] "tibble"         "ggplot2"        "tidyverse"      "stats"         
+[13] "graphics"       "grDevices"      "utils"          "datasets"      
+[17] "methods"        "base"          
+
+[[3]]
+ [1] "here"           "palmerpenguins" "lubridate"      "forcats"       
+ [5] "stringr"        "dplyr"          "purrr"          "readr"         
+ [9] "tidyr"          "tibble"         "ggplot2"        "tidyverse"     
+[13] "stats"          "graphics"       "grDevices"      "utils"         
+[17] "datasets"       "methods"        "base"          
+
+[[4]]
+ [1] "skimr"          "here"           "palmerpenguins" "lubridate"     
+ [5] "forcats"        "stringr"        "dplyr"          "purrr"         
+ [9] "readr"          "tidyr"          "tibble"         "ggplot2"       
+[13] "tidyverse"      "stats"          "graphics"       "grDevices"     
+[17] "utils"          "datasets"       "methods"        "base"          
+
+[[5]]
+ [1] "janitor"        "skimr"          "here"           "palmerpenguins"
+ [5] "lubridate"      "forcats"        "stringr"        "dplyr"         
+ [9] "purrr"          "readr"          "tidyr"          "tibble"        
+[13] "ggplot2"        "tidyverse"      "stats"          "graphics"      
+[17] "grDevices"      "utils"          "datasets"       "methods"       
+[21] "base"          
+
+[[6]]
+ [1] "SimDesign"      "janitor"        "skimr"          "here"          
+ [5] "palmerpenguins" "lubridate"      "forcats"        "stringr"       
+ [9] "dplyr"          "purrr"          "readr"          "tidyr"         
+[13] "tibble"         "ggplot2"        "tidyverse"      "stats"         
+[17] "graphics"       "grDevices"      "utils"          "datasets"      
+[21] "methods"        "base"          
+
+[[7]]
+ [1] "Tmisc"          "SimDesign"      "janitor"        "skimr"         
+ [5] "here"           "palmerpenguins" "lubridate"      "forcats"       
+ [9] "stringr"        "dplyr"          "purrr"          "readr"         
+[13] "tidyr"          "tibble"         "ggplot2"        "tidyverse"     
+[17] "stats"          "graphics"       "grDevices"      "utils"         
+[21] "datasets"       "methods"        "base"          
+
+[[8]]
+ [1] "Tmisc"          "SimDesign"      "janitor"        "skimr"         
+ [5] "here"           "palmerpenguins" "lubridate"      "forcats"       
+ [9] "stringr"        "dplyr"          "purrr"          "readr"         
+[13] "tidyr"          "tibble"         "ggplot2"        "tidyverse"     
+[17] "stats"          "graphics"       "grDevices"      "utils"         
+[21] "datasets"       "methods"        "base"          </code></pre>
+</div>
+</div>
+<section id="this-is-a-basic-intro-to-r-i-will-be-creating-the-following" class="level2">
+<h2 class="anchored" data-anchor-id="this-is-a-basic-intro-to-r-i-will-be-creating-the-following">This is a basic intro to R, I will be creating the following:</h2>
+<p><em>All of this is subject to change. I started writing these in .R and now I’m writing in RMarkdown.</em> *</p>
+<ul>
+<li><p><a href="http://www.toposcreative.com/p/learnr.html">LearnR_StarterGuide</a>.R - That’s where you are now</p>
+<ul>
+<li><p>This will be links to Videos, Blogs, and Websites about R</p></li>
+<li><p>This will be covering the very basic elements of R syntax, vocabulary, etc.</p></li>
+</ul></li>
+<li><p><a href="http://www.toposcreative.com/p/learnrpackages.html">Learn_R_Packages</a>_.R - Supplemental Information on important or interesting packages I find along the way.</p></li>
+</ul>
+<p><em>Interesting - To create that list, I used an asterisk, which is what RMarkdown Cheat Sheet suggested. It didn’t take. When I wrote it in the Visual vs Source, using the buttons, and went back to the code, it showed a new format. This can happen when updates come through.</em></p>
+<p>This is what I used:</p>
+<pre><code># This is what I used:
+* Learn_R_ref_Intro_to.R - That's where you are now
+* Learn_R_ref_Resources.html - This will be links to Videos, Blogs, and Websites about R
+* Learn_R_ref_Basics_of.R - This will be covering the very basic elements of R syntax, vocabulary, etc.
+* Learn_R_4_Packages\_.R - Information on important or interesting packages I find along the way.
+* Learn_R_ref_HowTo_TBC -</code></pre>
+<p>This is what it was corrected to:</p>
+<pre><code># This is what it was corrected to:
+-   Learn_R_ref_Intro_to.R - That's where you are now
+
+-   Learn_R_ref_Resources.html - This will be links to Videos, Blogs, and Websites about R
+
+-   Learn_R_ref_Basics_of.R - This will be covering the very basic elements of R syntax, vocabulary, etc.
+
+-   Learn_R_4_Packages\_.R - Information on important or interesting packages I find along the way.
+
+-   Learn_R_ref_HowTo_TBC -</code></pre>
+<hr>
+</section>
+<section id="citing-chatgpt-gpt-4" class="level2">
+<h2 class="anchored" data-anchor-id="citing-chatgpt-gpt-4">Citing ChatGPT / GPT-4</h2>
+<p>A quick side-note about ChatGPT/GPT-4 citations in this document.</p>
+<p>If you (<em>somehow</em>) don’t already know what ChatGPT (or GPT-4) is, then I wanted to provide a quick note.</p>
+<p>First (1st), periodically, I will be citing content provided by GPT-4. With a history in scholarship, I did not feel comfortable passing it off as my own. When I use GPT-4 to help me provide a summary or tutorial, I will cite that source directly.</p>
+<p>As such, all citations of GPT-4 below are from OpenAI’s GPT-4 product. I have almost completely replace Google Searches with GPT-4 since I started using the ChatGPT in December 2022. While I still use Google, I use it less frequently as the days go by. The only reason I haven’t completely replace Google with GPT-4 is because it is not (currently 08/05/2023) tied live-to-internet. So for store hours, directions, recent events, etc., I still use Google.</p>
+<p>Second (2nd), while I’ve used it to do tasks for me (like: “Strip this SQL Select list of comments and aliases, and provide it back in a comma delimited list of table.column” - so I can use them in a Group By list), I have not found that to be my primary use of GPT-4.</p>
+<p>The real power of GPT-4 isn’t as a task-doer but as a tutor. I don’t want the code written for me, I want to understand the code and syntax. When I use GPT-4 as a tutor, I begin to understand the concepts and how to use them. I can take three things I know, and have a logical idea of what I want to accomplish, and have GPT-4 show me the syntax steps I was missing to finalize the outcome I’m working for. It works with SQL, Macros, DAX, and R (probably Python too, but I haven’t started Python yet, that’s next).</p>
+<p>Below, you will see me asking GPT-4 to provide a summary. This mirrors how I use this as a tutor for teaching myself. Therefore, since I’m using it anyway, I decided to incorporate this into my guide, so anyone reading the guide can see how I use it effectively and adapt that for their own uses.</p>
+<p>If you’re new to ChatGPT:</p>
+<p><a href="https://chat.openai.com" title="Go to ChatGPT / GPT-4">ChatGPT</a> is OpenAI’s free version. <a href="https://chat.openai.com/" title="Go to ChatGPT / GPT-4">GPT-4</a> is the paid upgrade. Go to “chat.openai.com”, create and account, and ask it “What can you do?”</p>
+<p>Example: “In one complex sentence, explain what you are and how you can be used effectively.”</p>
+<blockquote class="blockquote">
+<p>GPT-4: “I am ChatGPT, a state-of-the-art language model developed by OpenAI, based on the GPT-4 architecture, designed to understand and generate human-like text based on the input provided, and when used effectively, I can assist users in a myriad of tasks ranging from answering questions and providing explanations to creative writing and problem-solving.”</p>
+</blockquote>
+<p>Example: “How can open a dataset in R, and plot the data?”</p>
+<p>GPT-4:</p>
+<p>“To open a dataset in R and plot the data, you’d typically follow these general steps:</p>
+<ol type="1">
+<li><p><strong>Load necessary libraries</strong>: To handle data and plot it, you might want to use libraries like <code>tidyverse</code> which includes both <code>ggplot2</code> for plotting and <code>readr</code> for reading data.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Import your dataset</strong>: Depending on the format of your dataset (e.g., CSV, Excel, RData), you’d use different functions. For a CSV file:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"path_to_your_file.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Inspect your data</strong>: Before plotting, always take a moment to inspect your data to understand its structure.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Plot the data</strong>: With <code>ggplot2</code>, you can make a variety of plots. Here’s a simple scatter plot assuming you have variables named <code>x</code> and <code>y</code>:</p>
+<ol type="1">
+<li><p>Define: aes -&gt; aesthetic ( visual property of an object)</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dataset, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol></li>
+</ol>
+<p>The above steps offer a very basic introduction. Both the process of importing data and creating plots have many nuances depending on the specifics of your dataset and the type of visualization you want to create. It would be helpful to consult the <code>tidyverse</code> and <code>ggplot2</code> documentation for more detailed information. ”</p>
+<p>On with our tutorial…</p>
+<hr>
+</section>
+<section id="training" class="level2">
+<h2 class="anchored" data-anchor-id="training">Training</h2>
+<p>I’m creating this as I’m learning R through Coursera. For information on the course I’m taking to kick-off this project:</p>
+<section id="coursera-data-analysis-with-r-programming" class="level4">
+<h4 class="anchored" data-anchor-id="coursera-data-analysis-with-r-programming">Coursera : <a href="https://www.coursera.org/learn/data-analysis-r/home/welcome">Data Analysis with R Programming</a></h4>
+<pre><code>[Data Analysis with R Programming](https://www.coursera.org/learn/data-analysis-r/home/welcome) </code></pre>
+<hr>
+</section>
+<section id="other-resources" class="level4">
+<h4 class="anchored" data-anchor-id="other-resources">Other Resources</h4>
+<p>I will also be implementing strategies I find from any helpful resources, including the native help documentation, YouTube videos, TikTok posts, articles, and of course: GPT-4! I’ll link to anything I find that is useful.</p>
+<p>One perfect example of a resource is the YouTube video: “<a href="https://www.youtube.com/watch?v=yZ0bV2Afkjc" title="YouTube: Learn R in 39 minutes">Learn R in 39 minutes</a>” by <strong>Equitable Equations.</strong> This video was comprehensive but not too long. The last portion of the video informed me about RMarkdown documents (which I’m using to write this now). Definitely subscribe to his channel.</p>
+<p>With all that established, let’s get to learning R.</p>
+</section>
+<section id="list-of-helpful-r-resources" class="level4">
+<h4 class="anchored" data-anchor-id="list-of-helpful-r-resources">List of Helpful R Resources:</h4>
+<ul>
+<li><p><a href="https://www.youtube.com/watch?v=yZ0bV2Afkjc" title="YouTube: Learn R in 39 minutes">Learn R in 39 minutes</a> by <strong>Equitable Equations</strong></p></li>
+<li><p><a href="https://youtube.com/playlist?list=PLhR2Go-lh6X6ZJnN4WQScB4qjO4GYTO0S" title="YouTube: Data analysis using R (2021)">Data analysis using R (2021)</a> by Danny Arends</p></li>
+<li><p><a href="https://youtu.be/eR-XRSKsuR4" title="YouTube: R programming in one hour">R programming in one hour</a> - a crash course for beginners by R Programming 101</p></li>
+<li><p><a href="https://youtu.be/rfR9Nrpfnyg" title="YouTube: Visualize your data using ggplot">Visualize your data using ggplot. R programming is the best platform for creating plots and graphs</a>. by R Programming 101</p></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="what-is-r" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-r">What is “R”?</h2>
+<p>To get started on this reference guide, I asked ChatGPT-4 to summarize.</p>
+<section id="background-of-r-per-gpt-4" class="level4">
+<h4 class="anchored" data-anchor-id="background-of-r-per-gpt-4">BACKGROUND OF R per GPT-4:</h4>
+<blockquote class="blockquote">
+<p><em>The “R” in R programming doesn’t officially stand for anything. The language was named “R” by its creators, Ross Ihaka and Robert Gentleman, from the University of Auckland, New Zealand. It can be viewed as a play on their names’ initial letter.</em></p>
+<p><em>However, the language is also considered as an implementation of the S programming language, so sometimes “R” is referred to as a sort of play on the name “S”.</em></p>
+<p><em>S was created by John Chambers and colleagues at Bell Laboratories.</em></p>
+<p><em>R has become a go-to language for statistical computing and graphics, widely used among statisticians and data analysts.”</em></p>
+</blockquote>
+<hr>
+</section>
+</section>
+<section id="i-assume-you-are-using-rstudio-desktop" class="level2">
+<h2 class="anchored" data-anchor-id="i-assume-you-are-using-rstudio-desktop">I assume you are using RStudio Desktop:</h2>
+<p>IF you are reading this in RStudio Cloud / Posit Cloud or in GitHub or online in some way…but you want to use this reference guide to follow along and repeat the processes in your own, you will really want RStudio. While you can use RStudio Cloud/Posit Cloud, the native desktop environment is good to use and get used to.</p>
+<p><em>If you are a GitHub user and you’re not reading this there, my profile is <a href="https://github.com/darrellwolfe" title="GitHub_darrellwolfe">darrellwolfe</a>, and my repository for this project is <a href="https://github.com/darrellwolfe/R_Analysis" title="GitHub_R_Analysis">R_Analysis</a>.</em></p>
+<p>If you choose to download RStudio Desktop, you will want to install both:</p>
+<ol type="1">
+<li><p>R - That is the code and operating system information you need running in the background.</p></li>
+<li><p>RStudio - That is the Graphic User Interface (GUI) that you will primarily interact with.</p></li>
+</ol>
+<hr>
+<section id="download-download-both_r_and_rstudio_here" class="level4">
+<h4 class="anchored" data-anchor-id="download-download-both_r_and_rstudio_here">Download: <a href="https://posit.co/download/rstudio-desktop/">Download both_R_And_RStudio_Here</a></h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Download: [Download_R_And_RStudio_Here](https://posit.co/download/rstudio-desktop/)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Inside a Doc.R document, use: Ctrl + (Mouse Left Click)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="rstudio-desktop-overview" class="level2">
+<h2 class="anchored" data-anchor-id="rstudio-desktop-overview">RStudio Desktop Overview</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"RStudio"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "RStudio"</code></pre>
+</div>
+</div>
+<hr>
+</section>
+<section id="system-information" class="level2">
+<h2 class="anchored" data-anchor-id="system-information">SYSTEM INFORMATION</h2>
+<p>To run code, place cursor in the same line as the code, press Ctrl+Enter (or, click “Run” icon at the top right of the .R docment box). Additionally, highlight multiple lines of code and then do either of the above.</p>
+<p>In your session of RStudio (or RStudio Cloud) type:</p>
+<p>To see which version of RStudio you are on, type ‘version’ (without the quotes) place cursor in the same line as the code, press Ctrl+Enter. You should get a result like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>version</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               _                                
+platform       x86_64-w64-mingw32               
+arch           x86_64                           
+os             mingw32                          
+crt            ucrt                             
+system         x86_64, mingw32                  
+status                                          
+major          4                                
+minor          4.1                              
+year           2024                             
+month          06                               
+day            14                               
+svn rev        86737                            
+language       R                                
+version.string R version 4.4.1 (2024-06-14 ucrt)
+nickname       Race for Your Life               </code></pre>
+</div>
+</div>
+<hr>
+</section>
+<section id="the-basics-of-r" class="level2">
+<h2 class="anchored" data-anchor-id="the-basics-of-r">The Basics of R</h2>
+<p>Here are the things you NEED to know to get started. This won’t be comprehensive, just an overview of the basic syntax, vocab, etc.</p>
+<p><em>NOTE: MAC vs PC - I am going to say Ctrl+, if you use Mac, you know to use Command instead.</em></p>
+<section id="run-or-excute-commands" class="level3">
+<h3 class="anchored" data-anchor-id="run-or-excute-commands">1. RUN (or EXCUTE) COMMANDS</h3>
+<p>To run a command, place your cursor in the line of code (or highlight if multiple lines) B. Press Ctrl+Enter (or Command+Enter for Mac)</p>
+<p>Except website links, for those [Ctrl+(Left Click with Mouse)]</p>
+<p>Example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Hello, World!"</span>)  <span class="co"># Type this in your session, place your cursor on the line, Press Ctrl+Enter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hello, World!"</code></pre>
+</div>
+</div>
+</section>
+<section id="comments" class="level3">
+<h3 class="anchored" data-anchor-id="comments">2. COMMENTS</h3>
+<p>The hash-tag/number sign (#) is a comment marker, R ignores everything after Comments #</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">installed.packages</span>() <span class="co">#Comments can come after live code too! Click here() then Ctrl+Enter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="where-is-stuff" class="level3">
+<h3 class="anchored" data-anchor-id="where-is-stuff">3. WHERE is stuff?</h3>
+<p>This is based on the default layout, you can also move these around:</p>
+<section id="top-left---source--" class="level4">
+<h4 class="anchored" data-anchor-id="top-left---source--">Top Left - Source -</h4>
+<p>This text-box-area you may do most of your active writing within. You may have several files/windows open at once, writing code in each. You can have files/windows of different types (R, SQL, HTML, Text, VBA, etc.) open at once.</p>
+<p>If you use Ctrl+F - a Find and Replace capability will work just like it does in Word or Excel.</p>
+<p>If you run the following three in order, the “view” function will open a tab in this section of RStudio</p>
+<pre><code>library(tidyverse) # Cursor on this line, Press Ctrl+Enter
+library("palmerpenguins") # Cursor on this line, Press Ctrl+Enter
+view(penguins) # Cursor on this line, Press Ctrl+Enter</code></pre>
+</section>
+<section id="bottom-left---console--" class="level4">
+<h4 class="anchored" data-anchor-id="bottom-left---console--">Bottom Left - Console -</h4>
+<p>Below the Source is the “Console” area. Commands can be typed directly into the console too; however, they don’t get saved that way. Commands may give a Warning or Error, read those. Command outputs show in the console, that is its primary function.</p>
+<p><em>NOTE: Commands ARE case sensitive library() and Library() are not the same.</em></p>
+</section>
+<section id="top-right---environment--" class="level4">
+<h4 class="anchored" data-anchor-id="top-right---environment--">Top Right - Environment -</h4>
+<p>Environment tab will tell you which libraries and datasets you have open (loaded)</p>
+<p>History will tell you what you have been doing.</p>
+<p>Connections will tell if you have a live connection to the database.</p>
+<p>Git (if a GitHub project is loaded) is to create a new Project with an existing GitHub repo.</p>
+<p><em>To do this:</em> File &gt; New Project &gt; Version Control &gt; Git (then paste link from GitHub)</p>
+<p><em>To open an existing GitHub Project</em> File &gt; Open Project (navigate to the folder, click on the “NameOfFile.R” file) Tutorials - will walk you through the basics of R.</p>
+</section>
+</section>
+<section id="bottom-right---files--" class="level3">
+<h3 class="anchored" data-anchor-id="bottom-right---files--">Bottom Right - Files -</h3>
+<p>Lets you navigate all the files on your PC.</p>
+<p><em>Note: You can import a .csv or .xls file from this section.</em></p>
+<p><em>To do this:</em> Navigate to the file from within the Files window, right click file, “Import”</p>
+<p>Plots is where your visuals will appear once you create them.</p>
+<p>Packages - Lists your packages, click the name to read about the package.</p>
+<p>Help - Type a “?” in front of any command or name, run the command, info will appear in Help.</p>
+<hr>
+</section>
+</section>
+<section id="rstudio-visual-tour" class="level2">
+<h2 class="anchored" data-anchor-id="rstudio-visual-tour">RStudio Visual Tour</h2>
+<section id="rstudio-desktop" class="level3">
+<h3 class="anchored" data-anchor-id="rstudio-desktop">RStudio Desktop</h3>
+<p><img src="y.Images/RStudio_Desktop_Full.jpg" class="img-fluid"></p>
+</section>
+<section id="document-type-.r" class="level3">
+<h3 class="anchored" data-anchor-id="document-type-.r">Document Type .R</h3>
+<p><img src="y.Images/RStudio_Desktop_Docments_Views.jpg" class="img-fluid"></p>
+</section>
+<section id="view---shows-up-in-the-top-left-panel-by-default." class="level3">
+<h3 class="anchored" data-anchor-id="view---shows-up-in-the-top-left-panel-by-default.">view() - Shows up in the Top Left panel by default.</h3>
+<p><img src="y.Images/RStudio_Desktop_Top_Left_View.jpg" class="img-fluid"></p>
+</section>
+<section id="top-left---environment" class="level3">
+<h3 class="anchored" data-anchor-id="top-left---environment">Top Left - Environment</h3>
+<p>This shows datasets and values and stored values. If you set x &lt;- 10, it will show that x equals ten.</p>
+<p><img src="y.Images/RStudio_Desktop_Right_Top.jpg" class="img-fluid"></p>
+</section>
+<section id="files" class="level3">
+<h3 class="anchored" data-anchor-id="files">Files</h3>
+<p>My files are constantly evolving. Even since taking this screenshot last night, it changed. However, this is where you fill find all the files you have written. You can code in R, RMarkdown, SQL, Python, vba and others, and have them all linked to your GitHub code base.</p>
+<p><img src="y.Images/RStudio_Desktop_Right_Bottom_Files.jpg" class="img-fluid"></p>
+</section>
+<section id="plots" class="level3">
+<h3 class="anchored" data-anchor-id="plots">Plots</h3>
+<p>Plots is where your visuals will appear once you have run them.</p>
+<p><img src="y.Images/RStudio_Desktop_Bottom_Right_Plot.jpg" class="img-fluid"></p>
+</section>
+<section id="github" class="level3">
+<h3 class="anchored" data-anchor-id="github">GitHub</h3>
+<p>Optional but recommended. If you create a GitHub Repository, then link that repo to RStudio, you can push all your code to the cloud easily. This way, you can also recover it from anywhere and share it with others. This my <a href="https://github.com/darrellwolfe/R_Analysis" title="R_Analysis repo here">R_Analysis repo here</a>.</p>
+<p><img src="y.Images/RStudio_Desktop_Right_Top_GitHub.jpg" class="img-fluid"></p>
+<hr>
+</section>
+</section>
+<section id="r---101" class="level2">
+<h2 class="anchored" data-anchor-id="r---101">R &lt;- 101</h2>
+<p>At its core, R is a place to build and run RStudio R code. However, RStudio has evolved to be a full-service code editor (R, SQL, Python, HTML, and more). I have grown to enjoy it more than Visual Studio.</p>
+<p>Even more basic than R, RStudio can operate as a calculator.</p>
+<p>Here are few intro to RStudio items that you can use right now on your own session just to get used to running commands or math in the editor.</p>
+<section id="calculator" class="level3">
+<h3 class="anchored" data-anchor-id="calculator">Calculator</h3>
+<section id="basic-math" class="level5">
+<h5 class="anchored" data-anchor-id="basic-math">Basic Math</h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span> <span class="co">#Now run this calculation, place cursor on this line and then Ctrl+Enter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+</div>
+</section>
+<section id="variables" class="level5">
+<h5 class="anchored" data-anchor-id="variables">Variables</h5>
+<p>Note: To assign a variable use (&lt;-). While you can use (=), don’t for reasons I don’t fully understand yet.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co">#This assigns the variable, place cursor on this line and then Ctrl+Enter</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="dv">10</span> <span class="sc">*</span> x <span class="co">#Now run this calculation, place cursor on this line and then Ctrl+Enter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 100</code></pre>
+</div>
+</div>
+</section>
+<section id="vectors" class="level5">
+<h5 class="anchored" data-anchor-id="vectors">Vectors</h5>
+<p>GPT-4 on vectors: ” In R, a vector is a sequence of data elements of the same basic type. Members in a vector are officially called components. However, we will often use the term “elements” interchangeably.</p>
+<p>There are two key points here:</p>
+<ol type="1">
+<li>The data elements of a vector must all be of the same type. Thus, we may have a vector of integers, a vector of real numbers, a vector of complex numbers, a vector of logical values, a vector of characters, etc.</li>
+<li>The order of elements in a vector matters.</li>
+</ol>
+<p>The “c()” function in R is used to create vectors. The “c” stands for concatenate, which means to join or link things together in a chain or series.</p>
+<p>Let’s take your example, <code>c(10,1,5,60)</code>. This code is creating a vector in R with four elements: 10, 1, 5, and 60. This vector is of numeric type, meaning all elements are numbers.</p>
+<p>You can assign this vector to a variable like this:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>my_vector <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">60</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, <code>my_vector</code> holds your vector and you can use it in calculations, pass it to functions, etc. For example, if you want to calculate the sum of all elements in the vector, you would use the <code>sum()</code> function:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(my_vector)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This would output <code>76</code>, the sum of 10, 1, 5, and 60.</p>
+<p>R has many functions to manipulate vectors, including mathematical operations, sorting, and statistical analysis. These are one of the basic data structures of R and fundamental to how it operates. ”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>my_vector <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">60</span>) <span class="co">#Now run this calculation, place cursor on this line and then Ctrl+Enter</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(my_vector) <span class="co">#Now run this calculation, place cursor on this line and then Ctrl+Enter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 76</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="help" class="level3">
+<h3 class="anchored" data-anchor-id="help">Help</h3>
+<p>If you need to understand something or how a code works you can place a question mark in front of any code and run that. It will show up in your Help tab at the bottom right.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>?<span class="fu">print</span>() <span class="co">#Now run this calculation, place cursor on this line and then Ctrl+Enter</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>?<span class="fu">c</span>() <span class="co">#Now run this calculation, place cursor on this line and then Ctrl+Enter</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>?<span class="fu">library</span>(tidyverse) <span class="co">#Now run this calculation, place cursor on this line and then Ctrl+Enter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="packages" class="level2">
+<h2 class="anchored" data-anchor-id="packages">PACKAGES</h2>
+<p><em>There are thousands!</em></p>
+<p>Packages are built either by Posit directly or by various third parties and users. One of the (if not the) first packages you will install is “tidyverse”, which has become an industry standard package, providing several functionalities that are used frequently.</p>
+<p>Packages come with datasets, new functionality, and other items. In some rare cases, packages can come with conflicting functions (meaning two packages could assign the same name to different functions within the package), but most of this is circumvented by which library you have loaded.</p>
+<section id="install-a-package" class="level3">
+<h3 class="anchored" data-anchor-id="install-a-package">Install a Package</h3>
+<p>On your machine, run the following:</p>
+<p>install.packages(“tidyverse”) then Ctrl+Enter</p>
+<p>You should see this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>) <span class="co"># You can place your cursor anywhere on this line and it would run in your RStudio</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="installed-packages" class="level3">
+<h3 class="anchored" data-anchor-id="installed-packages">Installed Packages</h3>
+<p>To see which packages are already installed, place cursor in the same line as the code, press Ctrl+Enter: installed.packages()</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">installed.packages</span>() <span class="co">#Ctrl+Enter}</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Example ![](y.Images/installed.packages.jpg)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The print out is long on installed.packages, but it will tell you every package you have on your system.</p>
+<p><img src="y.Images/installed.packages.jpg" class="img-fluid"></p>
+<p>To install packages, place cursor in the same line as the code, press Ctrl+Enter: “tidyverse” is the first package you should install, it is one of the first everyone installs after the basic load-in.</p>
+<pre><code>install.packages("tidyverse")</code></pre>
+<p>To load the library from installed packages, place cursor in the same line as the code, press Ctrl+Enter: This is your first installed library, you will use this often. More on that later.</p>
+<pre><code>library(tidyverse)</code></pre>
+</section>
+</section>
+<section id="libraries" class="level2">
+<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
+<p>Once packages are installed, they are on your machine unless you delete them. However, the individual functions of any given package won’t be available unless you load them into the current session. Consider each R file-type “Document_Name.R” to be a new blank slate.</p>
+<p>Once you load the library, those functions and datasets are available to use within the session. This may be the first thing you want to do after naming your .R file.</p>
+<section id="library-as-a-function" class="level3">
+<h3 class="anchored" data-anchor-id="library-as-a-function">library() as a function</h3>
+<p>You will load the packages you want to use by using “library”.</p>
+<p><em>Note: CAPITAL vs lowercase matters in R. library() &lt;is not equal to&gt; Library()</em></p>
+<p>Example:</p>
+<pre><code>Library(tidyverse) #Ctrl+Enter This probably gives you an error.</code></pre>
+<p>vs</p>
+<pre><code>library(tidyverse) #Ctrl+Enter This probably works.</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co">#Ctrl+Enter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="change-appearance" class="level2">
+<h2 class="anchored" data-anchor-id="change-appearance">Change Appearance</h2>
+<p>To change the appearance of your desktop, or theme do the following:</p>
+<ol type="1">
+<li><p>From the Tools menu at the top of the page, select “Global Options” at the bottom of the list.</p></li>
+<li><p>From the left hand menu, select “Appearance”.</p></li>
+<li><p>Select the editor themes until you find one you like.</p></li>
+<li><p>Click Apply, then click OK to save.</p></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="Change%20Appearance"><img src="y.Images/RStudio_Desktop_Change_Appearance.jpg" class="img-fluid figure-img" width="606" alt="Change Appearance"></a></p>
+<figcaption>Change Appearance</figcaption>
+</figure>
+</div>
+<hr>
+</section>
+<section id="viewing-data" class="level2">
+<h2 class="anchored" data-anchor-id="viewing-data">Viewing Data</h2>
+<p>In R, there are several different ways of viewing information within a dataset. If the set is small (Ex: five columns, fifteen rows), using view() or looking at it in a CSV or Excel works fine. But for most Data Analysts, the datasets will be large, hundreds, thousands, or even millions of rows of data. R gives us different options to understand the dataset we are working with, without loading it into an Excel sheet.</p>
+<p>GPT-4 Summarizes:</p>
+<blockquote class="blockquote">
+<p>Certainly! Here’s a short summary of options in R to view information about a dataset:</p>
+<ol type="1">
+<li><strong>dim(dataset)</strong>: Returns the dimensions (number of rows and columns) of the dataset.</li>
+<li><strong>colnames(dataset)</strong>: Retrieves the column names of the dataset.</li>
+<li><strong>rownames(dataset)</strong>: Retrieves the row names of the dataset.</li>
+<li><strong>summary(dataset)</strong>: Provides a statistical summary of each column in the dataset.</li>
+<li><strong>str(dataset)</strong>: Displays the structure of the dataset including data types and the first few entries.</li>
+<li><strong>head(dataset, n)</strong>: Shows the first <code>n</code> rows of the dataset (default is 6).</li>
+<li><strong>tail(dataset, n)</strong>: Shows the last <code>n</code> rows of the dataset (default is 6).</li>
+<li><strong>View(dataset)</strong>: Opens the dataset in a spreadsheet-like viewer (RStudio specific).</li>
+<li><strong>glimpse(dataset)</strong> (tidyverse): Offers a transposed version of <code>str()</code>, making it more concise especially for datasets with many columns.</li>
+<li><strong>dplyr::tbl_sum(dataset)</strong> (tidyverse): Briefly summarizes the dataset, displaying its type and dimensions.</li>
+<li><strong>skimr::skim(dataset)</strong>: Produces a detailed summary of each variable including histograms (from the skimr package).</li>
+</ol>
+<p>Each of these commands provides a different perspective on the dataset, helping the user to understand its structure, content, and key statistical properties.</p>
+</blockquote>
+<hr>
+</section>
+<section id="pipes" class="level2">
+<h2 class="anchored" data-anchor-id="pipes">Pipes %&gt;%</h2>
+<p>The Pipe (%&gt;%) is a way of passing data and variables through to the next command. Think of it as “and then”.</p>
+<p>You can type this by holding Shift and then % &gt; %, or you can use the hotkey in RStudio.</p>
+<blockquote class="blockquote">
+<ul>
+<li>Windows/Linux: Ctrl + Shift + M</li>
+<li>Mac: Cmd + Shift + M</li>
+</ul>
+</blockquote>
+<p>This will add the pipe ( %&gt;% ) automatically. We’ll be using piples more later, but an example is here below.</p>
+<hr>
+</section>
+</section>
+<section id="data-cleaning" class="level1">
+<h1>Data Cleaning</h1>
+<p>This is Week 3, Coursera, “Cleaning up with the basics” video content.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install these packages</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"here"</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"skimr"</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"janitor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load these packages</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Install and load the practice dataset</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"palmerpenguins"</span>)</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Some ways to view data</span></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="fu">skim_without_charts</span>(penguins)</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(penguins)</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(penguins)</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span> <span class="co"># passess this dataset into the following argument. </span></span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">island_new=</span>island) <span class="co"># Changes the column name from "island" to "island_new"</span></span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. give me the penguins dataset (and then %&gt;% ) 2. rename this column.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<section id="coursera---transforming-and-summarising-data" class="level2">
+<h2 class="anchored" data-anchor-id="coursera---transforming-and-summarising-data">Coursera - Transforming and Summarising Data</h2>
+<section id="penguin-summary-information" class="level3">
+<h3 class="anchored" data-anchor-id="penguin-summary-information">Penguin Summary Information</h3>
+<p>Getting a quick summary view of the data to understand quickly the answer to a question, such as, “What is the penguin type with the shortest flipper?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Minimum is min</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>penguins  <span class="sc">%&gt;%</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()  <span class="sc">%&gt;%</span> </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(species, sex)  <span class="sc">%&gt;%</span> </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">min_flipper_length =</span> <span class="fu">min</span>(flipper_length_mm))</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternatively, max</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>      <span class="co"># summarise(max_flipper_length = max(flipper_length_mm))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="seperate-r---split-sql" class="level3">
+<h3 class="anchored" data-anchor-id="seperate-r---split-sql">Seperate (R) &lt;- Split (SQL)</h3>
+<p>In SQL (and Excel Power Query), taking data from one column into two columns is called “Split”, which can be accomplished through Split by Delimiter or Split by Character.</p>
+<p>In R, this is called “separate”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">seperate</span> (employee, name, <span class="at">into=</span><span class="fu">c</span>(<span class="st">'first_name'</span>,<span class="st">'last_name'</span>), <span class="at">sep=</span><span class="st">' |'</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Take the employee table, name column, separate/split that column into two columns using the space as a delimiter.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="unite-r---merge-sql" class="level3">
+<h3 class="anchored" data-anchor-id="unite-r---merge-sql">Unite (R) &lt;- Merge (SQL)</h3>
+<p>Likewise, “Merge” in SQL or Excel Power Query is called “unite” in R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unite</span>(employee,<span class="st">'name'</span>,first_name,last_name,<span class="at">sep=</span><span class="st">' '</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="mutate-r---add-conditional-columns-power-query---derivedcomputed-columns-sql" class="level3">
+<h3 class="anchored" data-anchor-id="mutate-r---add-conditional-columns-power-query---derivedcomputed-columns-sql">Mutate (R) &lt;- Add Conditional Columns (Power Query) &lt;- Derived/Computed Columns (SQL)</h3>
+<p>If you want to add a new column in R, you can use “mutate”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">body_mass_kg=</span>body_mass_g<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co">#This adds a new column that converts Kilograms to Grams.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="side-bar-sql-add-columns" class="level4">
+<h4 class="anchored" data-anchor-id="side-bar-sql-add-columns">Side Bar: SQL Add Columns</h4>
+<p>GPT-4 Explains:</p>
+<blockquote class="blockquote">
+<p>When you create a new column in SQL by combining or performing some operation (like addition) on two or more existing columns, the new column is often referred to as a “derived column” or “computed column.” Here’s why:</p>
+<ol type="1">
+<li><p><strong>Derived Column</strong>: This term is used to describe a column that is derived from one or more existing columns in a table. For instance, if you’re selecting from a table and you want to add together the values of two columns for your result set, the resulting column would be a derived column.</p></li>
+<li><p><strong>Computed Column</strong>: This term is often used in the context of adding a new permanent column to a database table where the values are computed based on other columns. In some database systems, you can actually create computed columns that will automatically update their values based on the values of other columns.</p></li>
+</ol>
+<p>Here’s a simple example of creating a derived column using SQL:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> first_name, last_name, salary, bonus, (salary <span class="op">+</span> bonus) <span class="kw">AS</span> total_compensation</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> employees;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this example, <code>total_compensation</code> is a derived column that adds the <code>salary</code> and <code>bonus</code> columns together.</p>
+<p>Remember that the terminology might vary slightly based on context or the specific database platform. The most general term for such operations would be “derived column.”</p>
+</blockquote>
+</section>
+</section>
+<section id="bias-function" class="level3">
+<h3 class="anchored" data-anchor-id="bias-function">Bias Function</h3>
+<p>In R, there is a bias() function that helps to see if there is any bias in the data. The lower the result, the less bias is present.</p>
+<section id="coursera" class="level4">
+<h4 class="anchored" data-anchor-id="coursera">Coursera:</h4>
+<section id="data-analysis-with-r-programming-week-3-the-bias-function" class="level5">
+<h5 class="anchored" data-anchor-id="data-analysis-with-r-programming-week-3-the-bias-function">Data Analysis with R Programming &gt; Week 3 &gt;The bias function</h5>
+<blockquote class="blockquote">
+<p><em>“When we run this we find out that the result Is 0.71. That’s pretty close to zero but the prediction seemed biased towards lower temperatures which, means they aren’t as accurate as they could be. And now that the local weather channel knows about this, they can find the problem in their system that’s causing biased predictions. This doesn’t mean that their predictions will be perfect all the time, but they’ll be more accurate overall.”</em></p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"SimDesign"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'SimDesign' is in use and will not be installed</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SimDesign)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>actual_temp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">68.3</span>, <span class="dv">70</span> ,<span class="fl">72.4</span>, <span class="dv">71</span>, <span class="dv">67</span>, <span class="dv">70</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>predicted_temp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">67.9</span>, <span class="dv">69</span>, <span class="fl">71.5</span>, <span class="dv">70</span>, <span class="dv">67</span>, <span class="dv">69</span>)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bias</span>(actual_temp, predicted_temp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7166667</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="clean-names" class="level3">
+<h3 class="anchored" data-anchor-id="clean-names">Clean Names</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clean_names</span>(penguins) <span class="co"># What does this actually do?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="arrange-r---order-by-sql---sort-by-excelpower-query" class="level3">
+<h3 class="anchored" data-anchor-id="arrange-r---order-by-sql---sort-by-excelpower-query">Arrange (R) &lt;- Order By (SQL) &lt;- Sort By (Excel/Power Query)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>penguins <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(body_mass_g)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="statistical-differences" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-differences">Statistical Differences</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'Tmisc'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'Tmisc' is in use and will not be installed</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Tmisc)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(quartet)</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># View(quartet) # Use View to see the table.</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>quartet <span class="sc">%&gt;%</span> </span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(set) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">mean</span>(x), <span class="fu">sd</span>(x), <span class="fu">mean</span>(y), <span class="fu">sd</span> (y), <span class="fu">cor</span>(x,y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 6
+  set   `mean(x)` `sd(x)` `mean(y)` `sd(y)` `cor(x, y)`
+  &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;
+1 I             9    3.32      7.50    2.03       0.816
+2 II            9    3.32      7.50    2.03       0.816
+3 III           9    3.32      7.5     2.03       0.816
+4 IV            9    3.32      7.50    2.03       0.817</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean Averages are similar</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Deviation (sd), the standard deviation is similar in both sets , x &amp; y</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation for each set, the correllation seems similar.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualizing-sd-and-cor" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-sd-and-cor">Visualizing sd() and cor()</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(quartet, <span class="fu">aes</span>(x,y)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method=</span>lm,<span class="at">se=</span><span class="cn">FALSE</span>) <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>set)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="!RefLibraryFor_R__files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Taking the above summary, and then visualizing the data may tell a story that the numbers themslves did not. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualizing-penguins-data-with-ggplot2" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-penguins-data-with-ggplot2">Visualizing penguins data with ggplot2</h3>
+<p>In this section, we take the Palmer Penguins dataset, and plot it using ggplot2. See also, the <a href="https://ggplot2.tidyverse.org/">ggplot2 Cheat Sheet</a>.</p>
+<p>Coursera: How to work with “ggplot2”</p>
+<ol type="1">
+<li><p>Start with the ggplot function and choose a dataset to work with.</p></li>
+<li><p>Add a geom_ function to display your data.</p></li>
+<li><p>Map the variables you want to plot in the arguments of the aes() function.</p></li>
+</ol>
+<p>Install.packages</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' is in use and will not be installed</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"palmerpenguins"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'palmerpenguins' is in use and will not be installed</code></pre>
+</div>
+</div>
+<p>Load libraries</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>View the dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"penguins"</span>)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Explained:</p>
+<p>ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))</p>
+<ul>
+<li><p>ggplot(data = penguins) - Creates the coordinate system to add layers on.</p></li>
+<li><p>geom_point() - Scatterplot vs goem_bar - bar chart - “A geom is the geometric object used to represent your data. In this case, the function geom_point() tells R to represent your data with points. The ggplot() function creates a coordinate system that you can add layers to. The first argument of the ggplot() function is the dataset to use in the plot. In this case, it’s&nbsp;”penguins.”” - Coursera, Week 4, Hands-On Activity</p></li>
+<li><p>(mapping = aes(x=,y=)) - What figures to place where on vizualization.</p></li>
+<li><p>aes(): “In the ggplot2 package of R, the function aes() stands for”aesthetic mappings.” When you’re using ggplot2 to create visualizations, you often use aes() to map variables in your data to visual properties (or “aesthetics”) of the plot, such as the x and y position, color, size, shape, etc.” GPT-4</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> penguins) <span class="sc">+</span> </span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="!RefLibraryFor_R__files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Adding layers to this plot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> penguins) <span class="sc">+</span> </span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g, <span class="at">color=</span>species, <span class="at">shape =</span> species)) <span class="co"># , size = species This made it worse but was an option.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="!RefLibraryFor_R__files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="annotating-viz" class="level2">
+<h2 class="anchored" data-anchor-id="annotating-viz">Annotating Viz</h2>
+<p>We can add:</p>
+<ul>
+<li><p>Title - Bold top of visualization</p></li>
+<li><p>Subtitle - Smaller below title</p></li>
+<li><p>Caption - below graph</p></li>
+<li><p>Annotation - Label inside graph</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> penguins) <span class="sc">+</span> </span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g, <span class="at">color=</span>species, <span class="at">shape =</span> species)) <span class="sc">+</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Palmer Penguins: Body Mass vs Flipper Length"</span>, <span class="at">subtitle =</span> <span class="st">"SubTitle Here"</span>, <span class="at">caption =</span> <span class="st">"Data collected by Dr. Kristen Gorman, 2007-2009"</span>) <span class="sc">+</span></span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a><span class="fu">annotate</span>(<span class="st">"text"</span>,<span class="at">x=</span><span class="dv">220</span>,<span class="at">y=</span><span class="dv">3500</span>,<span class="at">label=</span><span class="st">"The Gentoos are the Largest"</span>, <span class="at">color =</span> <span class="st">"purple"</span>,<span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size=</span><span class="fl">4.0</span>, <span class="at">angle=</span><span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="!RefLibraryFor_R__files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="assigning-a-variable-to-an-entire-plotted-graph" class="level2">
+<h2 class="anchored" data-anchor-id="assigning-a-variable-to-an-entire-plotted-graph">Assigning a variable to an entire plotted graph</h2>
+<p>Type anything you want (letters before numbers) followed by the assignment (&lt;-) and place the ggplot after this. Than you can add things to the variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> penguins) <span class="sc">+</span> </span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g, <span class="at">color=</span>species, <span class="at">shape =</span> species)) <span class="sc">+</span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Palmer Penguins: Body Mass vs Flipper Length"</span>, <span class="at">subtitle =</span> <span class="st">"SubTitle Here"</span>, <span class="at">caption =</span> <span class="st">"Data collected by Dr. Kristen Gorman, 2007-2009"</span>)</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>psaved <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>,<span class="at">x=</span><span class="dv">220</span>,<span class="at">y=</span><span class="dv">3500</span>,<span class="at">label=</span><span class="st">"The Gentoos are the Largest"</span>, <span class="at">color =</span> <span class="st">"purple"</span>,<span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size=</span><span class="fl">4.0</span>, <span class="at">angle=</span><span class="dv">25</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+<section id="saving-work" class="level2">
+<h2 class="anchored" data-anchor-id="saving-work">Saving Work</h2>
+<p>In the Plots tab in RStudio, you can export the images (png, jpg, etc.) to a specified location.</p>
+<p>Alternatively, you can use <code>ggsave("Title.png")</code> and it will automatically save this to your RStudio Files.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> penguins) <span class="sc">+</span> </span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g, <span class="at">color=</span>species, <span class="at">shape =</span> species)) <span class="sc">+</span></span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Palmer Penguins: Body Mass vs Flipper Length"</span>, <span class="at">subtitle =</span> <span class="st">"SubTitle Here"</span>, <span class="at">caption =</span> <span class="st">"Data collected by Dr. Kristen Gorman, 2007-2009"</span>)</span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-10"><a href="#cb75-10" aria-hidden="true" tabindex="-1"></a>psaved <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>,<span class="at">x=</span><span class="dv">220</span>,<span class="at">y=</span><span class="dv">3500</span>,<span class="at">label=</span><span class="st">"The Gentoos are the Largest"</span>, <span class="at">color =</span> <span class="st">"purple"</span>,<span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size=</span><span class="fl">4.0</span>, <span class="at">angle=</span><span class="dv">25</span>)</span>
+<span id="cb75-11"><a href="#cb75-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb75-12"><a href="#cb75-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"Three Penguins.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Saving 7 x 5 in image</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="other-ggplot2-options" class="level1">
+<h1>Other ggplot2 options</h1>
+<ol type="1">
+<li>Facests</li>
+<li>Smooth</li>
+<li>Alpha</li>
+</ol>
+<p>GPT-4: “Certainly! In the <code>ggplot2</code> package in R, visualization is built up through layers, allowing users to iteratively add elements to their plots. Let’s go through each of the items you listed:</p>
+<ol type="1">
+<li><strong>Facets</strong>:
+<ul>
+<li>Facets are a way to create multiple small plots (sub-plots) that share the same x and y axes, arranged in a grid. This is extremely useful for visualizing data across different subgroups or categories.</li>
+<li>Two primary functions are used to create facets:
+<ul>
+<li><code>facet_wrap(~variable, nrow = , ncol = )</code>: It wraps a 1D sequence of panels into a 2D grid.</li>
+<li><code>facet_grid(rows = ~variable1, cols = ~variable2)</code>: It creates a 2D grid of panels. You can facet by a variable on rows and/or columns.</li>
+</ul></li>
+<li>Example: <code>R      library(ggplot2)      ggplot(mpg, aes(x=displ, y=hwy)) +          geom_point() +          facet_wrap(~class, nrow=2)</code></li>
+</ul></li>
+<li><strong>Smooth</strong>:
+<ul>
+<li>The <code>geom_smooth()</code> function adds a smoothed line (typically a regression line) to a scatter plot, helping to show trends or patterns in the data. By default, if the dataset is large, it uses a method called ‘loess’ (locally estimated scatterplot smoothing). For smaller datasets or for categorical x-axis, it will compute a linear model.</li>
+<li>You can specify the method you want using the <code>method</code> argument.</li>
+<li>Example: <code>R      ggplot(mpg, aes(x=displ, y=hwy)) +          geom_point() +          geom_smooth()</code></li>
+</ul></li>
+<li><strong>Alpha</strong>:
+<ul>
+<li>Alpha refers to the transparency level of a geom (graphic element). It takes values between 0 (completely transparent) and 1 (completely opaque).</li>
+<li>Adjusting the alpha level can be particularly useful when dealing with overlapping points in scatter plots, as it helps to visualize the density of points.</li>
+<li>The <code>alpha</code> argument can be set in most geoms to adjust transparency.</li>
+<li>Example: <code>R      ggplot(mpg, aes(x=displ, y=hwy)) +          geom_point(alpha=0.5)</code> In this example, points in the scatter plot will be semi-transparent.</li>
+</ul></li>
+</ol>
+<p>These are just basic overviews of each concept. The flexibility and power of <code>ggplot2</code> allow for much deeper customization and control over visualizations.”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> penguins) <span class="sc">+</span> </span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g, <span class="at">color=</span>species, <span class="at">shape =</span> species, <span class="at">alpha=</span><span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Palmer Penguins: Body Mass vs Flipper Length"</span>, <span class="at">subtitle =</span> <span class="st">"SubTitle Here"</span>, <span class="at">caption =</span> <span class="st">"Data collected by Dr. Kristen Gorman, 2007-2009"</span>)</span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>psaved <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">"text"</span>,<span class="at">x=</span><span class="dv">220</span>,<span class="at">y=</span><span class="dv">3500</span>,<span class="at">label=</span><span class="st">"The Gentoos are the Largest"</span>, <span class="at">color =</span> <span class="st">"purple"</span>,<span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size=</span><span class="fl">4.0</span>, <span class="at">angle=</span><span class="dv">25</span>) <span class="sc">+</span></span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>species, <span class="at">nrow=</span><span class="dv">2</span>)</span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave("Three Penguins.png")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+<section id="future-sections-under-construction" class="level1">
+<h1>Future Sections Under Construction …</h1>
+<p>TEXT</p>
+<hr>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-1" class="level2">
+<h2 class="anchored" data-anchor-id="section-1">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-2" class="level2">
+<h2 class="anchored" data-anchor-id="section-2">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-3" class="level2">
+<h2 class="anchored" data-anchor-id="section-3">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-4" class="level2">
+<h2 class="anchored" data-anchor-id="section-4">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-5" class="level2">
+<h2 class="anchored" data-anchor-id="section-5">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-6" class="level2">
+<h2 class="anchored" data-anchor-id="section-6">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-7" class="level2">
+<h2 class="anchored" data-anchor-id="section-7">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-8" class="level2">
+<h2 class="anchored" data-anchor-id="section-8">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+<section id="section-9" class="level2">
+<h2 class="anchored" data-anchor-id="section-9">Section</h2>
+<p>TEXT</p>
+<hr>
+</section>
+</section>
+<section id="to-be-continued" class="level1">
+<h1>TO BE CONTINUED…</h1>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

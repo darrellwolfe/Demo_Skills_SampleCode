@@ -1,0 +1,9 @@
+=IF([LRSN]=" "," ",
+  IF([@[Remaining Acres LCM]]=30,
+  IFERROR(INDEX($AU$3:$AU$8, MATCH(MAX(IF($AT$3:$AT$8<[@[Pre-Adjust Base Remain Acre Rate]], $AT$3:$AT$8)), $AT$3:$AT$8, 0))
++ ([@[Pre-Adjust Base Remain Acre Rate]] - MAX(IF($AT$3:$AT$8<[@[Pre-Adjust Base Remain Acre Rate]], $AT$3:$AT$8)))
+* (INDEX($AU$3:$AU$8, MATCH(MIN(IF($AT$3:$AT$8>[@[Pre-Adjust Base Remain Acre Rate]], $AT$3:$AT$8)), $AT$3:$AT$8, 0))
+- INDEX($AU$3:$AU$8, MATCH(MAX(IF($AT$3:$AT$8<[@[Pre-Adjust Base Remain Acre Rate]], $AT$3:$AT$8)), $AT$3:$AT$8, 0)))
+/ (MIN(IF($AT$3:$AT$8>[@[Pre-Adjust Base Remain Acre Rate]], $AT$3:$AT$8)) - MAX(IF($AT$3:$AT$8<[@[Pre-Adjust Base Remain Acre Rate]], $AT$3:$AT$8))),""),
+  =[@[Remaining Acres]]*$AV$12)
+)
