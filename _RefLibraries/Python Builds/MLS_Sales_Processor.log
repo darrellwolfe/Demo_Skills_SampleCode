@@ -1,0 +1,22 @@
+ootenai_County_Assessor_CodeBase-1> & C:/Users/dwolfe/AppData/Local/Programs/Python/Python312/python.exe "c:/Users/dwolfe/Documents/Kootenai_County_Assessor_CodeBase-1/Working_Darrell/Python Builds/New Python Tools/MLS_Sales_Processor.py"
+Start_SetUp
+Start_DatabaseConnections
+Start_SQLQueiries        
+Start_MLS_CSV_Combine_To_Dataframe
+You should now have a MLS Dataframe called: combined_df
+Start_CleanedVersion_Of_combined_df
+Start_Matching_DFs_on_ParcelMaster
+Start_PM_to_AIN
+Start_PM_to_Address
+ERROR:root:All records matched on Address; no non-matches found in the DataFrame.
+Start_PM_to_LegalDescription
+Traceback (most recent call last):
+  File "c:\Users\dwolfe\Documents\Kootenai_County_Assessor_CodeBase-1\Working_Darrell\Python Builds\New Python Tools\MLS_Sales_Processor.py", line 504, in <module>     
+    non_matched_df_address['Matched_Legal'] = non_matched_df_address.apply(fuzzy_match_legal, axis=1, pm_legals=pm_legals)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\dwolfe\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\frame.py", line 4301, in __setitem__
+    self._set_item_frame_value(key, value)
+  File "C:\Users\dwolfe\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\frame.py", line 4459, in _set_item_frame_value
+    raise ValueError(
+ValueError: Cannot set a DataFrame with multiple columns to the single column Matched_Legal
+PS C:\Users\dwolfe\Documents\Kootenai_County_Assessor_CodeBase-1> 

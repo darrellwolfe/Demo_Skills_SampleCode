@@ -1,0 +1,71 @@
+import os
+import logging
+from datetime import datetime
+import re
+
+
+""" UPDATE THE FOLDERNAME AND LOG NAME """
+
+# Sets up dynamic logging and returns the log file path
+def setup_logging():
+
+    """ UPDATE THE FOLDERNAME AND LOG NAME """
+    log_folder = os.path.join(os.path.expanduser('~'), 'FolderNameHere')
+    if not os.path.exists(log_folder):
+        os.makedirs(log_folder)
+
+    """ UPDATE THE FOLDERNAME AND LOG NAME """
+    log_file = os.path.join(log_folder, 'LogNameHere.log')
+
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.DEBUG,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    return log_file
+
+# Initialize logging and get the dynamic log file path
+log_file_path = setup_logging()
+print("Start_SetUp")
+logging.info("Start_SetUp")
+
+# AINLogProcessor now uses the dynamic log file
+class AINLogProcessor:
+    def __init__(self, log_filename):
+        self.log_filename = log_filename
+        self.unique_ains = set()
+        self.today_date = datetime.now().strftime('%Y-%m-%d')
+        self.pattern = re.compile(r'Sent AIN (\d{6})')
+
+    def process_log(self):
+        # Open and read the log file
+        with open(self.log_filename, 'r') as log_file:
+            for line in log_file:
+                # Check if the line contains today's date
+                if self.today_date in line:
+                    # Search for the pattern in the line
+                    match = self.pattern.search(line)
+                    if match:
+                        # Add the matched AIN to the set
+                        self.unique_ains.add(match.group(1))
+
+    def get_unique_ains(self):
+        # Convert the set to a sorted list if needed
+        return sorted(self.unique_ains)
+
+    def print_unique_ains(self):
+        unique_ains_list = self.get_unique_ains()
+        print(f"Unique AINs count for {self.today_date}: {len(unique_ains_list)}")
+        for ain in unique_ains_list:
+            print(ain)
+
+if __name__ == "__main__":
+    # Create an instance of the AINLogProcessor using the dynamic log file path
+    log_processor = AINLogProcessor(log_file_path)
+
+    # Process the log file
+    log_processor.process_log()
+
+    # Print the unique AINs
+    log_processor.print_unique_ains()

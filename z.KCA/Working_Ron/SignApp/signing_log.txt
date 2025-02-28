@@ -1,2 +1,0 @@
-2024-11-15 15:16:45,152 - INFO - Starting TimeTracker signing process
-2024-11-15 15:16:45,152 - ERROR - Signing process failed: Certificate not found: C:\Users\rmason\Code\Repositories\KCAsrCB\Working_Ron\SignApp\TimeTrackerCert.pfx

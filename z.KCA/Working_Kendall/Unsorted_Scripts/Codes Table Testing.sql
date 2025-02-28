@@ -1,5 +1,0 @@
---CODES TABLE TESTING--
-
-SELECT *
-
-FROM land_types AS lt

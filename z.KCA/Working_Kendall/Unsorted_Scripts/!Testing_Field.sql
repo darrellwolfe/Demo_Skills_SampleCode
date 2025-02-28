@@ -1,7 +1,0 @@
-SELECT t.TAGId,
-COUNT(t.TAGId)AS yep
-FROM TAGTaxAuthority AS t
-WHERE t.TaxAuthorityId IN ('202','1141','203','207','210','1056','1060','1064','227','1074','228','1005','1054','1011','1032','1034','1118','1044','1050','1046','252','254','271','272')
-    AND t.TAGId NOT LIKE ('2%')
-GROUP BY t.TAGId
-ORDER BY yep DESC
